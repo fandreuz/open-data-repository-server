@@ -43,7 +43,7 @@ public final class DatasetService {
      * @param file name of the file to be imported.
      * @return the newly created dataset metadata if available.
      */
-    private DatasetMetadata createDataset(@NonNull String collectionId, @NonNull String file) {
+    public DatasetMetadata createDataset(@NonNull String collectionId, @NonNull String file) {
         var pair = datasetFetchService.fetchDataset(collectionId, file);
         DatasetMetadata metadata = pair.getKey();
         Path converted = conversionServiceOrchestrator
@@ -67,7 +67,7 @@ public final class DatasetService {
      * @param datasetId ID of the dataset to be found.
      * @return the dataset object if it exists.
      */
-    public DatasetMetadata getMetadata(long datasetId) {
+    public DatasetMetadata getMetadata(String datasetId) {
         return metadataDatabaseClient.get(datasetId);
     }
 
