@@ -1,4 +1,4 @@
-package io.github.fandreuz.model.impl;
+package io.github.fandreuz.database.impl;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -6,7 +6,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.InsertOneResult;
-import io.github.fandreuz.model.DatabaseClient;
+import io.github.fandreuz.database.DatabaseClient;
 import io.github.fandreuz.model.Dataset;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;

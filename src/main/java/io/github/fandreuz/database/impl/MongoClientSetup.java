@@ -1,4 +1,4 @@
-package io.github.fandreuz.model.impl;
+package io.github.fandreuz.database.impl;
 
 import jakarta.inject.Singleton;
 import lombok.Getter;
