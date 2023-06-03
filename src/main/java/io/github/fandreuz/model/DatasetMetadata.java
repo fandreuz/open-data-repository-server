@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @Slf4j
 @Builder
+@NonNull
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
     private static final Comparator<DatasetMetadata> COMPARATOR = Comparator //
