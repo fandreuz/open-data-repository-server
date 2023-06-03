@@ -57,7 +57,7 @@ public final class DatasetService {
             transactionController.commit();
             return storedMetadata;
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            throw new RuntimeException("An exception occurred while closing the transaction", exception);
         }
     }
 
