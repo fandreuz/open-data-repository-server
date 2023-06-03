@@ -7,7 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.InsertOneResult;
 import io.github.fandreuz.database.DatabaseClient;
-import io.github.fandreuz.model.Dataset;
+import io.github.fandreuz.model.DatasetMetadata;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -30,7 +30,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
  */
 @Slf4j
 @Singleton
-public class MongoDatabaseClient implements DatabaseClient {
+public class MongoDatabaseMetadataClient implements DatabaseClient<DatasetMetadata> {
 
     private static final String DATASET_NAME = "dataset-db";
     private static final String COLLECTION_NAME = "Datasets";
@@ -41,7 +41,7 @@ public class MongoDatabaseClient implements DatabaseClient {
     private MongoClient mongoClient;
 
     @Override
-    public Optional<Dataset> createDataset(@NonNull Dataset dataset) {
+    public Optional<DatasetMetadata> createDataset(@NonNull DatasetMetadata dataset) {
         var collection = getDatasetCollection();
         log.info("Inserting new dataset: {} ...", dataset);
         InsertOneResult result = collection.insertOne(dataset);
@@ -58,7 +58,7 @@ public class MongoDatabaseClient implements DatabaseClient {
     }
 
     @Override
-    public Optional<Dataset> getDataset(long datasetId) {
+    public Optional<DatasetMetadata> getDataset(long datasetId) {
         var collection = getDatasetCollection();
         log.info("Getting dataset (id={}) ...", datasetId);
         return Optional.ofNullable(
@@ -66,17 +66,17 @@ public class MongoDatabaseClient implements DatabaseClient {
     }
 
     @Override
-    public SortedSet<Dataset> getAllDatasets() {
+    public SortedSet<DatasetMetadata> getAllDatasets() {
         var collection = getDatasetCollection();
         log.info("Getting all stored datasets ...");
         return collection.find().into(new TreeSet<>());
     }
 
-    private MongoCollection<Dataset> getDatasetCollection() {
+    private MongoCollection<DatasetMetadata> getDatasetCollection() {
         if (mongoClient == null) {
             initDatabaseClient();
         }
-        return mongoClient.getDatabase(DATASET_NAME).getCollection(COLLECTION_NAME, Dataset.class);
+        return mongoClient.getDatabase(DATASET_NAME).getCollection(COLLECTION_NAME, DatasetMetadata.class);
     }
 
     private void initDatabaseClient() {

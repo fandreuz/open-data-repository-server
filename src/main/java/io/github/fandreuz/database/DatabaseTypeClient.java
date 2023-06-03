@@ -1,6 +1,6 @@
 package io.github.fandreuz.database;
 
-import io.github.fandreuz.model.Dataset;
+import io.github.fandreuz.model.DatasetMetadata;
 import java.util.Optional;
 import java.util.SortedSet;
 import lombok.NonNull;
@@ -8,30 +8,31 @@ import lombok.NonNull;
 /**
  * Interface for database clients.
  *
+ * @param <T> type of the controlled type.
  * @author fandreuz
  */
-public interface DatabaseClient {
+public interface DatabaseClient<T> {
 
     /**
-     * Create a new dataset in the database.
+     * Create a new object in the database.
      *
      * @param dataset the object to be inserted.
      * @return the newly created dataset if available.
      */
-    Optional<Dataset> createDataset(@NonNull Dataset dataset);
+    Optional<T> createDataset(@NonNull T dataset);
 
     /**
-     * Find an existing dataset in the database.
+     * Find an existing object in the database.
      *
      * @param datasetId ID of the dataset to be found.
      * @return the dataset object if it exists.
      */
-    Optional<Dataset> getDataset(long datasetId);
+    Optional<T> getDataset(long datasetId);
 
     /**
-     * Get all the datasets stored in the database.
+     * Get all the objects stored in the database.
      *
      * @return a set containing all the datasets in the database.
      */
-    SortedSet<Dataset> getAllDatasets();
+    SortedSet<T> getAllDatasets();
 }
