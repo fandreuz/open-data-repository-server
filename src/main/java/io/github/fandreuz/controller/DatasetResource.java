@@ -1,6 +1,6 @@
 package io.github.fandreuz.controller;
 
-import io.github.fandreuz.model.DatabaseClient;
+import io.github.fandreuz.database.DatabaseClient;
 import io.github.fandreuz.model.Dataset;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -14,13 +14,18 @@ public class DatasetResource {
     @Inject
     private DatabaseClient databaseClient;
 
-    @GET
-    public SortedSet<Dataset> list() {
-        return databaseClient.getAllDatasets();
-    }
-
     @POST
     public Dataset create(Dataset dataset) {
         return databaseClient.createDataset(dataset).orElseThrow();
+    }
+    
+    @GET
+    public Dataset get(long id) {
+        return databaseClient.getDataset(id).orElseThrow();
+    }
+    
+    @GET
+    public SortedSet<Dataset> list() {
+        return databaseClient.getAllDatasets();
     }
 }
