@@ -1,31 +1,36 @@
 package io.github.fandreuz.controller;
 
-import io.github.fandreuz.database.DatabaseClient;
 import io.github.fandreuz.model.Dataset;
+import io.github.fandreuz.model.DatasetService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import java.util.SortedSet;
 
+/**
+ * Dataset resource controller.
+ *
+ * @author fandreuz
+ */
 @Path("/dataset")
-public class DatasetResource {
+public final class DatasetResource {
 
     @Inject
-    private DatabaseClient databaseClient;
+    private DatasetService datasetService;
 
     @POST
     public Dataset create(Dataset dataset) {
-        return databaseClient.createDataset(dataset).orElseThrow();
+        return datasetService.createDataset(dataset);
     }
-    
+
     @GET
     public Dataset get(long id) {
-        return databaseClient.getDataset(id).orElseThrow();
+        return datasetService.getDataset(id);
     }
-    
+
     @GET
     public SortedSet<Dataset> list() {
-        return databaseClient.getAllDatasets();
+        return datasetService.getAllDatasets();
     }
 }
