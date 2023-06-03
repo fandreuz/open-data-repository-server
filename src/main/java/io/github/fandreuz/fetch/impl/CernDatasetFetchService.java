@@ -26,7 +26,7 @@ public final class CernDatasetFetchService implements DatasetFetchService {
         String fileContent = RemoteDatasetReader.read(url).orElseThrow();
 
         DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file, fileContent);
-        Dataset dataset = Dataset.fromFileContent(metadata.getId(), fileContent);
+        Dataset dataset = new Dataset(metadata.getId(), fileContent);
         return Pair.of(metadata, dataset);
     }
 }

@@ -1,8 +1,14 @@
 package io.github.fandreuz.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+
+@AllArgsConstructor
+@NonNull
+@Getter
 public class Dataset {
 
-    public static Dataset fromFileContent(String id, String content) {
-        return null;
-    }
+    private final String uniqueId;
+    private final String fileCsvContent;
 }

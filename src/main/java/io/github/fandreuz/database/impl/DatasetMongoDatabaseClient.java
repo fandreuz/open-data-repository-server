@@ -1,15 +1,19 @@
 package io.github.fandreuz.database.impl;
 
-import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
 import io.github.fandreuz.database.DatabaseTypeClient;
 import io.github.fandreuz.model.Dataset;
-import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Optional;
 import java.util.SortedSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.bson.Document;
 
 /**
  * MongoDB implementation of {@link DatabaseTypeClient} for {@link Dataset} objects.
@@ -21,16 +25,35 @@ import lombok.extern.slf4j.Slf4j;
 public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
 
     private static final String DATASET_NAME = "dataset-db";
-    private static final String COLLECTION_NAME = "Datasets";
 
     @Inject
     private MongoClientSetup databaseClientSetup;
 
-    private MongoClient mongoClient;
-
     @Override
     public Optional<Dataset> create(@NonNull Dataset dataset) {
-        return null;
+        log.info("Storing dataset '{}' in the database ...", dataset.getUniqueId());
+        var reader = new StringReader(dataset.getFileCsvContent());
+        CSVFormat csvFormat = CSVFormat.Builder.create().setHeader().build();
+        CSVParser parser;
+        try {
+            parser = csvFormat.parse(reader);
+        } catch (IOException exception) {
+            log.error("An error occurred while parsing the CSV file", exception);
+            return Optional.empty();
+        }
+
+        MongoCollection<Document> collection = getDatasetCollection(dataset);
+        var headers = parser.getHeaderMap();
+        for (var record : parser) {
+            Document document = new Document();
+            for (var headerEntry : headers.entrySet()) {
+                document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
+            }
+            collection.insertOne(document);
+        }
+
+        log.info("Stored dataset '{}' in the database", dataset.getUniqueId());
+        return Optional.of(dataset);
     }
 
     @Override
@@ -43,10 +66,10 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
         return null;
     }
 
-    @PreDestroy
-    void cleanUp() {
-        if (mongoClient != null) {
-            mongoClient.close();
-        }
+    private MongoCollection<Document> getDatasetCollection(Dataset dataset) {
+        return databaseClientSetup
+                .getMongoClient() //
+                .getDatabase(DATASET_NAME) //
+                .getCollection(dataset.getUniqueId());
     }
 }
