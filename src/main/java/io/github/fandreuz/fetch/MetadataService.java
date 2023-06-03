@@ -15,8 +15,7 @@ public interface MetadataService {
      *
      * @param collectionId dataset collection ID.
      * @param fileName dataset fileName name.
-     * @param fileContent content of the dataset.
      * @return metadata for the given dataset.
      */
-    DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName, @NonNull String fileContent);
+    DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName);
 }

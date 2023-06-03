@@ -18,8 +18,7 @@ final class CernMetadataService implements MetadataService {
     private static final String UID_PATTERN = "%s-%s";
 
     @Override
-    public DatasetMetadata buildMetadata(
-            @NonNull String collectionId, @NonNull String fileName, @NonNull String fileContent) {
+    public DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName) {
         String uid = makeDatasetUid(collectionId, fileName);
         DatasetType type = Utils.extractExtension(fileName) //
                 .map(String::toUpperCase) //
