@@ -1,9 +1,8 @@
 package io.github.fandreuz.database;
 
+import io.github.fandreuz.model.Dataset;
 import java.util.Optional;
 import java.util.SortedSet;
-
-import io.github.fandreuz.model.Dataset;
 import lombok.NonNull;
 
 /**
