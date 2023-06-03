@@ -1,28 +1,54 @@
 package io.github.fandreuz.model;
 
-import io.github.fandreuz.database.DatabaseClient;
+import io.github.fandreuz.database.DatabaseTransactionService;
+import io.github.fandreuz.database.DatabaseTypeClient;
+import io.github.fandreuz.database.TransactionController;
+import io.github.fandreuz.fetch.DatasetFetchService;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.SortedSet;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Dataset service.
  *
  * @author fandreuz
  */
+@Singleton
+@Slf4j
 public final class DatasetService {
 
     @Inject
-    private DatabaseClient databaseClient;
+    private DatabaseTypeClient<DatasetMetadata> metadataDatabaseClient;
+
+    @Inject
+    private DatabaseTypeClient<Dataset> datasetDatabaseClient;
+
+    @Inject
+    private DatasetFetchService datasetFetchService;
+
+    @Inject
+    private DatabaseTransactionService transactionService;
 
     /**
-     * Create a new dataset.
+     * Create a new dataset. A dataset is identified by the ID of the collection it belongs to, and by the file name.
      *
-     * @param dataset the object to be created.
-     * @return the newly created dataset if available.
+     * @param collectionId unique ID of the collection.
+     * @param file name of the file to be imported.
+     * @return the newly created dataset metadata if available.
      */
-    public Dataset createDataset(@NonNull Dataset dataset) {
-        return databaseClient.createDataset(dataset).orElseThrow();
+    public DatasetMetadata createDataset(@NonNull String collectionId, @NonNull String file) {
+        DatasetMetadata storedMetadata;
+        try (TransactionController transactionController = transactionService.start()) {
+            var pair = datasetFetchService.fetchDataset(collectionId, file);
+            storedMetadata = metadataDatabaseClient.create(pair.getKey()).orElseThrow();
+            datasetDatabaseClient.create(pair.getValue()).orElseThrow();
+            transactionController.commit();
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+        return storedMetadata;
     }
 
     /**
@@ -31,8 +57,8 @@ public final class DatasetService {
      * @param datasetId ID of the dataset to be found.
      * @return the dataset object if it exists.
      */
-    public Dataset getDataset(long datasetId) {
-        return databaseClient.getDataset(datasetId).orElseThrow();
+    public DatasetMetadata getMetadata(long datasetId) {
+        return metadataDatabaseClient.get(datasetId).orElseThrow();
     }
 
     /**
@@ -40,7 +66,7 @@ public final class DatasetService {
      *
      * @return a set containing all the datasets.
      */
-    public SortedSet<Dataset> getAllDatasets() {
-        return databaseClient.getAllDatasets();
+    public SortedSet<DatasetMetadata> getAllMetadata() {
+        return metadataDatabaseClient.getAll();
     }
 }

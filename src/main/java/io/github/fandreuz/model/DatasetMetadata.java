@@ -6,20 +6,20 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Object representation of stored ROOT datasets.
+ * Stored ROOT dataset metadata.
  *
  * @author fandreuz
  */
 @Getter
 @ToString
 @Slf4j
-public class Dataset implements Comparable<Dataset> {
+public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
-    private long id;
+    private String id;
     private String name;
 
     @Override
-    public int compareTo(@NonNull Dataset dataset) {
+    public int compareTo(@NonNull DatasetMetadata dataset) {
         return getName().compareTo(dataset.getName());
     }
 }

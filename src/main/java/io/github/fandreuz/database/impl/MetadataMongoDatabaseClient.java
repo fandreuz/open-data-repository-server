@@ -1,14 +1,9 @@
 package io.github.fandreuz.database.impl;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.InsertOneResult;
-import io.github.fandreuz.database.DatabaseClient;
+import io.github.fandreuz.database.DatabaseTypeClient;
 import io.github.fandreuz.model.DatasetMetadata;
-import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.Optional;
@@ -19,29 +14,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonInt64;
 import org.bson.BsonValue;
 import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistries;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
 
 /**
- * MongoDB implementation of {@link DatabaseClient}.
+ * MongoDB implementation of {@link DatabaseTypeClient} for {@link DatasetMetadata} objects.
  *
  * @author fandreuz
  */
 @Slf4j
 @Singleton
-public class MongoDatabaseMetadataClient implements DatabaseClient<DatasetMetadata> {
+public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMetadata> {
 
     private static final String DATASET_NAME = "dataset-db";
-    private static final String COLLECTION_NAME = "Datasets";
+    private static final String COLLECTION_NAME = "datasets-metadata";
 
     @Inject
     private MongoClientSetup databaseClientSetup;
 
-    private MongoClient mongoClient;
-
     @Override
-    public Optional<DatasetMetadata> createDataset(@NonNull DatasetMetadata dataset) {
+    public Optional<DatasetMetadata> create(@NonNull DatasetMetadata dataset) {
         var collection = getDatasetCollection();
         log.info("Inserting new dataset: {} ...", dataset);
         InsertOneResult result = collection.insertOne(dataset);
@@ -54,11 +44,11 @@ public class MongoDatabaseMetadataClient implements DatabaseClient<DatasetMetada
         return Optional.ofNullable(result.getInsertedId()) //
                 .map(BsonValue::asInt64) //
                 .map(BsonInt64::getValue) //
-                .flatMap(this::getDataset);
+                .flatMap(this::get);
     }
 
     @Override
-    public Optional<DatasetMetadata> getDataset(long datasetId) {
+    public Optional<DatasetMetadata> get(long datasetId) {
         var collection = getDatasetCollection();
         log.info("Getting dataset (id={}) ...", datasetId);
         return Optional.ofNullable(
@@ -66,40 +56,16 @@ public class MongoDatabaseMetadataClient implements DatabaseClient<DatasetMetada
     }
 
     @Override
-    public SortedSet<DatasetMetadata> getAllDatasets() {
+    public SortedSet<DatasetMetadata> getAll() {
         var collection = getDatasetCollection();
         log.info("Getting all stored datasets ...");
         return collection.find().into(new TreeSet<>());
     }
 
     private MongoCollection<DatasetMetadata> getDatasetCollection() {
-        if (mongoClient == null) {
-            initDatabaseClient();
-        }
-        return mongoClient.getDatabase(DATASET_NAME).getCollection(COLLECTION_NAME, DatasetMetadata.class);
-    }
-
-    private void initDatabaseClient() {
-        MongoClientSettings settings = MongoClientSettings.builder() //
-                .applyConnectionString(new ConnectionString(databaseClientSetup.getDatabaseConnectionString())) //
-                .codecRegistry(setupCodecRegistry()) //
-                .build();
-        mongoClient = MongoClients.create(settings);
-    }
-
-    private static CodecRegistry setupCodecRegistry() {
-        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(
-                PojoCodecProvider.builder() //
-                        .automatic(true) //
-                        .build() //
-                );
-        return CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-    }
-
-    @PreDestroy
-    void cleanUp() {
-        if (mongoClient != null) {
-            mongoClient.close();
-        }
+        return databaseClientSetup
+                .getMongoClient() //
+                .getDatabase(DATASET_NAME) //
+                .getCollection(COLLECTION_NAME, DatasetMetadata.class);
     }
 }
