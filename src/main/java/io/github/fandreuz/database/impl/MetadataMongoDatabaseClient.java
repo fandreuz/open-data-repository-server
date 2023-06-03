@@ -32,7 +32,7 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
 
     @Override
     public Optional<DatasetMetadata> create(@NonNull DatasetMetadata dataset) {
-        var collection = getDatasetCollection();
+        var collection = getMetadataCollection();
         log.info("Inserting new dataset: {} ...", dataset);
         InsertOneResult result = collection.insertOne(dataset);
         if (!result.wasAcknowledged()) {
@@ -49,7 +49,7 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
 
     @Override
     public Optional<DatasetMetadata> get(long datasetId) {
-        var collection = getDatasetCollection();
+        var collection = getMetadataCollection();
         log.info("Getting dataset (id={}) ...", datasetId);
         return Optional.ofNullable(
                 collection.find(new Document("_id", datasetId)).first());
@@ -57,12 +57,12 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
 
     @Override
     public SortedSet<DatasetMetadata> getAll() {
-        var collection = getDatasetCollection();
+        var collection = getMetadataCollection();
         log.info("Getting all stored datasets ...");
         return collection.find().into(new TreeSet<>());
     }
 
-    private MongoCollection<DatasetMetadata> getDatasetCollection() {
+    private MongoCollection<DatasetMetadata> getMetadataCollection() {
         return databaseClientSetup
                 .getMongoClient() //
                 .getDatabase(DATASET_NAME) //
