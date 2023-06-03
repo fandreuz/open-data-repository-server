@@ -1,7 +1,7 @@
 package io.github.fandreuz.fetch;
 
-import io.github.fandreuz.model.Dataset;
 import io.github.fandreuz.model.DatasetMetadata;
+import java.nio.file.Path;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -18,8 +18,8 @@ public interface DatasetFetchService {
      * stored.
      *
      * @param collectionId ID of the collection.
-     * @param file name of the file where the dataset is stored.
+     * @param file local file where the dataset is stored.
      * @return a pair of metadata and the object representation of the dataset.
      */
-    Pair<DatasetMetadata, Dataset> fetchDataset(String collectionId, String file);
+    Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file);
 }

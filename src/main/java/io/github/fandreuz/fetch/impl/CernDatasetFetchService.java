@@ -1,10 +1,10 @@
 package io.github.fandreuz.fetch.impl;
 
 import io.github.fandreuz.fetch.DatasetFetchService;
-import io.github.fandreuz.model.Dataset;
 import io.github.fandreuz.model.DatasetMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.nio.file.Path;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -20,13 +20,14 @@ public final class CernDatasetFetchService implements DatasetFetchService {
     @Inject
     private CernMetadataService metadataService;
 
-    @Override
-    public Pair<DatasetMetadata, Dataset> fetchDataset(String collectionId, String file) {
-        String url = String.format(BASE_URL_FILE_PATTERN, collectionId, file);
-        String fileContent = RemoteDatasetReader.read(url).orElseThrow();
+    @Inject
+    private DownloadService downloadService;
 
-        DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file, fileContent);
-        Dataset dataset = new Dataset(metadata.getId(), fileContent);
-        return Pair.of(metadata, dataset);
+    @Override
+    public Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
+        String url = String.format(BASE_URL_FILE_PATTERN, collectionId, file);
+        Path localDatasetFile = downloadService.download(url);
+        DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file);
+        return Pair.of(metadata, localDatasetFile);
     }
 }
