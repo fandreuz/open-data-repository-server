@@ -1,18 +1,20 @@
 package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
+import io.github.fandreuz.database.DatabaseException;
 import io.github.fandreuz.database.DatabaseTypeClient;
 import io.github.fandreuz.model.Dataset;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.Optional;
+import java.nio.file.Files;
 import java.util.SortedSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.bson.Document;
 
 /**
@@ -25,39 +27,37 @@ import org.bson.Document;
 public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
 
     private static final String DATASET_NAME = "dataset-db";
+    private static final CSVFormat csvFormat =
+            CSVFormat.Builder.create().setHeader().build();
 
     @Inject
     private MongoClientSetup databaseClientSetup;
 
     @Override
-    public Optional<Dataset> create(@NonNull Dataset dataset) {
+    public Dataset create(@NonNull Dataset dataset) {
         log.info("Storing dataset '{}' in the database ...", dataset.getUniqueId());
-        var reader = new StringReader(dataset.getFileCsvContent());
-        CSVFormat csvFormat = CSVFormat.Builder.create().setHeader().build();
-        CSVParser parser;
-        try {
-            parser = csvFormat.parse(reader);
-        } catch (IOException exception) {
-            log.error("An error occurred while parsing the CSV file", exception);
-            return Optional.empty();
-        }
 
         MongoCollection<Document> collection = getDatasetCollection(dataset);
-        var headers = parser.getHeaderMap();
-        for (var record : parser) {
-            Document document = new Document();
-            for (var headerEntry : headers.entrySet()) {
-                document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
+        try (BufferedReader reader = Files.newBufferedReader(dataset.getLocalFileLocation());
+                CSVParser parser = csvFormat.parse(reader)) {
+            var headers = parser.getHeaderMap();
+            for (CSVRecord record : parser) {
+                Document document = new Document();
+                for (var headerEntry : headers.entrySet()) {
+                    document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
+                }
+                collection.insertOne(document);
             }
-            collection.insertOne(document);
+        } catch (IOException exception) {
+            throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
         }
 
         log.info("Stored dataset '{}' in the database", dataset.getUniqueId());
-        return Optional.of(dataset);
+        return dataset;
     }
 
     @Override
-    public Optional<Dataset> get(long datasetId) {
+    public Dataset get(String datasetId) {
         return null;
     }
 

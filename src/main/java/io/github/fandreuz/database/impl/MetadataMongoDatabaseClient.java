@@ -2,17 +2,16 @@ package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.InsertOneResult;
+import io.github.fandreuz.database.DatabaseException;
+import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTypeClient;
 import io.github.fandreuz.model.DatasetMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.BsonInt64;
-import org.bson.BsonValue;
 import org.bson.Document;
 
 /**
@@ -31,28 +30,28 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
     private MongoClientSetup databaseClientSetup;
 
     @Override
-    public Optional<DatasetMetadata> create(@NonNull DatasetMetadata dataset) {
+    public DatasetMetadata create(@NonNull DatasetMetadata dataset) {
         var collection = getMetadataCollection();
-        log.info("Inserting new dataset: {} ...", dataset);
+        log.info("Inserting new dataset in the DB: {} ...", dataset);
         InsertOneResult result = collection.insertOne(dataset);
-        if (!result.wasAcknowledged()) {
-            log.info("The write wasn't acknowledged");
-            return Optional.empty();
+        if (!result.wasAcknowledged() || result.getInsertedId() == null) {
+            String msg = String.format("The write operation wasn't acknowledged (ID=%s)", dataset.getId());
+            throw new DatabaseException(msg);
         }
-
-        log.info("Inserted new dataset: {}", dataset);
-        return Optional.ofNullable(result.getInsertedId()) //
-                .map(BsonValue::asInt64) //
-                .map(BsonInt64::getValue) //
-                .flatMap(this::get);
+        log.info("Inserted new dataset in the DB: {}", dataset);
+        return get(dataset.getId());
     }
 
     @Override
-    public Optional<DatasetMetadata> get(long datasetId) {
+    public DatasetMetadata get(String datasetId) {
         var collection = getMetadataCollection();
         log.info("Getting dataset (id={}) ...", datasetId);
-        return Optional.ofNullable(
-                collection.find(new Document("_id", datasetId)).first());
+        DatasetMetadata result = collection.find(new Document("_id", datasetId)).first();
+        if (result == null) {
+            String msg = String.format("Metadata not found for ID=%s", datasetId);
+            throw new DatabaseNotFoundException(msg);
+        }
+        return result;
     }
 
     @Override

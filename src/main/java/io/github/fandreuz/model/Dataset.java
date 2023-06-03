@@ -1,5 +1,6 @@
 package io.github.fandreuz.model;
 
+import java.nio.file.Path;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,5 +11,5 @@ import lombok.NonNull;
 public class Dataset {
 
     private final String uniqueId;
-    private final String fileCsvContent;
+    private final Path localFileLocation;
 }

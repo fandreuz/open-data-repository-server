@@ -1,6 +1,5 @@
 package io.github.fandreuz.database;
 
-import java.util.Optional;
 import java.util.SortedSet;
 import lombok.NonNull;
 
@@ -18,15 +17,15 @@ public interface DatabaseTypeClient<T> {
      * @param dataset the object to be inserted.
      * @return the newly created dataset if available.
      */
-    Optional<T> create(@NonNull T dataset);
+    T create(@NonNull T dataset);
 
     /**
      * Find an existing object in the database.
      *
-     * @param datasetId ID of the dataset to be found.
+     * @param datasetId ID of the dataset to be fetched.
      * @return the dataset object if it exists.
      */
-    Optional<T> get(long datasetId);
+    T get(String datasetId);
 
     /**
      * Get all the objects stored in the database.
