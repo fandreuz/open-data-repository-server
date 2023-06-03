@@ -18,20 +18,20 @@ import org.bson.codecs.pojo.PojoCodecProvider;
  */
 @Singleton
 @Slf4j
-public class MongoClientSetup {
+final class MongoClientSetup {
 
     private static final String CONNECTION_STRING_KEY = "mongodb.uri";
 
     private final String databaseConnectionString;
     private MongoClient mongoClient;
 
-    public MongoClientSetup() {
+    MongoClientSetup() {
         log.info("Reading MongoDB connection string from environment ('{}') ...", CONNECTION_STRING_KEY);
         databaseConnectionString = System.getenv(CONNECTION_STRING_KEY);
         log.info("{}={}", CONNECTION_STRING_KEY, databaseConnectionString);
     }
 
-    public MongoClient getMongoClient() {
+    MongoClient getMongoClient() {
         if (mongoClient == null) {
             MongoClientSettings settings = MongoClientSettings.builder() //
                     .applyConnectionString(new ConnectionString(databaseConnectionString)) //
