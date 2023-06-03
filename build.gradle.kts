@@ -17,6 +17,7 @@ val logbackVersion: String by project
 val mongoDriverSyncVersion: String by project
 val mongoCryptVersion: String by project
 val apacheCommonsVersion: String by project
+val apacheCommonsCsvVersion: String by project
 
 dependencies {
 	// Quarkus
@@ -30,8 +31,9 @@ dependencies {
 	// Logging
 	implementation("org.slf4j:slf4j-api:${slf4jVersion}")
 	implementation("ch.qos.logback:logback-classic:${logbackVersion}")
-
+	// Utilities
 	implementation("org.apache.commons:commons-lang3:${apacheCommonsVersion}")
+	implementation("org.apache.commons:commons-csv:${apacheCommonsCsvVersion}")
 
 	testImplementation("io.quarkus:quarkus-junit5")
 	testImplementation("io.rest-assured:rest-assured")
