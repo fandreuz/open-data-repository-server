@@ -21,11 +21,11 @@ public final class CernDatasetFetchService implements DatasetFetchService {
     private CernMetadataService metadataService;
 
     @Override
-    public Pair<DatasetMetadata, Dataset> fetchDataset(String id, String file) {
-        String url = String.format(BASE_URL_FILE_PATTERN, id, file);
+    public Pair<DatasetMetadata, Dataset> fetchDataset(String collectionId, String file) {
+        String url = String.format(BASE_URL_FILE_PATTERN, collectionId, file);
         String fileContent = RemoteDatasetReader.read(url).orElseThrow();
 
-        DatasetMetadata metadata = metadataService.buildMetadata(id, file, fileContent);
+        DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file, fileContent);
         Dataset dataset = Dataset.fromFileContent(metadata.getId(), fileContent);
         return Pair.of(metadata, dataset);
     }
