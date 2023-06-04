@@ -10,7 +10,7 @@ import java.nio.file.Path;
  * @author fandreuz
  */
 @Singleton
-public class CsvConversionService implements ConversionService {
+class CsvConversionService implements ConversionService {
 
     @Override
     public Path convert(Path source) {

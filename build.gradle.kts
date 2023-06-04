@@ -51,7 +51,7 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.quarkusDev {
-	environmentVariables.set(mapOf("mongodb.uri" to "mongodb://localhost:27017"))
+	environmentVariables.set(mapOf("mongodb.uri" to "mongodb://localhost:27017", "root.executables.path" to "/home/fandreuz/go/bin"))
 }
 
 spotless {
