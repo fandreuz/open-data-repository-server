@@ -23,7 +23,7 @@ final class ConversionServiceOrchestratorImpl implements ConversionServiceOrches
     @Inject
     private RootConversionService rootConversionService;
 
-    private EnumMap<DatasetType, ConversionService> conversionServices;
+    private final EnumMap<DatasetType, ConversionService> conversionServices = new EnumMap<>(DatasetType.class);
 
     @PostConstruct
     void postConstruct() {
