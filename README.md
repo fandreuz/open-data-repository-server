@@ -9,17 +9,19 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 - Java 11
 - Quarkus
 	- RESTEasy Reactive
-	- Jackson
+	- Jackson extension
 - Jakarta EE CDI
 - MongoDB Java driver
 - Apache Commons CSV
 - Apache Commons Lang3
 - Slf4j + Logback
 
-### Build tools
+### Build tools & plugins
 
 - Quarkus CLI
 - Gradle (Kotlin DSL)
+- Spotless
+- Lombok
 
 ## REST endpoints
 
