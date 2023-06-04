@@ -32,9 +32,6 @@ dependencies {
 	// Utilities
 	implementation("org.apache.commons:commons-lang3:${apacheCommonsVersion}")
 	implementation("org.apache.commons:commons-csv:${apacheCommonsCsvVersion}")
-
-	testImplementation("io.quarkus:quarkus-junit5")
-	testImplementation("io.rest-assured:rest-assured")
 }
 
 group = "io.github.fandreuz"
