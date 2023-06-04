@@ -4,6 +4,7 @@ import com.mongodb.client.ClientSession;
 import io.github.fandreuz.database.DatabaseTransactionService;
 import io.github.fandreuz.database.TransactionController;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author fandreuz
  */
 @Slf4j
+@Singleton
 public class MongoTransactionService implements DatabaseTransactionService {
 
     @Inject

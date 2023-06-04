@@ -1,6 +1,7 @@
 package io.github.fandreuz.conversion.impl;
 
 import io.github.fandreuz.conversion.ConversionService;
+import jakarta.inject.Singleton;
 import java.nio.file.Path;
 
 /**
@@ -8,6 +9,7 @@ import java.nio.file.Path;
  *
  * @author fandreuz
  */
+@Singleton
 public class CsvConversionService implements ConversionService {
 
     @Override
