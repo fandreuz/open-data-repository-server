@@ -1,6 +1,8 @@
 package io.github.fandreuz.model;
 
 import java.util.Comparator;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Builder
 @NonNull
+@AllArgsConstructor
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
     private static final Comparator<DatasetMetadata> COMPARATOR = Comparator //
@@ -28,6 +31,10 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
     private String fileName;
     private DatasetType type;
     private long importTimestamp;
+
+    public DatasetMetadata() {
+        // Required by the serialization layer
+    }
 
     @Override
     public int compareTo(@NonNull DatasetMetadata dataset) {
