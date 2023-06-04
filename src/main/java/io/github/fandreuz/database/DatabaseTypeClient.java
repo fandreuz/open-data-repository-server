@@ -15,9 +15,8 @@ public interface DatabaseTypeClient<T> {
      * Create a new object in the database.
      *
      * @param dataset the object to be inserted.
-     * @return the newly created dataset if available.
      */
-    T create(@NonNull T dataset);
+    void create(@NonNull T dataset);
 
     /**
      * Find an existing object in the database.

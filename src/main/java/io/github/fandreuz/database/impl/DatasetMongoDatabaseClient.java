@@ -33,7 +33,7 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
     private MongoClientSetup databaseClientSetup;
 
     @Override
-    public Dataset create(@NonNull Dataset dataset) {
+    public void create(@NonNull Dataset dataset) {
         log.info("Storing dataset '{}' in the DB ...", dataset);
 
         MongoCollection<Document> collection = getDatasetCollection(dataset);
@@ -60,7 +60,6 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
         }
 
         log.info("Stored dataset '{}' in the database", dataset);
-        return dataset;
     }
 
     @Override

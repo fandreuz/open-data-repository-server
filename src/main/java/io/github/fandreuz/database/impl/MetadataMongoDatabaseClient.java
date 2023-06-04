@@ -30,7 +30,7 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
     private MongoClientSetup databaseClientSetup;
 
     @Override
-    public DatasetMetadata create(@NonNull DatasetMetadata metadata) {
+    public void create(@NonNull DatasetMetadata metadata) {
         log.info("Storing dataset metadata '{}' in the DB ...", metadata);
 
         var collection = getMetadataCollection();
@@ -41,13 +41,12 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
         }
 
         log.info("Stored dataset metadata '{}' in the DB", metadata);
-        return get(metadata.getId());
     }
 
     @Override
     public DatasetMetadata get(String datasetId) {
         var collection = getMetadataCollection();
-        log.info("Getting dataset (id={}) ...", datasetId);
+        log.info("Getting dataset metadata for ID={} ...", datasetId);
         DatasetMetadata result = collection.find(new Document("_id", datasetId)).first();
         if (result == null) {
             String msg = String.format("Metadata not found for ID=%s", datasetId);

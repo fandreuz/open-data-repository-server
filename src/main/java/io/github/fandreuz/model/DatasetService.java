@@ -49,16 +49,17 @@ public final class DatasetService {
         Path converted = conversionServiceOrchestrator
                 .getConversionService(metadata.getType()) //
                 .convert(pair.getValue());
-        Dataset dataset = new Dataset(pair.getKey().getId(), converted);
+        Dataset dataset = new Dataset(metadata.getId(), converted);
 
         try (TransactionController transactionController = transactionService.start()) {
             datasetDatabaseClient.create(dataset);
-            DatasetMetadata storedMetadata = metadataDatabaseClient.create(metadata);
+            metadataDatabaseClient.create(metadata);
             transactionController.commit();
-            return storedMetadata;
         } catch (Exception exception) {
             throw new RuntimeException("An exception occurred while closing the transaction", exception);
         }
+
+        return getMetadata(metadata.getId());
     }
 
     /**
