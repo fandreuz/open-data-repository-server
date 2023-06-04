@@ -15,7 +15,6 @@ val quarkusPlatformVersion: String by project
 val slf4jVersion: String by project
 val logbackVersion: String by project
 val mongoDriverSyncVersion: String by project
-val mongoCryptVersion: String by project
 val apacheCommonsVersion: String by project
 val apacheCommonsCsvVersion: String by project
 
@@ -27,7 +26,6 @@ dependencies {
 	implementation("io.quarkus:quarkus-arc")
 	// MongoDB
 	implementation("org.mongodb:mongodb-driver-sync:${mongoDriverSyncVersion}")
-	implementation("org.mongodb:mongodb-crypt:${mongoCryptVersion}")
 	// Logging
 	implementation("org.slf4j:slf4j-api:${slf4jVersion}")
 	implementation("ch.qos.logback:logback-classic:${logbackVersion}")
