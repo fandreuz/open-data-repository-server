@@ -24,30 +24,6 @@ public class MongoTransactionService implements DatabaseTransactionService {
         ClientSession session = databaseClientSetup.getMongoClient().startSession();
         log.info("Transaction starting");
         session.startTransaction();
-        return new TransactionController() {
-            private boolean committed;
-
-            @Override
-            public void commit() {
-                log.info("Committing the transaction");
-                committed = true;
-                session.commitTransaction();
-                session.close();
-            }
-
-            @Override
-            public void abort() {
-                log.info("Aborting the transaction");
-                session.abortTransaction();
-                session.close();
-            }
-
-            @Override
-            public void close() {
-                if (!committed) {
-                    abort();
-                }
-            }
-        };
+        return new MongoTransactionController(session);
     }
 }
