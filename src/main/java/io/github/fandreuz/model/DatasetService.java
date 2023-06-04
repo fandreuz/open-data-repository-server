@@ -8,7 +8,11 @@ import io.github.fandreuz.fetch.DatasetFetchService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.SortedSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +40,8 @@ public final class DatasetService {
     @Inject
     public ConversionServiceOrchestrator conversionServiceOrchestrator;
 
+    private final Map<String, Future<DatasetMetadata>> datasetMetadataPool = new ConcurrentHashMap<>();
+
     /**
      * Create a new dataset. A dataset is identified by the ID of the collection it belongs to, and by the file name.
      *
@@ -44,6 +50,24 @@ public final class DatasetService {
      * @return the newly created dataset metadata if available.
      */
     public DatasetMetadata createDataset(@NonNull String collectionId, @NonNull String file) {
+        String datasetLockKey = buildDatasetLockKey(collectionId, file);
+        boolean leader = datasetMetadataPool.putIfAbsent(datasetLockKey, new CompletableFuture<>()) == null;
+        var future = datasetMetadataPool.get(datasetLockKey);
+        if (leader) {
+            var metadata = datasetCreationTransaction(collectionId, file);
+            ((CompletableFuture<DatasetMetadata>) future).complete(metadata);
+        }
+
+        try {
+            return future.get();
+        } catch (Exception exception) {
+            throw new ConcurrentOperationException(
+                    "An exception occurred while waiting for the completion of a concurrent operation on the same dataset",
+                    exception);
+        }
+    }
+
+    private DatasetMetadata datasetCreationTransaction(@NonNull String collectionId, @NonNull String file) {
         var pair = datasetFetchService.fetchDataset(collectionId, file);
         DatasetMetadata metadata = pair.getKey();
         Path converted = conversionServiceOrchestrator
@@ -59,7 +83,11 @@ public final class DatasetService {
             throw new RuntimeException("An exception occurred while closing the transaction", exception);
         }
 
-        return getMetadata(metadata.getId());
+        return pair.getKey();
+    }
+
+    private static String buildDatasetLockKey(@NonNull String collectionId, @NonNull String file) {
+        return collectionId + "-" + file;
     }
 
     /**
