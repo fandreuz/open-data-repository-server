@@ -57,7 +57,7 @@ tasks.quarkusDev {
 spotless {
 	format("misc") {
 		// define the files to apply `misc` to
-		target("*.gradle.kts", "*.md", ".gitignore")
+		target("*.gradle.kts", ".gitignore")
 
 		trimTrailingWhitespace()
 		indentWithTabs()
