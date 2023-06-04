@@ -21,8 +21,8 @@ public final class DatasetMetadataResource {
     private DatasetService datasetService;
 
     @POST
-    public DatasetMetadata create(String collectionId, String file) {
-        return datasetService.createDataset(collectionId, file);
+    public DatasetMetadata create(DatasetLocator datasetLocator) {
+        return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
     }
 
     @GET
