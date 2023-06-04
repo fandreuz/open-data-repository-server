@@ -59,8 +59,10 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
     @Override
     public SortedSet<DatasetMetadata> getAll() {
         var collection = getMetadataCollection();
-        log.info("Getting all stored datasets ...");
-        return collection.find().into(new TreeSet<>());
+        log.info("Getting all stored datasets metadata ...");
+        var result = collection.find().into(new TreeSet<>());
+        log.info("Found {} dataset metadatas", result.size());
+        return result;
     }
 
     private MongoCollection<DatasetMetadata> getMetadataCollection() {
