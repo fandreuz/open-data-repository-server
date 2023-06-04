@@ -5,7 +5,7 @@ package io.github.fandreuz.database;
  *
  * @author fandreuz
  */
-public class DatabaseNotFoundException extends RuntimeException {
+public class DatabaseNotFoundException extends DatabaseException {
 
     private static final long serialVersionUID = 0L;
 
