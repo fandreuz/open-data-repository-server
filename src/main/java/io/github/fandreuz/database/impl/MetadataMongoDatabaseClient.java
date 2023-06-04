@@ -1,6 +1,7 @@
 package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
 import io.github.fandreuz.database.DatabaseException;
 import io.github.fandreuz.database.DatabaseNotFoundException;
@@ -12,7 +13,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 
 /**
  * MongoDB implementation of {@link DatabaseTypeClient} for {@link DatasetMetadata} objects.
@@ -47,11 +47,12 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
     public DatasetMetadata get(String datasetId) {
         var collection = getMetadataCollection();
         log.info("Getting dataset metadata for ID={} ...", datasetId);
-        DatasetMetadata result = collection.find(new Document("_id", datasetId)).first();
+        DatasetMetadata result = collection.find(Filters.eq("_id", datasetId)).first();
         if (result == null) {
             String msg = String.format("Metadata not found for ID=%s", datasetId);
             throw new DatabaseNotFoundException(msg);
         }
+        log.info("Found metadata: {}", result);
         return result;
     }
 

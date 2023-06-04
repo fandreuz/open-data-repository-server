@@ -3,10 +3,11 @@ package io.github.fandreuz.model;
 import java.util.Comparator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Stored dataset metadata.
@@ -14,11 +15,12 @@ import lombok.extern.slf4j.Slf4j;
  * @author fandreuz
  */
 @Getter
-@ToString
-@Slf4j
+@Setter
 @Builder
 @NonNull
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
     private static final Comparator<DatasetMetadata> COMPARATOR = Comparator //
