@@ -18,10 +18,14 @@ import java.util.SortedSet;
 public final class DatasetMetadataResource {
 
     @Inject
+    private InputValidationService inputValidationService;
+
+    @Inject
     private DatasetService datasetService;
 
     @POST
     public DatasetMetadata create(DatasetLocator datasetLocator) {
+        inputValidationService.validateInput(datasetLocator);
         return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
     }
 
