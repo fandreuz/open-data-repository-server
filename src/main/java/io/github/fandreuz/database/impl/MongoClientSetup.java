@@ -11,6 +11,8 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.util.ArrayList;
+
 /**
  * Setup database client properties from the environment configuration.
  *
@@ -38,6 +40,9 @@ final class MongoClientSetup {
                     .codecRegistry(setupCodecRegistry()) //
                     .build();
             mongoClient = MongoClients.create(settings);
+
+            log.info("MongoClient instance created");
+            log.info("Databases in the cluster: {}", mongoClient.listDatabaseNames().into(new ArrayList<>()));
         }
         return mongoClient;
     }
