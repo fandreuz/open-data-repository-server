@@ -14,7 +14,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.bson.Document;
 
 /**
@@ -42,8 +41,14 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
 
         try (BufferedReader reader = Files.newBufferedReader(dataset.getLocalFileLocation());
                 CSVParser parser = csvFormat.parse(reader)) {
+            var iterator = parser.iterator();
+            if (!iterator.hasNext()) {
+                throw new IllegalArgumentException("The dataset is empty");
+            }
+
             var headers = parser.getHeaderMap();
-            for (CSVRecord record : parser) {
+            while (iterator.hasNext()) {
+                var record = iterator.next();
                 Document document = new Document();
                 for (var headerEntry : headers.entrySet()) {
                     document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
