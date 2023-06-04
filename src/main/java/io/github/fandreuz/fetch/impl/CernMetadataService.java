@@ -1,5 +1,6 @@
 package io.github.fandreuz.fetch.impl;
 
+import io.github.fandreuz.fetch.FileTypeNotRecognizedException;
 import io.github.fandreuz.fetch.MetadataService;
 import io.github.fandreuz.model.DatasetMetadata;
 import io.github.fandreuz.model.DatasetType;
@@ -20,10 +21,7 @@ final class CernMetadataService implements MetadataService {
     @Override
     public DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName) {
         String uid = makeDatasetUid(collectionId, fileName);
-        DatasetType type = Utils.extractExtension(fileName) //
-                .map(String::toUpperCase) //
-                .map(DatasetType::valueOf) //
-                .orElseThrow();
+        DatasetType type = findDatasetType(fileName);
         return DatasetMetadata.builder() //
                 .id(uid) //
                 .collectionName(collectionId) //
@@ -35,5 +33,15 @@ final class CernMetadataService implements MetadataService {
 
     private static String makeDatasetUid(@NonNull String id, @NonNull String file) {
         return String.format(UID_PATTERN, id, file);
+    }
+
+    private static DatasetType findDatasetType(@NonNull String fileName) {
+        String fileExtension = Utils.extractExtension(fileName);
+        for (DatasetType datasetType : DatasetType.values()) {
+            if (fileExtension.equals(datasetType.getExtension())) {
+                return datasetType;
+            }
+        }
+        throw new FileTypeNotRecognizedException(fileName);
     }
 }
