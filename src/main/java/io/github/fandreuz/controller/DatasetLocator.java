@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 
+/**
+ * DTO for dataset locations.
+ *
+ * @author fandreuz
+ */
 @AllArgsConstructor
 @Getter
 @NonNull
