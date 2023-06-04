@@ -1,6 +1,7 @@
 package io.github.fandreuz.model;
 
 import io.github.fandreuz.conversion.ConversionServiceOrchestrator;
+import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTransactionService;
 import io.github.fandreuz.database.DatabaseTypeClient;
 import io.github.fandreuz.database.TransactionController;
@@ -9,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,6 +72,14 @@ public final class DatasetService {
     private DatasetMetadata datasetCreationTransaction(@NonNull String collectionId, @NonNull String file) {
         var pair = datasetFetchService.fetchDataset(collectionId, file);
         DatasetMetadata metadata = pair.getKey();
+
+        // If the metadata is already in the DB, stop the operation
+        var dbMetadata = getMetadataIfAvailable(metadata.getId());
+        if (dbMetadata.isPresent()) {
+            log.info("The operation aborted because the dataset was already imported");
+            return dbMetadata.get();
+        }
+
         Path converted = conversionServiceOrchestrator
                 .getConversionService(metadata.getType()) //
                 .convert(pair.getValue());
@@ -84,6 +94,15 @@ public final class DatasetService {
         }
 
         return pair.getKey();
+    }
+
+    private Optional<DatasetMetadata> getMetadataIfAvailable(@NonNull String metadataId) {
+        try {
+            return Optional.of(getMetadata(metadataId));
+        } catch (DatabaseNotFoundException exception) {
+            log.info("Metadata not found in the database, continuing the operation", exception);
+            return Optional.empty();
+        }
     }
 
     private static String buildDatasetLockKey(@NonNull String collectionId, @NonNull String file) {
