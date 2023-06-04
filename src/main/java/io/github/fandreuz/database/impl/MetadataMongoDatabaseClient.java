@@ -30,16 +30,18 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
     private MongoClientSetup databaseClientSetup;
 
     @Override
-    public DatasetMetadata create(@NonNull DatasetMetadata dataset) {
+    public DatasetMetadata create(@NonNull DatasetMetadata metadata) {
+        log.info("Storing dataset metadata '{}' in the DB ...", metadata);
+
         var collection = getMetadataCollection();
-        log.info("Inserting new dataset in the DB: {} ...", dataset);
-        InsertOneResult result = collection.insertOne(dataset);
+        InsertOneResult result = collection.insertOne(metadata);
         if (!result.wasAcknowledged() || result.getInsertedId() == null) {
-            String msg = String.format("The write operation wasn't acknowledged (ID=%s)", dataset.getId());
+            String msg = String.format("The write operation wasn't acknowledged (ID=%s)", metadata.getId());
             throw new DatabaseException(msg);
         }
-        log.info("Inserted new dataset in the DB: {}", dataset);
-        return get(dataset.getId());
+
+        log.info("Stored dataset metadata '{}' in the DB", metadata);
+        return get(metadata.getId());
     }
 
     @Override

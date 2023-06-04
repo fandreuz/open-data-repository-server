@@ -35,9 +35,11 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
 
     @Override
     public Dataset create(@NonNull Dataset dataset) {
-        log.info("Storing dataset '{}' in the database ...", dataset.getUniqueId());
+        log.info("Storing dataset '{}' in the DB ...", dataset);
 
         MongoCollection<Document> collection = getDatasetCollection(dataset);
+        log.info("DB Collection: {}", collection.getNamespace());
+
         try (BufferedReader reader = Files.newBufferedReader(dataset.getLocalFileLocation());
                 CSVParser parser = csvFormat.parse(reader)) {
             var headers = parser.getHeaderMap();
@@ -52,7 +54,7 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
             throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
         }
 
-        log.info("Stored dataset '{}' in the database", dataset.getUniqueId());
+        log.info("Stored dataset '{}' in the database", dataset);
         return dataset;
     }
 
