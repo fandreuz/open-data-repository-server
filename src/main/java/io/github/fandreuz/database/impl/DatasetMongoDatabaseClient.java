@@ -34,91 +34,87 @@ import org.bson.Document;
 @Singleton
 public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> {
 
-    private static final String DATASET_NAME = "dataset-db";
-    private static final CSVFormat csvFormat =
-            CSVFormat.Builder.create().setHeader().build();
+   private static final String DATASET_NAME = "dataset-db";
+   private static final CSVFormat csvFormat = CSVFormat.Builder.create().setHeader().build();
 
-    @Inject
-    private MongoClientSetup databaseClientSetup;
+   @Inject
+   private MongoClientSetup databaseClientSetup;
 
-    @Override
-    public void create(@NonNull DatasetCoordinates datasetCoordinates) {
-        log.info("Storing dataset '{}' in the DB ...", datasetCoordinates);
+   @Override
+   public void create(@NonNull DatasetCoordinates datasetCoordinates) {
+      log.info("Storing dataset '{}' in the DB ...", datasetCoordinates);
 
-        MongoCollection<Document> collection = getDatasetCollection(datasetCoordinates.getId());
-        log.info("DB Collection: {}", collection.getNamespace());
+      MongoCollection<Document> collection = getDatasetCollection(datasetCoordinates.getId());
+      log.info("DB Collection: {}", collection.getNamespace());
 
-        try (BufferedReader reader = Files.newBufferedReader(datasetCoordinates.getLocalFileLocation());
-                CSVParser parser = csvFormat.parse(reader)) {
-            var iterator = parser.iterator();
-            if (!iterator.hasNext()) {
-                throw new IllegalArgumentException("The dataset is empty");
+      try (BufferedReader reader = Files.newBufferedReader(datasetCoordinates.getLocalFileLocation());
+            CSVParser parser = csvFormat.parse(reader)) {
+         var iterator = parser.iterator();
+         if (!iterator.hasNext()) {
+            throw new IllegalArgumentException("The dataset is empty");
+         }
+
+         var headers = parser.getHeaderMap();
+         while (iterator.hasNext()) {
+            var record = iterator.next();
+            Document document = new Document();
+            for (var headerEntry : headers.entrySet()) {
+               document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
             }
+            collection.insertOne(document);
+         }
+      } catch (IOException exception) {
+         throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
+      }
 
-            var headers = parser.getHeaderMap();
-            while (iterator.hasNext()) {
-                var record = iterator.next();
-                Document document = new Document();
-                for (var headerEntry : headers.entrySet()) {
-                    document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
-                }
-                collection.insertOne(document);
-            }
-        } catch (IOException exception) {
-            throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
-        }
+      log.info("Stored dataset '{}' in the database", datasetCoordinates);
+   }
 
-        log.info("Stored dataset '{}' in the database", datasetCoordinates);
-    }
+   @Override
+   public StoredDataset get(String id) {
+      var collection = getDatasetCollection(id);
+      log.info("Getting dataset for ID={} ...", id);
 
-    @Override
-    public StoredDataset get(String id) {
-        var collection = getDatasetCollection(id);
-        log.info("Getting dataset for ID={} ...", id);
+      var firstDocument = collection.find().first();
+      if (firstDocument == null) {
+         throw new DatabaseNotFoundException(String.format("Dataset with ID=%s not found", id));
+      }
 
-        var firstDocument = collection.find().first();
-        if (firstDocument == null) {
-            throw new DatabaseNotFoundException(String.format("Dataset with ID=%s not found", id));
-        }
+      StoredDataset storedDataset = new StoredDataset(id, firstDocument.keySet());
+      log.info("Found dataset: {}", storedDataset);
 
-        StoredDataset storedDataset = new StoredDataset(id, firstDocument.keySet());
-        log.info("Found dataset: {}", storedDataset);
+      return storedDataset;
+   }
 
-        return storedDataset;
-    }
+   @Override
+   public SortedMap<String, String> getColumn(@NonNull String id, @NonNull String columnName) {
+      var collection = getDatasetCollection(id);
+      log.info("Getting dataset column '{}' for ID={} ...", columnName, id);
 
-    @Override
-    public SortedMap<String, String> getColumn(@NonNull String id, @NonNull String columnName) {
-        var collection = getDatasetCollection(id);
-        log.info("Getting dataset column '{}' for ID={} ...", columnName, id);
+      var projection = Projections.fields(Projections.include(columnName));
+      return collection.find(Filters.empty()) //
+            .projection(projection) //
+            .into(new HashSet<>()) //
+            .stream() //
+            .collect(Collectors.toMap( //
+                  document -> document.getObjectId("_id").toString(), //
+                  document -> document.get(columnName, String.class), //
+                  (value1, value2) -> { //
+                     throw new RuntimeException(
+                           String.format("Duplicate key for values %s and %s", value1, value2));
+                  }, //
+                  TreeMap::new) //
+            );
+   }
 
-        var projection = Projections.fields(Projections.include(columnName));
-        return collection
-                .find(Filters.empty()) //
-                .projection(projection) //
-                .into(new HashSet<>()) //
-                .stream() //
-                .collect(
-                        Collectors.toMap( //
-                                document -> document.getObjectId("_id").toString(), //
-                                document -> document.get(columnName, String.class), //
-                                (value1, value2) -> { //
-                                    throw new RuntimeException(
-                                            String.format("Duplicate key for values %s and %s", value1, value2));
-                                }, //
-                                TreeMap::new) //
-                        );
-    }
+   @Override
+   public SortedSet<StoredDataset> getAll() {
+      return null;
+   }
 
-    @Override
-    public SortedSet<StoredDataset> getAll() {
-        return null;
-    }
-
-    private MongoCollection<Document> getDatasetCollection(@NonNull String datasetId) {
-        return databaseClientSetup
-                .getMongoClient() //
-                .getDatabase(DATASET_NAME) //
-                .getCollection(datasetId);
-    }
+   private MongoCollection<Document> getDatasetCollection(@NonNull String datasetId) {
+      return databaseClientSetup.getMongoClient() //
+            .getDatabase(DATASET_NAME) //
+            .getCollection(datasetId);
+   }
 }

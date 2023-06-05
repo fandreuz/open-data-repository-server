@@ -15,19 +15,19 @@ import org.apache.commons.lang3.tuple.Pair;
 @Singleton
 public final class CernDatasetFetchService implements DatasetFetchService {
 
-    private static final String BASE_URL_FILE_PATTERN = "https://opendata.cern.ch/record/%s/files/%s";
+   private static final String BASE_URL_FILE_PATTERN = "https://opendata.cern.ch/record/%s/files/%s";
 
-    @Inject
-    private CernMetadataService metadataService;
+   @Inject
+   private CernMetadataService metadataService;
 
-    @Inject
-    private DownloadService downloadService;
+   @Inject
+   private DownloadService downloadService;
 
-    @Override
-    public Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
-        String url = String.format(BASE_URL_FILE_PATTERN, collectionId, file);
-        Path localDatasetFile = downloadService.download(url);
-        DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file);
-        return Pair.of(metadata, localDatasetFile);
-    }
+   @Override
+   public Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
+      String url = String.format(BASE_URL_FILE_PATTERN, collectionId, file);
+      Path localDatasetFile = downloadService.download(url);
+      DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file);
+      return Pair.of(metadata, localDatasetFile);
+   }
 }

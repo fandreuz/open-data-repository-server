@@ -11,10 +11,10 @@ import jakarta.inject.Singleton;
 @Singleton
 class RootProcessRunnerConfiguration {
 
-    private static final String ROOT_BIN_DIRECTORY_ENV_PROPERTY = "root.executables.path";
+   private static final String ROOT_BIN_DIRECTORY_ENV_PROPERTY = "root.executables.path";
 
-    @Produces
-    ProcessRunner getProcessRunner() {
-        return new ProcessRunner(System.getenv(ROOT_BIN_DIRECTORY_ENV_PROPERTY));
-    }
+   @Produces
+   ProcessRunner getProcessRunner() {
+      return new ProcessRunner(System.getenv(ROOT_BIN_DIRECTORY_ENV_PROPERTY));
+   }
 }

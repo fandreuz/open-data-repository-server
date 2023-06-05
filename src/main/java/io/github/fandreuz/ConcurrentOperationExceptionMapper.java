@@ -7,7 +7,8 @@ import jakarta.ws.rs.ext.Provider;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of {@link ExceptionMapper} for {@link ConcurrentOperationException}.
+ * Implementation of {@link ExceptionMapper} for
+ * {@link ConcurrentOperationException}.
  *
  * @author fandreuz
  */
@@ -15,11 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ConcurrentOperationExceptionMapper implements ExceptionMapper<ConcurrentOperationException> {
 
-    @Override
-    public Response toResponse(ConcurrentOperationException exception) {
-        log.error("ConcurrentOperationException caught", exception);
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR) //
-                .entity(exception.getMessage()) //
-                .build();
-    }
+   @Override
+   public Response toResponse(ConcurrentOperationException exception) {
+      log.error("ConcurrentOperationException caught", exception);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR) //
+            .entity(exception.getMessage()) //
+            .build();
+   }
 }

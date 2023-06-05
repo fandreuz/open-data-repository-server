@@ -8,6 +8,7 @@ import lombok.ToString;
 
 /**
  * Catalyzer for importing a new dataset in the database.
+ *
  * <p>
  * Contains critical information to finalize the import operation.
  *
@@ -19,6 +20,6 @@ import lombok.ToString;
 @ToString
 public class DatasetCoordinates {
 
-    private final String id;
-    private final Path localFileLocation;
+   private final String id;
+   private final Path localFileLocation;
 }

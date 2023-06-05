@@ -9,20 +9,21 @@ import lombok.NonNull;
  */
 final class Utils {
 
-    private Utils() {
-        throw new UnsupportedOperationException("Instances not allowed");
-    }
+   private Utils() {
+      throw new UnsupportedOperationException("Instances not allowed");
+   }
 
-    /**
-     * Extract the file extension from the given file name.
-     *
-     * @param fileName file name.
-     * @return the file extension if available.
-     */
-    static String extractExtension(@NonNull String fileName) {
-        if (!fileName.contains(".")) {
-            return "";
-        }
-        return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-    }
+   /**
+    * Extract the file extension from the given file name.
+    *
+    * @param fileName
+    *            file name.
+    * @return the file extension if available.
+    */
+   static String extractExtension(@NonNull String fileName) {
+      if (!fileName.contains(".")) {
+         return "";
+      }
+      return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+   }
 }

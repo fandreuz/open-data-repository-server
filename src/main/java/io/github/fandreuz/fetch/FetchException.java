@@ -7,13 +7,13 @@ package io.github.fandreuz.fetch;
  */
 public class FetchException extends RuntimeException {
 
-    private static final long serialVersionUID = 0L;
+   private static final long serialVersionUID = 0L;
 
-    public FetchException(String message) {
-        super(message);
-    }
+   public FetchException(String message) {
+      super(message);
+   }
 
-    public FetchException(String message, Throwable cause) {
-        super(message, cause);
-    }
+   public FetchException(String message, Throwable cause) {
+      super(message, cause);
+   }
 }

@@ -17,25 +17,25 @@ import java.util.EnumMap;
 @Singleton
 final class ConversionServiceOrchestratorImpl implements ConversionServiceOrchestrator {
 
-    @Inject
-    private CsvConversionService csvConversionService;
+   @Inject
+   private CsvConversionService csvConversionService;
 
-    @Inject
-    private RootConversionService rootConversionService;
+   @Inject
+   private RootConversionService rootConversionService;
 
-    private final EnumMap<DatasetType, ConversionService> conversionServices = new EnumMap<>(DatasetType.class);
+   private final EnumMap<DatasetType, ConversionService> conversionServices = new EnumMap<>(DatasetType.class);
 
-    @PostConstruct
-    void postConstruct() {
-        conversionServices.put(DatasetType.CSV, csvConversionService);
-        conversionServices.put(DatasetType.ROOT, rootConversionService);
-    }
+   @PostConstruct
+   void postConstruct() {
+      conversionServices.put(DatasetType.CSV, csvConversionService);
+      conversionServices.put(DatasetType.ROOT, rootConversionService);
+   }
 
-    @Override
-    public ConversionService getConversionService(DatasetType datasetType) {
-        if (!conversionServices.containsKey(datasetType)) {
-            throw new ConversionServiceUnavailableException(datasetType);
-        }
-        return conversionServices.get(datasetType);
-    }
+   @Override
+   public ConversionService getConversionService(DatasetType datasetType) {
+      if (!conversionServices.containsKey(datasetType)) {
+         throw new ConversionServiceUnavailableException(datasetType);
+      }
+      return conversionServices.get(datasetType);
+   }
 }

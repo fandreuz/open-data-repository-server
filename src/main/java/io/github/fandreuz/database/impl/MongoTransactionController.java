@@ -14,31 +14,31 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 class MongoTransactionController implements TransactionController {
 
-    private final ClientSession session;
+   private final ClientSession session;
 
-    private boolean committed = false;
+   private boolean committed = false;
 
-    @Override
-    public synchronized void commit() {
-        log.info("Committing the transaction");
-        committed = true;
-        session.commitTransaction();
-        session.close();
-    }
+   @Override
+   public synchronized void commit() {
+      log.info("Committing the transaction");
+      committed = true;
+      session.commitTransaction();
+      session.close();
+   }
 
-    @Override
-    public synchronized void abort() {
-        log.info("Aborting the transaction");
-        session.abortTransaction();
-        session.close();
-    }
+   @Override
+   public synchronized void abort() {
+      log.info("Aborting the transaction");
+      session.abortTransaction();
+      session.close();
+   }
 
-    @Override
-    public void close() {
-        synchronized (this) {
-            if (!committed) {
-                abort();
-            }
-        }
-    }
+   @Override
+   public void close() {
+      synchronized (this) {
+         if (!committed) {
+            abort();
+         }
+      }
+   }
 }

@@ -65,6 +65,8 @@ spotless {
 		endWithNewline()
 	}
 	java {
-		palantirJavaFormat()
+		eclipse()
+		indentWithSpaces(3)
+		removeUnusedImports()
 	}
 }

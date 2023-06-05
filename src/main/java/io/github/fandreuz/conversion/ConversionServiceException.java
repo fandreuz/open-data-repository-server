@@ -7,13 +7,13 @@ package io.github.fandreuz.conversion;
  */
 public class ConversionServiceException extends RuntimeException {
 
-    private static final long serialVersionUID = 0L;
+   private static final long serialVersionUID = 0L;
 
-    public ConversionServiceException(String message) {
-        super(message);
-    }
+   public ConversionServiceException(String message) {
+      super(message);
+   }
 
-    public ConversionServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+   public ConversionServiceException(String message, Throwable cause) {
+      super(message, cause);
+   }
 }

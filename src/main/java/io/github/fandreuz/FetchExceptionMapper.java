@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FetchExceptionMapper implements ExceptionMapper<FetchException> {
 
-    @Override
-    public Response toResponse(FetchException exception) {
-        log.error("FetchException caught", exception);
-        return Response.status(Response.Status.BAD_REQUEST) //
-                .entity(exception.getMessage()) //
-                .build();
-    }
+   @Override
+   public Response toResponse(FetchException exception) {
+      log.error("FetchException caught", exception);
+      return Response.status(Response.Status.BAD_REQUEST) //
+            .entity(exception.getMessage()) //
+            .build();
+   }
 }

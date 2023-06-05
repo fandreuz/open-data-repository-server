@@ -12,16 +12,16 @@ import jakarta.inject.Singleton;
 @Singleton
 public class CernInputValidationService implements InputValidationService {
 
-    @Override
-    public void validateInput(DatasetLocator datasetLocator) {
-        try {
-            Long.parseLong(datasetLocator.getCollectionId());
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException("The given collection ID is not a valid integer", exception);
-        }
+   @Override
+   public void validateInput(DatasetLocator datasetLocator) {
+      try {
+         Long.parseLong(datasetLocator.getCollectionId());
+      } catch (NumberFormatException exception) {
+         throw new IllegalArgumentException("The given collection ID is not a valid integer", exception);
+      }
 
-        if (datasetLocator.getFileName().contains("/")) {
-            throw new IllegalArgumentException("The given file name is not a plain file name");
-        }
-    }
+      if (datasetLocator.getFileName().contains("/")) {
+         throw new IllegalArgumentException("The given file name is not a plain file name");
+      }
+   }
 }

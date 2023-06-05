@@ -11,9 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum DatasetType {
-    ROOT("root"),
-    CSV("csv"),
-    JSON("json");
+   ROOT("root"), CSV("csv"), JSON("json");
 
-    private final String extension;
+   private final String extension;
 }

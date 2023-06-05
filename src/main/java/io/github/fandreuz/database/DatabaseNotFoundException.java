@@ -7,13 +7,13 @@ package io.github.fandreuz.database;
  */
 public class DatabaseNotFoundException extends DatabaseException {
 
-    private static final long serialVersionUID = 0L;
+   private static final long serialVersionUID = 0L;
 
-    public DatabaseNotFoundException(String message) {
-        super(message);
-    }
+   public DatabaseNotFoundException(String message) {
+      super(message);
+   }
 
-    public DatabaseNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+   public DatabaseNotFoundException(String message, Throwable cause) {
+      super(message, cause);
+   }
 }

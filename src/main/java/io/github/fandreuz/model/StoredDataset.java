@@ -18,18 +18,18 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public final class StoredDataset {
 
-    @Getter
-    @EqualsAndHashCode.Include
-    private final String id;
+   @Getter
+   @EqualsAndHashCode.Include
+   private final String id;
 
-    private final SortedSet<String> columnNames;
+   private final SortedSet<String> columnNames;
 
-    public StoredDataset(@NonNull String id, @NonNull Collection<String> columnNames) {
-        this.id = id;
-        this.columnNames = new TreeSet<>(columnNames);
-    }
+   public StoredDataset(@NonNull String id, @NonNull Collection<String> columnNames) {
+      this.id = id;
+      this.columnNames = new TreeSet<>(columnNames);
+   }
 
-    public SortedSet<String> getColumnNames() {
-        return Collections.unmodifiableSortedSet(columnNames);
-    }
+   public SortedSet<String> getColumnNames() {
+      return Collections.unmodifiableSortedSet(columnNames);
+   }
 }

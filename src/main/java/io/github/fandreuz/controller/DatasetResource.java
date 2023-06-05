@@ -20,36 +20,36 @@ import java.util.SortedSet;
 @Path("/")
 public final class DatasetResource {
 
-    @Inject
-    private InputValidationService inputValidationService;
+   @Inject
+   private InputValidationService inputValidationService;
 
-    @Inject
-    private DatasetService datasetService;
+   @Inject
+   private DatasetService datasetService;
 
-    @PUT
-    public DatasetMetadata create( //
-            @Valid DatasetLocator datasetLocator //
-            ) {
-        inputValidationService.validateInput(datasetLocator);
-        return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
-    }
+   @PUT
+   public DatasetMetadata create( //
+         @Valid DatasetLocator datasetLocator //
+   ) {
+      inputValidationService.validateInput(datasetLocator);
+      return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
+   }
 
-    @GET
-    @Path("/{id}/column-names")
-    public SortedSet<String> getColumnNames( //
-            @PathParam("id") @NotBlank String id //
-            ) {
-        return datasetService.getColumnNames(id);
-    }
+   @GET
+   @Path("/{id}/column-names")
+   public SortedSet<String> getColumnNames( //
+         @PathParam("id") @NotBlank String id //
+   ) {
+      return datasetService.getColumnNames(id);
+   }
 
-    @GET
-    @Path("/{id}")
-    public SortedMap<String, String> getColumn( //
-            @PathParam("id") @NotBlank String id, //
-            @NotBlank String columnName //
-            ) {
-        return datasetService.getColumn(id, columnName);
-    }
+   @GET
+   @Path("/{id}")
+   public SortedMap<String, String> getColumn( //
+         @PathParam("id") @NotBlank String id, //
+         @NotBlank String columnName //
+   ) {
+      return datasetService.getColumn(id, columnName);
+   }
 
-    // TODO Endpoints for basic search & operations
+   // TODO Endpoints for basic search & operations
 }

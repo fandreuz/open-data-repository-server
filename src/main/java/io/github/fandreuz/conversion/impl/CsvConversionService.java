@@ -12,9 +12,9 @@ import java.nio.file.Path;
 @Singleton
 class CsvConversionService implements ConversionService {
 
-    @Override
-    public Path convert(Path source) {
-        // Path is not immutable
-        return Path.of(source.toUri());
-    }
+   @Override
+   public Path convert(Path source) {
+      // Path is not immutable
+      return Path.of(source.toUri());
+   }
 }

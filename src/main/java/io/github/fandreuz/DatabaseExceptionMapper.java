@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DatabaseExceptionMapper implements ExceptionMapper<DatabaseException> {
 
-    @Override
-    public Response toResponse(DatabaseException exception) {
-        log.error("DatabaseException caught", exception);
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR) //
-                .entity(exception.getMessage()) //
-                .build();
-    }
+   @Override
+   public Response toResponse(DatabaseException exception) {
+      log.error("DatabaseException caught", exception);
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR) //
+            .entity(exception.getMessage()) //
+            .build();
+   }
 }

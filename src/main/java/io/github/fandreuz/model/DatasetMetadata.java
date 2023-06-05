@@ -23,22 +23,22 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
-    private static final Comparator<DatasetMetadata> COMPARATOR = Comparator //
-            .comparing(DatasetMetadata::getCollectionName) //
-            .thenComparing(DatasetMetadata::getFileName);
+   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator //
+         .comparing(DatasetMetadata::getCollectionName) //
+         .thenComparing(DatasetMetadata::getFileName);
 
-    private String id;
-    private String collectionName;
-    private String fileName;
-    private DatasetType type;
-    private long importTimestamp;
+   private String id;
+   private String collectionName;
+   private String fileName;
+   private DatasetType type;
+   private long importTimestamp;
 
-    public DatasetMetadata() {
-        // Required by the serialization layer
-    }
+   public DatasetMetadata() {
+      // Required by the serialization layer
+   }
 
-    @Override
-    public int compareTo(@NonNull DatasetMetadata dataset) {
-        return COMPARATOR.compare(this, dataset);
-    }
+   @Override
+   public int compareTo(@NonNull DatasetMetadata dataset) {
+      return COMPARATOR.compare(this, dataset);
+   }
 }

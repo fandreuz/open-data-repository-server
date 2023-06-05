@@ -17,22 +17,22 @@ import java.util.SortedSet;
 @Path("/metadata")
 public final class DatasetMetadataResource {
 
-    @Inject
-    private InputValidationService inputValidationService;
+   @Inject
+   private InputValidationService inputValidationService;
 
-    @Inject
-    private DatasetService datasetService;
+   @Inject
+   private DatasetService datasetService;
 
-    @GET
-    @Path("{id}")
-    public DatasetMetadata get( //
-            @PathParam("id") @NotBlank String id //
-            ) {
-        return datasetService.getMetadata(id);
-    }
+   @GET
+   @Path("{id}")
+   public DatasetMetadata get( //
+         @PathParam("id") @NotBlank String id //
+   ) {
+      return datasetService.getMetadata(id);
+   }
 
-    @GET
-    public SortedSet<DatasetMetadata> list() {
-        return datasetService.getAllMetadata();
-    }
+   @GET
+   public SortedSet<DatasetMetadata> list() {
+      return datasetService.getAllMetadata();
+   }
 }

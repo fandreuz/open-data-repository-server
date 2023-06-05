@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AppLifecycle {
 
-    void onStart(@Observes StartupEvent event) {
-        log.info("root-data-server starting...");
-    }
+   void onStart(@Observes StartupEvent event) {
+      log.info("root-data-server starting...");
+   }
 
-    void onStop(@Observes ShutdownEvent event) {
-        log.info("root-data-server stopping...");
-    }
+   void onStop(@Observes ShutdownEvent event) {
+      log.info("root-data-server stopping...");
+   }
 }

@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
-    @Override
-    public Response toResponse(IllegalArgumentException exception) {
-        log.error("IllegalArgumentException caught", exception);
-        return Response.status(Response.Status.BAD_REQUEST) //
-                .entity(exception.getMessage()) //
-                .build();
-    }
+   @Override
+   public Response toResponse(IllegalArgumentException exception) {
+      log.error("IllegalArgumentException caught", exception);
+      return Response.status(Response.Status.BAD_REQUEST) //
+            .entity(exception.getMessage()) //
+            .build();
+   }
 }

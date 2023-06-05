@@ -10,12 +10,14 @@ import lombok.NonNull;
  */
 public interface MetadataService {
 
-    /**
-     * Build metadata for the given dataset.
-     *
-     * @param collectionId dataset collection ID.
-     * @param fileName dataset fileName name.
-     * @return metadata for the given dataset.
-     */
-    DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName);
+   /**
+    * Build metadata for the given dataset.
+    *
+    * @param collectionId
+    *            dataset collection ID.
+    * @param fileName
+    *            dataset fileName name.
+    * @return metadata for the given dataset.
+    */
+   DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName);
 }

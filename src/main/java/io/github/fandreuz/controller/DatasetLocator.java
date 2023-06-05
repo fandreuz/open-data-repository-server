@@ -16,14 +16,14 @@ import lombok.NonNull;
 @NonNull
 public class DatasetLocator {
 
-    @NotBlank
-    @Digits(integer = 10, fraction = 0)
-    private String collectionId;
+   @NotBlank
+   @Digits(integer = 10, fraction = 0)
+   private String collectionId;
 
-    @NotBlank
-    private String fileName;
+   @NotBlank
+   private String fileName;
 
-    public DatasetLocator() {
-        // Required by the serialization layer
-    }
+   public DatasetLocator() {
+      // Required by the serialization layer
+   }
 }

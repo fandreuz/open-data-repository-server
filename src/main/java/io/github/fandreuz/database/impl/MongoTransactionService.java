@@ -16,14 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 public class MongoTransactionService implements DatabaseTransactionService {
 
-    @Inject
-    private MongoClientSetup databaseClientSetup;
+   @Inject
+   private MongoClientSetup databaseClientSetup;
 
-    @Override
-    public TransactionController start() {
-        ClientSession session = databaseClientSetup.getMongoClient().startSession();
-        log.info("Transaction starting");
-        session.startTransaction();
-        return new MongoTransactionController(session);
-    }
+   @Override
+   public TransactionController start() {
+      ClientSession session = databaseClientSetup.getMongoClient().startSession();
+      log.info("Transaction starting");
+      session.startTransaction();
+      return new MongoTransactionController(session);
+   }
 }
