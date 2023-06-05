@@ -4,6 +4,7 @@ import io.github.fandreuz.conversion.ConversionServiceOrchestrator;
 import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTransactionService;
 import io.github.fandreuz.database.DatabaseTypedClient;
+import io.github.fandreuz.database.ExtractibleDatabaseTypedClient;
 import io.github.fandreuz.database.TransactionController;
 import io.github.fandreuz.fetch.DatasetFetchService;
 import jakarta.inject.Inject;
@@ -11,6 +12,7 @@ import jakarta.inject.Singleton;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +33,7 @@ public final class DatasetService {
     private DatabaseTypedClient<DatasetMetadata, DatasetMetadata> metadataDatabaseClient;
 
     @Inject
-    private DatabaseTypedClient<DatasetCoordinates, StoredDataset> datasetDatabaseClient;
+    private ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> datasetDatabaseClient;
 
     @Inject
     private DatasetFetchService datasetFetchService;
@@ -111,6 +113,10 @@ public final class DatasetService {
 
     public SortedSet<String> getColumnNames(@NonNull String datasetId) {
         return datasetDatabaseClient.get(datasetId).getColumnNames();
+    }
+
+    public SortedMap<String, String> getColumn(@NonNull String datasetId, @NonNull String columnName) {
+        return datasetDatabaseClient.getColumn(datasetId, columnName);
     }
 
     /**

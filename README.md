@@ -72,6 +72,7 @@ Return a sorted collection of all metadata objects stored in the database.
 - [ ] Endpoints for simple calculations
 - [ ] Endpoints for simple querying
   - [x] Endpoint to get column names
+  - [x] Endpoint to extract column content
 - [ ] Data lifecycle
 - [ ] Docker image
 - [ ] ~~Tests~~

@@ -7,6 +7,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import java.util.SortedMap;
 import java.util.SortedSet;
 
 /**
@@ -33,6 +34,12 @@ public final class DatasetResource {
     @Path("/{id}/column-names")
     public SortedSet<String> getColumnNames(@PathParam("id") String id) {
         return datasetService.getColumnNames(id);
+    }
+
+    @GET
+    @Path("/{id}")
+    public SortedMap<String, String> getColumn(@PathParam("id") String id, String columnName) {
+        return datasetService.getColumn(id, columnName);
     }
 
     // TODO Endpoints for basic search & operations

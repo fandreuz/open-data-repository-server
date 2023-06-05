@@ -1,9 +1,12 @@
 package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import io.github.fandreuz.database.DatabaseException;
 import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTypedClient;
+import io.github.fandreuz.database.ExtractibleDatabaseTypedClient;
 import io.github.fandreuz.model.DatasetCoordinates;
 import io.github.fandreuz.model.StoredDataset;
 import jakarta.inject.Inject;
@@ -11,8 +14,11 @@ import jakarta.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Comparator;
+import java.util.HashSet;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -26,13 +32,11 @@ import org.bson.Document;
  */
 @Slf4j
 @Singleton
-public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCoordinates, StoredDataset> {
+public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> {
 
     private static final String DATASET_NAME = "dataset-db";
     private static final CSVFormat csvFormat =
             CSVFormat.Builder.create().setHeader().build();
-    private static final Comparator<Document> entriesComparator =
-            Comparator.comparing(document -> document.getObjectId("_id").toString());
 
     @Inject
     private MongoClientSetup databaseClientSetup;
@@ -81,6 +85,29 @@ public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCo
         log.info("Found dataset: {}", storedDataset);
 
         return storedDataset;
+    }
+
+    @Override
+    public SortedMap<String, String> getColumn(@NonNull String id, @NonNull String columnName) {
+        var collection = getDatasetCollection(id);
+        log.info("Getting dataset column '{}' for ID={} ...", columnName, id);
+
+        var projection = Projections.fields(Projections.include(columnName));
+        return collection
+                .find(Filters.empty()) //
+                .projection(projection) //
+                .into(new HashSet<>()) //
+                .stream() //
+                .collect(
+                        Collectors.toMap( //
+                                document -> document.getObjectId("_id").toString(), //
+                                document -> document.get(columnName, String.class), //
+                                (value1, value2) -> { //
+                                    throw new RuntimeException(
+                                            String.format("Duplicate key for values %s and %s", value1, value2));
+                                }, //
+                                TreeMap::new) //
+                        );
     }
 
     @Override
