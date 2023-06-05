@@ -5,7 +5,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.InsertOneResult;
 import io.github.fandreuz.database.DatabaseException;
 import io.github.fandreuz.database.DatabaseNotFoundException;
-import io.github.fandreuz.database.DatabaseTypeClient;
+import io.github.fandreuz.database.DatabaseTypedClient;
 import io.github.fandreuz.model.DatasetMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -15,13 +15,13 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * MongoDB implementation of {@link DatabaseTypeClient} for {@link DatasetMetadata} objects.
+ * MongoDB implementation of {@link DatabaseTypedClient} for {@link DatasetMetadata} objects.
  *
  * @author fandreuz
  */
 @Slf4j
 @Singleton
-public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMetadata> {
+public class MetadataMongoDatabaseClient implements DatabaseTypedClient<DatasetMetadata, DatasetMetadata> {
 
     private static final String DATASET_NAME = "dataset-db";
     private static final String COLLECTION_NAME = "datasets-metadata";
@@ -44,12 +44,12 @@ public class MetadataMongoDatabaseClient implements DatabaseTypeClient<DatasetMe
     }
 
     @Override
-    public DatasetMetadata get(String datasetId) {
+    public DatasetMetadata get(String id) {
         var collection = getMetadataCollection();
-        log.info("Getting dataset metadata for ID={} ...", datasetId);
-        DatasetMetadata result = collection.find(Filters.eq("_id", datasetId)).first();
+        log.info("Getting dataset metadata for ID={} ...", id);
+        DatasetMetadata result = collection.find(Filters.eq("_id", id)).first();
         if (result == null) {
-            String msg = String.format("Metadata not found for ID=%s", datasetId);
+            String msg = String.format("Metadata not found for ID=%s", id);
             throw new DatabaseNotFoundException(msg);
         }
         log.info("Found metadata: {}", result);

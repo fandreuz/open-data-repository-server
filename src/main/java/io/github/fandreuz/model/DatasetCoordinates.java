@@ -10,8 +10,8 @@ import lombok.ToString;
 @NonNull
 @Getter
 @ToString
-public class Dataset {
+public class DatasetCoordinates {
 
-    private final String uniqueId;
+    private final String id;
     private final Path localFileLocation;
 }

@@ -3,7 +3,7 @@ package io.github.fandreuz.model;
 import io.github.fandreuz.conversion.ConversionServiceOrchestrator;
 import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTransactionService;
-import io.github.fandreuz.database.DatabaseTypeClient;
+import io.github.fandreuz.database.DatabaseTypedClient;
 import io.github.fandreuz.database.TransactionController;
 import io.github.fandreuz.fetch.DatasetFetchService;
 import jakarta.inject.Inject;
@@ -28,10 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 public final class DatasetService {
 
     @Inject
-    private DatabaseTypeClient<DatasetMetadata> metadataDatabaseClient;
+    private DatabaseTypedClient<DatasetMetadata, DatasetMetadata> metadataDatabaseClient;
 
     @Inject
-    private DatabaseTypeClient<Dataset> datasetDatabaseClient;
+    private DatabaseTypedClient<DatasetCoordinates, StoredDataset> datasetDatabaseClient;
 
     @Inject
     private DatasetFetchService datasetFetchService;
@@ -40,7 +40,7 @@ public final class DatasetService {
     private DatabaseTransactionService transactionService;
 
     @Inject
-    public ConversionServiceOrchestrator conversionServiceOrchestrator;
+    private ConversionServiceOrchestrator conversionServiceOrchestrator;
 
     private final Map<String, Future<DatasetMetadata>> datasetMetadataPool = new ConcurrentHashMap<>();
 
@@ -83,10 +83,10 @@ public final class DatasetService {
         Path converted = conversionServiceOrchestrator
                 .getConversionService(metadata.getType()) //
                 .convert(pair.getValue());
-        Dataset dataset = new Dataset(metadata.getId(), converted);
+        DatasetCoordinates datasetCoordinates = new DatasetCoordinates(metadata.getId(), converted);
 
         try (TransactionController transactionController = transactionService.start()) {
-            datasetDatabaseClient.create(dataset);
+            datasetDatabaseClient.create(datasetCoordinates);
             metadataDatabaseClient.create(metadata);
             transactionController.commit();
         } catch (Exception exception) {

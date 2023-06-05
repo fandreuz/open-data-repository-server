@@ -2,8 +2,9 @@ package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
 import io.github.fandreuz.database.DatabaseException;
-import io.github.fandreuz.database.DatabaseTypeClient;
-import io.github.fandreuz.model.Dataset;
+import io.github.fandreuz.database.DatabaseTypedClient;
+import io.github.fandreuz.model.DatasetCoordinates;
+import io.github.fandreuz.model.StoredDataset;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.BufferedReader;
@@ -17,13 +18,13 @@ import org.apache.commons.csv.CSVParser;
 import org.bson.Document;
 
 /**
- * MongoDB implementation of {@link DatabaseTypeClient} for {@link Dataset} objects.
+ * MongoDB implementation of {@link DatabaseTypedClient} for dataset objects.
  *
  * @author fandreuz
  */
 @Slf4j
 @Singleton
-public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
+public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCoordinates, StoredDataset> {
 
     private static final String DATASET_NAME = "dataset-db";
     private static final CSVFormat csvFormat =
@@ -33,13 +34,13 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
     private MongoClientSetup databaseClientSetup;
 
     @Override
-    public void create(@NonNull Dataset dataset) {
-        log.info("Storing dataset '{}' in the DB ...", dataset);
+    public void create(@NonNull DatasetCoordinates datasetCoordinates) {
+        log.info("Storing dataset '{}' in the DB ...", datasetCoordinates);
 
-        MongoCollection<Document> collection = getDatasetCollection(dataset);
+        MongoCollection<Document> collection = getDatasetCollection(datasetCoordinates);
         log.info("DB Collection: {}", collection.getNamespace());
 
-        try (BufferedReader reader = Files.newBufferedReader(dataset.getLocalFileLocation());
+        try (BufferedReader reader = Files.newBufferedReader(datasetCoordinates.getLocalFileLocation());
                 CSVParser parser = csvFormat.parse(reader)) {
             var iterator = parser.iterator();
             if (!iterator.hasNext()) {
@@ -59,23 +60,23 @@ public class DatasetMongoDatabaseClient implements DatabaseTypeClient<Dataset> {
             throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
         }
 
-        log.info("Stored dataset '{}' in the database", dataset);
+        log.info("Stored dataset '{}' in the database", datasetCoordinates);
     }
 
     @Override
-    public Dataset get(String datasetId) {
+    public StoredDataset get(String id) {
         return null;
     }
 
     @Override
-    public SortedSet<Dataset> getAll() {
+    public SortedSet<StoredDataset> getAll() {
         return null;
     }
 
-    private MongoCollection<Document> getDatasetCollection(Dataset dataset) {
+    private MongoCollection<Document> getDatasetCollection(DatasetCoordinates datasetCoordinates) {
         return databaseClientSetup
                 .getMongoClient() //
                 .getDatabase(DATASET_NAME) //
-                .getCollection(dataset.getUniqueId());
+                .getCollection(datasetCoordinates.getId());
     }
 }
