@@ -109,6 +109,10 @@ public final class DatasetService {
         return collectionId + "-" + file;
     }
 
+    public SortedSet<String> getColumnNames(@NonNull String datasetId) {
+        return datasetDatabaseClient.get(datasetId).getColumnNames();
+    }
+
     /**
      * Find an existing dataset in the service.
      *

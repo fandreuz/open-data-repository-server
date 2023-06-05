@@ -1,7 +1,9 @@
 package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import io.github.fandreuz.database.DatabaseException;
+import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTypedClient;
 import io.github.fandreuz.model.DatasetCoordinates;
 import io.github.fandreuz.model.StoredDataset;
@@ -11,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -37,7 +40,7 @@ public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCo
     public void create(@NonNull DatasetCoordinates datasetCoordinates) {
         log.info("Storing dataset '{}' in the DB ...", datasetCoordinates);
 
-        MongoCollection<Document> collection = getDatasetCollection(datasetCoordinates);
+        MongoCollection<Document> collection = getDatasetCollection(datasetCoordinates.getId());
         log.info("DB Collection: {}", collection.getNamespace());
 
         try (BufferedReader reader = Files.newBufferedReader(datasetCoordinates.getLocalFileLocation());
@@ -65,7 +68,17 @@ public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCo
 
     @Override
     public StoredDataset get(String id) {
-        return null;
+        var collection = getDatasetCollection(id);
+        log.info("Getting dataset for ID={} ...", id);
+        Document result = collection.find(Filters.eq("_id", id)).first();
+        if (result == null) {
+            String msg = String.format("Dataset not found for ID=%s", id);
+            throw new DatabaseNotFoundException(msg);
+        }
+
+        StoredDataset storedDataset = new StoredDataset(id, new TreeSet<>(result.keySet()));
+        log.info("Found dataset: {}", storedDataset);
+        return storedDataset;
     }
 
     @Override
@@ -73,10 +86,10 @@ public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCo
         return null;
     }
 
-    private MongoCollection<Document> getDatasetCollection(DatasetCoordinates datasetCoordinates) {
+    private MongoCollection<Document> getDatasetCollection(@NonNull String datasetId) {
         return databaseClientSetup
                 .getMongoClient() //
                 .getDatabase(DATASET_NAME) //
-                .getCollection(datasetCoordinates.getId());
+                .getCollection(datasetId);
     }
 }

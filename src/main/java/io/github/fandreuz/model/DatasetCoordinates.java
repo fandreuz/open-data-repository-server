@@ -6,6 +6,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
+/**
+ * Catalyzer for importing a new dataset in the database.
+ * <p>
+ * Contains critical information to finalize the import operation.
+ *
+ * @author fandreuz
+ */
 @AllArgsConstructor
 @NonNull
 @Getter
