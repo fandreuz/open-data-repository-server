@@ -1,7 +1,6 @@
 package io.github.fandreuz.database.impl;
 
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
 import io.github.fandreuz.database.DatabaseException;
 import io.github.fandreuz.database.DatabaseNotFoundException;
 import io.github.fandreuz.database.DatabaseTypedClient;
@@ -12,8 +11,8 @@ import jakarta.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Comparator;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -32,6 +31,8 @@ public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCo
     private static final String DATASET_NAME = "dataset-db";
     private static final CSVFormat csvFormat =
             CSVFormat.Builder.create().setHeader().build();
+    private static final Comparator<Document> entriesComparator =
+            Comparator.comparing(document -> document.getObjectId("_id").toString());
 
     @Inject
     private MongoClientSetup databaseClientSetup;
@@ -70,14 +71,15 @@ public class DatasetMongoDatabaseClient implements DatabaseTypedClient<DatasetCo
     public StoredDataset get(String id) {
         var collection = getDatasetCollection(id);
         log.info("Getting dataset for ID={} ...", id);
-        Document result = collection.find(Filters.eq("_id", id)).first();
-        if (result == null) {
-            String msg = String.format("Dataset not found for ID=%s", id);
-            throw new DatabaseNotFoundException(msg);
+
+        var firstDocument = collection.find().first();
+        if (firstDocument == null) {
+            throw new DatabaseNotFoundException(String.format("Dataset with ID=%s not found", id));
         }
 
-        StoredDataset storedDataset = new StoredDataset(id, new TreeSet<>(result.keySet()));
+        StoredDataset storedDataset = new StoredDataset(id, firstDocument.keySet());
         log.info("Found dataset: {}", storedDataset);
+
         return storedDataset;
     }
 
