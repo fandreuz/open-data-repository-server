@@ -10,6 +10,7 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 - Quarkus
 	- RESTEasy Reactive
 	- Jackson extension
+- Hibernate Validator
 - Jakarta EE CDI
 - MongoDB Java driver
 - Apache Commons CSV

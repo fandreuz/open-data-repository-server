@@ -24,6 +24,7 @@ dependencies {
 	implementation("io.quarkus:quarkus-resteasy-reactive")
 	implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
 	implementation("io.quarkus:quarkus-arc")
+	implementation("io.quarkus:quarkus-hibernate-validator")
 	// MongoDB
 	implementation("org.mongodb:mongodb-driver-sync:${mongoDriverSyncVersion}")
 	// Logging
