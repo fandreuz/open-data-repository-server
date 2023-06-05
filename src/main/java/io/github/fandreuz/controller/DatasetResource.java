@@ -28,9 +28,8 @@ public final class DatasetResource {
 
    @PUT
    public DatasetMetadata create( //
-         @Valid DatasetLocator datasetLocator //
+         @Valid @ValidDatasetLocator DatasetLocator datasetLocator //
    ) {
-      inputValidationService.validateInput(datasetLocator);
       return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
    }
 
