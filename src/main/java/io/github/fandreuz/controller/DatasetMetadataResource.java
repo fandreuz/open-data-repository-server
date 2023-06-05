@@ -3,6 +3,7 @@ package io.github.fandreuz.controller;
 import io.github.fandreuz.model.DatasetMetadata;
 import io.github.fandreuz.model.DatasetService;
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -24,7 +25,9 @@ public final class DatasetMetadataResource {
 
     @GET
     @Path("{id}")
-    public DatasetMetadata get(@PathParam("id") String id) {
+    public DatasetMetadata get( //
+            @PathParam("id") @NotBlank String id //
+            ) {
         return datasetService.getMetadata(id);
     }
 

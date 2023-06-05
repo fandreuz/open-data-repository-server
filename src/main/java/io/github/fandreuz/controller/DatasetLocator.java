@@ -1,5 +1,7 @@
 package io.github.fandreuz.controller;
 
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -14,7 +16,11 @@ import lombok.NonNull;
 @NonNull
 public class DatasetLocator {
 
+    @NotBlank
+    @Digits(integer = 10, fraction = 0)
     private String collectionId;
+
+    @NotBlank
     private String fileName;
 
     public DatasetLocator() {
