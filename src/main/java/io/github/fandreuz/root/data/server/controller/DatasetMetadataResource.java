@@ -26,7 +26,7 @@ public final class DatasetMetadataResource {
    @GET
    @Path("{id}")
    public DatasetMetadata get( //
-                               @PathParam("id") @NotBlank String id //
+         @PathParam("id") @NotBlank String id //
    ) {
       return datasetService.getMetadata(id);
    }

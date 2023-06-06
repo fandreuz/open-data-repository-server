@@ -28,7 +28,7 @@ public final class DatasetResource {
 
    @PUT
    public DatasetMetadata create( //
-                                  @Valid @ValidDatasetLocator DatasetLocator datasetLocator //
+         @Valid @ValidDatasetLocator DatasetLocator datasetLocator //
    ) {
       return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
    }
@@ -42,10 +42,10 @@ public final class DatasetResource {
    }
 
    @GET
-   @Path("/{id}")
+   @Path("/{id}/{columnName}")
    public SortedMap<String, String> getColumn( //
          @PathParam("id") @NotBlank String id, //
-         @NotBlank String columnName //
+         @PathParam("columnName") @NotBlank String columnName //
    ) {
       return datasetService.getColumn(id, columnName);
    }
