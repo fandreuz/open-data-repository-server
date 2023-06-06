@@ -221,3 +221,4 @@ curl -i --request GET \
 - [ ] Data lifecycle
 - [ ] Docker image
 - [ ] ~~Tests~~
+- [ ] Document REST endpoints to be more FAIR
