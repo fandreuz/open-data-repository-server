@@ -3,6 +3,7 @@ package io.github.fandreuz.root.data.server.database.impl;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import io.github.fandreuz.root.data.server.database.DatabaseBadQueryException;
 import io.github.fandreuz.root.data.server.database.DatabaseException;
 import io.github.fandreuz.root.data.server.database.DatabaseNotFoundException;
 import io.github.fandreuz.root.data.server.database.DatabaseTypedClient;
@@ -113,7 +114,14 @@ public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClien
       var collection = getDatasetCollection(id);
       log.info("Querying dataset with ID={}, query: '{}'...", id, query);
 
-      return collection.find(Document.parse(query)) //
+      Document parsedQuery;
+      try {
+         // See https://www.mongodb.com/docs/manual/tutorial/query-documents/ for valid queries
+         parsedQuery = Document.parse(query);
+      } catch (Exception exception) {
+         throw new DatabaseBadQueryException("An error occurred while parsing the query", exception);
+      }
+      return collection.find(parsedQuery) //
             .projection(Projections.include("_id")) //
             .map(Document::toString) //
             .into(new TreeSet<>());
