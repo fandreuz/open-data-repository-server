@@ -50,5 +50,13 @@ public final class DatasetResource {
       return datasetService.getColumn(id, columnName);
    }
 
-   // TODO Endpoints for basic search & operations
+   @GET
+   @Path("/{id}")
+   public SortedSet<String> getIdsWhere( //
+         @PathParam("id") @NotBlank String id, //
+         @NotBlank String query //
+   ) {
+      return datasetService.getIdsWhere(id, query);
+   }
+
 }

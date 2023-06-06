@@ -70,9 +70,10 @@ Return a sorted collection of all metadata objects stored in the database.
   - [x] Import CSV datasets
   - [x] Import ROOT datasets
 - [ ] Endpoints for simple calculations
-- [ ] Endpoints for simple querying
+- [x] Endpoints for simple querying
   - [x] Endpoint to get column names
   - [x] Endpoint to extract column content
+  - [x] Endpoint to extract IDs satisfying a condition
 - [ ] Data lifecycle
 - [ ] Docker image
 - [ ] ~~Tests~~

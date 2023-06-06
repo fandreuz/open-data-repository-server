@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +74,7 @@ public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClien
    @Override
    public StoredDataset get(String id) {
       var collection = getDatasetCollection(id);
-      log.info("Getting dataset for ID={} ...", id);
+      log.info("Getting dataset with ID={} ...", id);
 
       var firstDocument = collection.find().first();
       if (firstDocument == null) {
@@ -89,7 +90,7 @@ public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClien
    @Override
    public SortedMap<String, String> getColumn(@NonNull String id, @NonNull String columnName) {
       var collection = getDatasetCollection(id);
-      log.info("Getting dataset column '{}' for ID={} ...", columnName, id);
+      log.info("Querying dataset with ID={}, column: '{}' ...", id, columnName);
 
       var projection = Projections.fields(Projections.include(columnName));
       return collection.find(Filters.empty()) //
@@ -105,6 +106,17 @@ public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClien
                   }, //
                   TreeMap::new) //
             );
+   }
+
+   @Override
+   public SortedSet<String> getIdsWhere(@NonNull String id, @NonNull String query) {
+      var collection = getDatasetCollection(id);
+      log.info("Querying dataset with ID={}, query: '{}'...", id, query);
+
+      return collection.find(Document.parse(query)) //
+            .projection(Projections.include("_id")) //
+            .map(Document::toString) //
+            .into(new TreeSet<>());
    }
 
    @Override

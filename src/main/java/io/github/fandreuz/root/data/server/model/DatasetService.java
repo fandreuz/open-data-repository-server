@@ -121,6 +121,10 @@ public final class DatasetService {
       return datasetDatabaseClient.getColumn(datasetId, columnName);
    }
 
+   public SortedSet<String> getIdsWhere(@NonNull String datasetId, @NonNull String query) {
+      return datasetDatabaseClient.getIdsWhere(datasetId, query);
+   }
+
    /**
     * Find an existing dataset in the service.
     *
