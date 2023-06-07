@@ -16,6 +16,7 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 - Apache Commons CSV
 - Apache Commons Lang3
 - Slf4j + Logback
+- Swagger (OpenAPI)
 
 ### Build tools & plugins
 
@@ -221,4 +222,4 @@ curl -i --request GET \
 - [ ] Data lifecycle
 - [ ] Docker image
 - [ ] ~~Tests~~
-- [ ] Document REST endpoints to be more FAIR
+- [x] Document REST endpoints to be more FAIR (`/q/swagger-ui`, parsable version at `q/openapi`)
