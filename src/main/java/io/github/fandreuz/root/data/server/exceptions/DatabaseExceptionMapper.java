@@ -1,4 +1,4 @@
-package io.github.fandreuz.root.data.server;
+package io.github.fandreuz.root.data.server.exceptions;
 
 import io.github.fandreuz.root.data.server.database.DatabaseException;
 import jakarta.ws.rs.core.Response;
