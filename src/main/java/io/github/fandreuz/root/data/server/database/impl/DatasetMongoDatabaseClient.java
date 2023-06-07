@@ -116,7 +116,8 @@ public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClien
 
       Document parsedQuery;
       try {
-         // See https://www.mongodb.com/docs/manual/tutorial/query-documents/ for valid queries
+         // See https://www.mongodb.com/docs/manual/tutorial/query-documents/ for valid
+         // queries
          parsedQuery = Document.parse(query);
       } catch (Exception exception) {
          throw new DatabaseBadQueryException("An error occurred while parsing the query", exception);
