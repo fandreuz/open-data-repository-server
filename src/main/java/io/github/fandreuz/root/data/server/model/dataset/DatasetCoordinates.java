@@ -1,4 +1,4 @@
-package io.github.fandreuz.root.data.server.model;
+package io.github.fandreuz.root.data.server.model.dataset;
 
 import java.nio.file.Path;
 import lombok.AllArgsConstructor;

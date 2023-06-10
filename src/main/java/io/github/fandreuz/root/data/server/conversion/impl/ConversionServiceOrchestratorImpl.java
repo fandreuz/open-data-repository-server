@@ -3,7 +3,7 @@ package io.github.fandreuz.root.data.server.conversion.impl;
 import io.github.fandreuz.root.data.server.conversion.ConversionService;
 import io.github.fandreuz.root.data.server.conversion.ConversionServiceOrchestrator;
 import io.github.fandreuz.root.data.server.conversion.ConversionServiceUnavailableException;
-import io.github.fandreuz.root.data.server.model.DatasetType;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetType;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

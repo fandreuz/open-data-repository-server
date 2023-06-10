@@ -6,7 +6,7 @@ import com.mongodb.client.result.InsertOneResult;
 import io.github.fandreuz.root.data.server.database.DatabaseException;
 import io.github.fandreuz.root.data.server.database.DatabaseNotFoundException;
 import io.github.fandreuz.root.data.server.database.DatabaseTypedClient;
-import io.github.fandreuz.root.data.server.model.DatasetMetadata;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.SortedSet;

@@ -1,7 +1,7 @@
 package io.github.fandreuz.root.data.server.fetch.impl;
 
 import io.github.fandreuz.root.data.server.fetch.DatasetFetchService;
-import io.github.fandreuz.root.data.server.model.DatasetMetadata;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.nio.file.Path;

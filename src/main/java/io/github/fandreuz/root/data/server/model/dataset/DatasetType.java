@@ -1,4 +1,4 @@
-package io.github.fandreuz.root.data.server.model;
+package io.github.fandreuz.root.data.server.model.dataset;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

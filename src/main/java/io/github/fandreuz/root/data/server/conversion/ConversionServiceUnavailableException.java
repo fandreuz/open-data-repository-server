@@ -1,6 +1,6 @@
 package io.github.fandreuz.root.data.server.conversion;
 
-import io.github.fandreuz.root.data.server.model.DatasetType;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetType;
 
 /**
  * Thrown when there's {@link ConversionService} for the requested dataset type

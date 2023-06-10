@@ -1,6 +1,6 @@
 package io.github.fandreuz.root.data.server.conversion;
 
-import io.github.fandreuz.root.data.server.model.DatasetType;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetType;
 
 /**
  * Interface to orchestrate multiple conversion services.

@@ -1,6 +1,6 @@
 package io.github.fandreuz.root.data.server.fetch;
 
-import io.github.fandreuz.root.data.server.model.DatasetType;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetType;
 
 /**
  * Thrown when the requested file has an extension which is not recognized

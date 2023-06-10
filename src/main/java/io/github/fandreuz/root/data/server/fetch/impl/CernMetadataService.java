@@ -3,8 +3,8 @@ package io.github.fandreuz.root.data.server.fetch.impl;
 import io.github.fandreuz.root.data.server.fetch.FetchException;
 import io.github.fandreuz.root.data.server.fetch.FileTypeNotRecognizedException;
 import io.github.fandreuz.root.data.server.fetch.MetadataService;
-import io.github.fandreuz.root.data.server.model.DatasetMetadata;
-import io.github.fandreuz.root.data.server.model.DatasetType;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetType;
 import jakarta.inject.Singleton;
 
 import java.nio.channels.FileChannel;

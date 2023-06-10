@@ -1,6 +1,6 @@
 package io.github.fandreuz.root.data.server.fetch;
 
-import io.github.fandreuz.root.data.server.model.DatasetMetadata;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import lombok.NonNull;
 
 import java.nio.file.Path;

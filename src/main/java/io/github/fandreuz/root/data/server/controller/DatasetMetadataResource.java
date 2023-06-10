@@ -1,6 +1,6 @@
 package io.github.fandreuz.root.data.server.controller;
 
-import io.github.fandreuz.root.data.server.model.DatasetMetadata;
+import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import io.github.fandreuz.root.data.server.model.DatasetService;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotBlank;
