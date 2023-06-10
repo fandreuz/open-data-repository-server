@@ -42,6 +42,7 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
       return CollectionMetadata.builder() //
             .id(String.format(UID_PATTERN, collectionId)) //
             .name(collectionId) //
+            .description(extractDescription(document)) //
             .experimentName(extractExperimentName(document)) //
             .type(extractCollectionType(document)) //
             .tag(extractCollectionTag(document)) //
@@ -71,5 +72,17 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
          return Pair.of(text.replaceFirst("DOI:" + Pattern.quote(doiText), ""), doiText);
       }
       return Pair.of(text, "");
+   }
+
+   private String extractDescription(@NonNull Document document) {
+      try {
+         return document.getElementsMatchingOwnText("Description").first() // <h2>Description</h2>
+               .parent() //
+               .getElementsByTag("p") //
+               .text() //
+               .trim();
+      } catch (Exception exception) {
+         return "";
+      }
    }
 }
