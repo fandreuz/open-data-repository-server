@@ -1,6 +1,7 @@
 package io.github.fandreuz.root.data.server.model.collection;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -35,6 +36,8 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
    private String experimentName;
    // Collision, derived or simulated. Didn't want to provide an enum to make it
    // more flexible.
+   @Nullable
+   private Long eventsCount;
    @Nonnull
    private String type;
    @NonNull

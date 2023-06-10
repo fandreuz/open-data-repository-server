@@ -3,6 +3,7 @@ package io.github.fandreuz.root.data.server.fetch.impl;
 import io.github.fandreuz.root.data.server.fetch.FetchException;
 import io.github.fandreuz.root.data.server.fetch.MetadataService;
 import io.github.fandreuz.root.data.server.model.collection.CollectionMetadata;
+import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
    private static final String UID_PATTERN = "cern-open-data:%s";
    private static final Pattern DOI_PATTERN = Pattern.compile("DOI:([0-9.]+/[0-9A-Z.]+)");
    private static final Pattern LICENSE_PATTERN = Pattern.compile("The open data are released under the ([^.]+).");
+   private static final Pattern EVENTS_COUNT_PATTERN = Pattern.compile("(\\d+) events");
 
    @Override
    public CollectionMetadata buildMetadata(@NonNull String collectionId, @NonNull Path file) {
@@ -45,6 +47,7 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
             .name(collectionId) //
             .description(extractDescription(document)) //
             .experimentName(extractExperimentName(document)) //
+            .eventsCount(extractEventsCount(document)) //
             .type(extractCollectionType(document)) //
             .keyword(extractKeyword(document)) //
             .tag(extractCollectionTag(document)) //
@@ -109,5 +112,25 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
          return matcher.group(1);
       }
       return "";
+   }
+
+   @Nullable
+   private Long extractEventsCount(@NonNull Document document) {
+      String characteristicsText;
+      try {
+         characteristicsText = document.getElementsMatchingOwnText("Dataset characteristics").first() //
+               .parent() //
+               .getElementsByTag("span") //
+               .text() //
+               .trim();
+      } catch (Exception exception) {
+         return null;
+      }
+
+      Matcher matcher = EVENTS_COUNT_PATTERN.matcher(characteristicsText);
+      if (matcher.find()) {
+         return Long.parseLong(matcher.group(1));
+      }
+      return null;
    }
 }
