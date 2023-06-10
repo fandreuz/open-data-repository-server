@@ -46,6 +46,7 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
             .description(extractDescription(document)) //
             .experimentName(extractExperimentName(document)) //
             .type(extractCollectionType(document)) //
+            .keyword(extractKeyword(document)) //
             .tag(extractCollectionTag(document)) //
             .citeText(citeInfo.getLeft()) //
             .doi(citeInfo.getRight()) //
@@ -59,6 +60,10 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
 
    private String extractCollectionType(@NonNull Document document) {
       return document.getElementsByClass("badge-subtype").text().trim();
+   }
+
+   private String extractKeyword(@NonNull Document document) {
+      return document.getElementsByClass("badge-keyword").text().trim();
    }
 
    private String extractCollectionTag(@NonNull Document document) {

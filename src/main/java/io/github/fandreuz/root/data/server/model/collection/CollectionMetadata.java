@@ -38,6 +38,8 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
    @Nonnull
    private String type;
    @NonNull
+   private String keyword;
+   @NonNull
    private String tag;
    @NonNull
    private String citeText;
