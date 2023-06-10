@@ -1,10 +1,14 @@
 package io.github.fandreuz.root.data.server.fetch.impl;
 
+import io.github.fandreuz.root.data.server.fetch.FetchException;
 import io.github.fandreuz.root.data.server.fetch.FileTypeNotRecognizedException;
 import io.github.fandreuz.root.data.server.fetch.MetadataService;
 import io.github.fandreuz.root.data.server.model.DatasetMetadata;
 import io.github.fandreuz.root.data.server.model.DatasetType;
 import jakarta.inject.Singleton;
+
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.time.Instant;
 import lombok.NonNull;
 
@@ -21,15 +25,23 @@ final class CernMetadataService implements MetadataService {
    private static final String UID_PATTERN = "cern-open-data:%s:%s";
 
    @Override
-   public DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName) {
+   public DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull Path file) {
+      String fileName = file.toFile().getName();
       String uid = makeDatasetUid(collectionId, fileName);
       DatasetType type = findDatasetType(fileName);
+
+      long sizeInBytes;
+      try (FileChannel imageFileChannel = FileChannel.open(file)) {
+         sizeInBytes = imageFileChannel.size();
+      } catch (Exception exception) {
+         throw new FetchException("An exception occurred while building metadata", exception);
+      }
       return DatasetMetadata.builder() //
             .id(uid) //
-            .collectionName(collectionId) //
             .fileName(fileName) //
             .type(type) //
             .importTimestamp(Instant.now().toEpochMilli()) //
+            .sizeInBytes(sizeInBytes) //
             .build();
    }
 

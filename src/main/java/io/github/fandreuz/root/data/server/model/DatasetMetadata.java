@@ -1,7 +1,8 @@
 package io.github.fandreuz.root.data.server.model;
 
 import java.util.Comparator;
-import lombok.AllArgsConstructor;
+
+import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,20 +18,26 @@ import lombok.ToString;
 @Getter
 @Setter
 @Builder
-@NonNull
-@AllArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
-   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator //
-         .comparing(DatasetMetadata::getCollectionName) //
-         .thenComparing(DatasetMetadata::getFileName);
+   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator.comparing(DatasetMetadata::getId);
 
+   @NonNull
    private String id;
-   private String collectionName;
+
+   @NonNull
    private String fileName;
+   @NonNull
    private DatasetType type;
+   private long sizeInBytes;
+
+   @Nullable
+   private Integer numberOfColumns;
+   @Nullable
+   private String commaSeparatedColumnNames;
+
    private long importTimestamp;
 
    public DatasetMetadata() {

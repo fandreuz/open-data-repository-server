@@ -27,7 +27,7 @@ public final class CernDatasetFetchService implements DatasetFetchService {
    public Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
       String url = String.format(BASE_URL_FILE_PATTERN, collectionId, file);
       Path localDatasetFile = downloadService.download(url);
-      DatasetMetadata metadata = metadataService.buildMetadata(collectionId, file);
+      DatasetMetadata metadata = metadataService.buildMetadata(collectionId, localDatasetFile);
       return Pair.of(metadata, localDatasetFile);
    }
 }
