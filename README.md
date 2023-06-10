@@ -37,7 +37,7 @@ TODO
 
 ## REST endpoints
 
-### `PUT /`
+### `PUT /v1`
 
 Idempotent creation of a new dataset in the database.
 
@@ -60,7 +60,7 @@ Sample interaction:
 curl -i --request PUT \
     --header "Content-Type: application/json" \
     --data '{"collectionId":"13128","fileName":"237040910_FilteredDTHitsXZ.csv"} \
-    http://localhost:8080/'
+    http://localhost:8080/v1'
 ```
 
 ```json
@@ -73,7 +73,7 @@ curl -i --request PUT \
 }
 ```
 
-### `GET /{id}/column-names`
+### `GET /v1/{id}/column-names`
 
 Get the name of the columns for the given dataset.
 
@@ -81,14 +81,14 @@ Sample interaction:
 
 ```
 curl -i --request GET \ 
-    http://localhost:8080/13128-237040910_FilteredDTHitsXZ.csv/column-names
+    http://localhost:8080/v1/13128-237040910_FilteredDTHitsXZ.csv/column-names
 ```
 
 ```
 ["_id","driftDist","posX","posZ"]
 ```
 
-### `GET /{id}/{column-name}`
+### `GET /v1/{id}/{column-name}`
 
 Get the content of a column for the given dataset.
 
@@ -96,7 +96,7 @@ Sample interaction:
 
 ```
 curl -i --request GET \  
-    http://localhost:8080/13128-237040910_FilteredDTHitsXZ.csv/posX
+    http://localhost:8080/v1/13128-237040910_FilteredDTHitsXZ.csv/posX
 ```
 
 ```json
@@ -143,7 +143,7 @@ curl -i --request GET \
 }
 ```
 
-### `GET /{id}`
+### `GET /v1/{id}`
 
 Use request body to query the dataset identified by the given ID, and returns a list of IDs of the entries satisfying
 the condition.
@@ -154,7 +154,7 @@ Sample interaction
 curl -i --request GET \
     --header "Content-Type: application/json" \
     --data '{posX: "65.15"}' \
-    http://localhost:8080/13128-237040910_FilteredDTHitsXZ.csv
+    http://localhost:8080/v1/13128-237040910_FilteredDTHitsXZ.csv
 ```
 
 ```json
@@ -163,7 +163,7 @@ curl -i --request GET \
 ]
 ```
 
-### `GET /metadata/{id}`
+### `GET /v1/metadata/{id}`
 
 The given `{id}` is used to locate metadata for an imported dataset. If found, the JSON representation of the
 appropriate `DatasetMetadata` is returned.
@@ -172,7 +172,7 @@ Sample interaction:
 
 ```
 curl -i --request GET \
-    http://localhost:8080/metadata/13128-237040910_FilteredDTHitsXZ.csv
+    http://localhost:8080/v1/metadata/13128-237040910_FilteredDTHitsXZ.csv
 ```
 
 ```json
@@ -185,13 +185,13 @@ curl -i --request GET \
 }
 ```
 
-### `GET /metadata`
+### `GET /v1/metadata`
 
 Return a sorted collection of all metadata objects stored in the database.
 
 ```
 curl -i --request GET \ 
-    http://localhost:8080/metadata/
+    http://localhost:8080/v1/metadata/
 ```
 
 ```json
@@ -221,5 +221,7 @@ curl -i --request GET \
     - [x] Endpoint to extract IDs satisfying a condition
 - [ ] Data lifecycle
 - [ ] Docker image
+  - [ ] Quarkus native image
+  - [ ] MongoDB
 - [ ] ~~Tests~~
 - [x] Document REST endpoints to be more FAIR (`/q/swagger-ui`, parsable version at `q/openapi`)

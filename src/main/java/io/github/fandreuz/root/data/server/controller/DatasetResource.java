@@ -19,7 +19,7 @@ import java.util.SortedSet;
  *
  * @author fandreuz
  */
-@Path("/")
+@Path("/v1")
 public final class DatasetResource {
 
    @Inject

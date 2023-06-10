@@ -16,7 +16,7 @@ import java.util.SortedSet;
  *
  * @author fandreuz
  */
-@Path("/metadata")
+@Path("/v1/metadata")
 public final class DatasetMetadataResource {
 
    @Inject
