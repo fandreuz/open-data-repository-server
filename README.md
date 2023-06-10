@@ -35,6 +35,17 @@ TODO
 
 TODO
 
+## Dataset unique identifier
+
+We adopt the Uniform Resource Name (URN) standard: `schema:namespace:resourceName`
+
+### Example:
+
+We identify the file `experimentData` in the collection `19090` with the following URN:
+```
+cern-open-data:19090:experimentData
+```
+
 ## REST endpoints
 
 ### `PUT /v1`

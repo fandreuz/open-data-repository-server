@@ -16,7 +16,9 @@ import lombok.NonNull;
 @Singleton
 final class CernMetadataService implements MetadataService {
 
-   private static final String UID_PATTERN = "%s-%s";
+   // Uniform Resource Name (URN)
+   // schema:namespace:name
+   private static final String UID_PATTERN = "cern-open-data:%s:%s";
 
    @Override
    public DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull String fileName) {
@@ -31,8 +33,14 @@ final class CernMetadataService implements MetadataService {
             .build();
    }
 
-   private static String makeDatasetUid(@NonNull String id, @NonNull String file) {
-      return String.format(UID_PATTERN, id, file);
+   // cern-open-data:19090:experimentData
+   private static String makeDatasetUid(@NonNull String id, @NonNull String fileName) {
+      return String.format(UID_PATTERN, id, fileNameWithoutExtension(fileName));
+   }
+
+   private static String fileNameWithoutExtension(@NonNull String fileName) {
+      int lastDotIndex = fileName.lastIndexOf('.');
+      return lastDotIndex > 0 ? fileName.substring(0, lastDotIndex) : fileName;
    }
 
    private static DatasetType findDatasetType(@NonNull String fileName) {
