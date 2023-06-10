@@ -7,6 +7,7 @@ import io.github.fandreuz.root.data.server.database.DatabaseTypedClient;
 import io.github.fandreuz.root.data.server.database.ExtractibleDatabaseTypedClient;
 import io.github.fandreuz.root.data.server.database.TransactionController;
 import io.github.fandreuz.root.data.server.fetch.DatasetFetchService;
+import io.github.fandreuz.root.data.server.model.collection.CollectionMetadata;
 import io.github.fandreuz.root.data.server.model.dataset.DatasetCoordinates;
 import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import io.github.fandreuz.root.data.server.model.dataset.StoredDataset;
@@ -33,7 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 public final class DatasetService {
 
    @Inject
-   private DatabaseTypedClient<DatasetMetadata, DatasetMetadata> metadataDatabaseClient;
+   private DatabaseTypedClient<CollectionMetadata, CollectionMetadata> collectionMetadataDatabaseClient;
+
+   @Inject
+   private DatabaseTypedClient<DatasetMetadata, DatasetMetadata> datasetMetadataDatabaseClient;
 
    @Inject
    private ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> datasetDatabaseClient;
@@ -79,7 +83,7 @@ public final class DatasetService {
 
    private DatasetMetadata datasetCreationTransaction(@NonNull String collectionId, @NonNull String file) {
       var pair = datasetFetchService.fetchDataset(collectionId, file);
-      DatasetMetadata metadata = pair.getKey();
+      DatasetMetadata metadata = pair.getLeft();
 
       // If the metadata is already in the DB, stop the operation
       var dbMetadata = getMetadataIfAvailable(metadata.getId());
@@ -88,19 +92,20 @@ public final class DatasetService {
          return dbMetadata.get();
       }
 
-      Path converted = conversionServiceOrchestrator.getConversionService(metadata.getType()) //
-            .convert(pair.getValue());
+      Path converted = conversionServiceOrchestrator.getConversionService(metadata.getType())
+            .convert(pair.getRight());
       DatasetCoordinates datasetCoordinates = new DatasetCoordinates(metadata.getId(), converted);
 
       try (TransactionController transactionController = transactionService.start()) {
          datasetDatabaseClient.create(datasetCoordinates);
-         metadataDatabaseClient.create(metadata);
+         datasetMetadataDatabaseClient.create(metadata);
+         collectionMetadataDatabaseClient.create(metadata.getCollectionMetadata());
          transactionController.commit();
       } catch (Exception exception) {
          throw new RuntimeException("An exception occurred while closing the transaction", exception);
       }
 
-      return pair.getKey();
+      return metadata;
    }
 
    private Optional<DatasetMetadata> getMetadataIfAvailable(@NonNull String metadataId) {
@@ -136,7 +141,7 @@ public final class DatasetService {
     * @return the dataset object if it exists.
     */
    public DatasetMetadata getMetadata(String datasetId) {
-      return metadataDatabaseClient.get(datasetId);
+      return datasetMetadataDatabaseClient.get(datasetId);
    }
 
    /**
@@ -145,6 +150,6 @@ public final class DatasetService {
     * @return a set containing all the datasets.
     */
    public SortedSet<DatasetMetadata> getAllMetadata() {
-      return metadataDatabaseClient.getAll();
+      return datasetMetadataDatabaseClient.getAll();
    }
 }

@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RequiredArgsConstructor
 @Slf4j
-class MongoTransactionController implements TransactionController {
+final class MongoTransactionController implements TransactionController {
 
    private final ClientSession session;
 

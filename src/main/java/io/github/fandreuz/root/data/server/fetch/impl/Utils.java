@@ -19,8 +19,14 @@ final class Utils {
     * @param fileName
     *            file name.
     * @return the file extension if available.
+    * @throws IllegalArgumentException
+    *             if the name contains a slash.
     */
    static String extractExtension(@NonNull String fileName) {
+      if (fileName.contains("/")) {
+         String msg = "File name should not contain path: '%s'";
+         throw new IllegalArgumentException(msg);
+      }
       if (!fileName.contains(".")) {
          return "";
       }

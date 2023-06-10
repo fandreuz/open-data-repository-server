@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Singleton
-public class MongoTransactionService implements DatabaseTransactionService {
+final class MongoTransactionService implements DatabaseTransactionService {
 
    @Inject
    private MongoClientSetup databaseClientSetup;

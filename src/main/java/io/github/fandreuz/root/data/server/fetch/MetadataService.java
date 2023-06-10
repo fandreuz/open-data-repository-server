@@ -1,6 +1,5 @@
 package io.github.fandreuz.root.data.server.fetch;
 
-import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import lombok.NonNull;
 
 import java.nio.file.Path;
@@ -8,9 +7,11 @@ import java.nio.file.Path;
 /**
  * Interface for services providing metadata for in-memory remote datasets.
  *
+ * @param <M>
+ *            metadata type.
  * @author fandreuz
  */
-public interface MetadataService {
+public interface MetadataService<M> {
 
    /**
     * Build metadata for the given dataset.
@@ -21,5 +22,5 @@ public interface MetadataService {
     *            path to the dataset.
     * @return metadata for the given dataset.
     */
-   DatasetMetadata buildMetadata(@NonNull String collectionId, @NonNull Path file);
+   M buildMetadata(@NonNull String collectionId, @NonNull Path file);
 }

@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Singleton
-public class MetadataMongoDatabaseClient implements DatabaseTypedClient<DatasetMetadata, DatasetMetadata> {
+final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<DatasetMetadata, DatasetMetadata> {
 
    private static final String DATASET_NAME = "dataset-db";
    private static final String COLLECTION_NAME = "datasets-metadata";
@@ -62,7 +62,7 @@ public class MetadataMongoDatabaseClient implements DatabaseTypedClient<DatasetM
       var collection = getMetadataCollection();
       log.info("Getting all stored datasets metadata ...");
       var result = collection.find().into(new TreeSet<>());
-      log.info("Found {} dataset metadatas", result.size());
+      log.info("Found {} dataset metadata", result.size());
       return result;
    }
 

@@ -17,6 +17,7 @@ val logbackVersion: String by project
 val mongoDriverSyncVersion: String by project
 val apacheCommonsVersion: String by project
 val apacheCommonsCsvVersion: String by project
+val jsoupVersion: String by project
 
 dependencies {
 	// Quarkus
@@ -34,6 +35,7 @@ dependencies {
 	// Utilities
 	implementation("org.apache.commons:commons-lang3:${apacheCommonsVersion}")
 	implementation("org.apache.commons:commons-csv:${apacheCommonsCsvVersion}")
+	implementation("org.jsoup:jsoup:${jsoupVersion}")
 }
 
 group = "io.github.fandreuz"

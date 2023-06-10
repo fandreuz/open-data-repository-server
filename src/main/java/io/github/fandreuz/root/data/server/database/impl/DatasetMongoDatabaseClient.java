@@ -34,7 +34,7 @@ import org.bson.Document;
  */
 @Slf4j
 @Singleton
-public class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> {
+final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> {
 
    private static final String DATASET_NAME = "dataset-db";
    private static final CSVFormat csvFormat = CSVFormat.Builder.create().setHeader().build();

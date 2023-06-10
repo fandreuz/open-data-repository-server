@@ -30,6 +30,7 @@ final class DownloadService {
     * @return the file content if available.
     */
    Path download(@NonNull String fileUrl) {
+      log.info("Downloading URL '{}'", fileUrl);
       URL url;
       try {
          url = new URL(fileUrl);
@@ -37,18 +38,19 @@ final class DownloadService {
          throw new FetchException("An error occurred while parsing the URL", exception);
       }
 
-      String localFileName = generateUniqueFileName(fileUrl);
-      Path localDatasetFile = Path.of(localFileName);
-      log.info("Target file name for '{}': '{}'", fileUrl, localDatasetFile.getFileName());
+      Path localFile = Path.of(generateUniqueFileName(fileUrl));
+      log.info("Target file name for '{}': '{}'", fileUrl, localFile);
       try (ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(localDatasetFile.toFile());
-            FileChannel fileChannel = fileOutputStream.getChannel()) {
+            FileOutputStream fileOutputStream = new FileOutputStream(localFile.toFile());
+            FileChannel fileChannel = fileOutputStream.getChannel() //
+      ) {
          fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
       } catch (Exception exception) {
          try {
-            Files.deleteIfExists(localDatasetFile);
+            Files.deleteIfExists(localFile);
+            log.info("The file '{}' was removed", localFile);
          } catch (Exception deleteException) {
-            log.warn("Could not delete the partially downloaded file '{}' (URL='{}')", localFileName, fileUrl);
+            log.warn("Could not delete the partially downloaded file '{}' (URL='{}')", localFile, fileUrl);
          }
 
          String msg = String.format("An error occurred while reading the file at '%s'", fileUrl);
@@ -56,10 +58,11 @@ final class DownloadService {
       }
 
       log.info("Download completed: '{}'", fileUrl);
-      return localDatasetFile;
+      return localFile;
    }
 
    private static String generateUniqueFileName(@NonNull String fileUrl) {
-      return Instant.now().toEpochMilli() + "." + Utils.extractExtension(fileUrl);
+      int lastSlashIndex = fileUrl.lastIndexOf('/');
+      return Instant.now().toEpochMilli() + "." + Utils.extractExtension(fileUrl.substring(lastSlashIndex + 1));
    }
 }

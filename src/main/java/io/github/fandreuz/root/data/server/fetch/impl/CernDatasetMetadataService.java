@@ -13,12 +13,12 @@ import java.time.Instant;
 import lombok.NonNull;
 
 /**
- * Implementation of {@link MetadataService} for CERN Open data.
+ * Implementation of {@link MetadataService} for CERN Open data datasets.
  *
  * @author fandreuz
  */
 @Singleton
-final class CernMetadataService implements MetadataService {
+final class CernDatasetMetadataService implements MetadataService<DatasetMetadata> {
 
    // Uniform Resource Name (URN)
    // schema:namespace:name
