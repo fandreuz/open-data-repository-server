@@ -15,6 +15,7 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 - MongoDB Java driver
 - Apache Commons CSV
 - Apache Commons Lang3
+- JSoup
 - Slf4j + Logback
 - Swagger (OpenAPI)
 

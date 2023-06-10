@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.ToString;
 import org.bson.codecs.pojo.annotations.BsonIgnore;
 
@@ -19,8 +18,6 @@ import org.bson.codecs.pojo.annotations.BsonIgnore;
  * @author fandreuz
  */
 @Getter
-// TODO can this be removed?
-@Setter
 @Builder
 @ToString
 @EqualsAndHashCode
