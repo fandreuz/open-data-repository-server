@@ -43,6 +43,8 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
    private String citeText;
    @NonNull
    private String doi;
+   @NonNull
+   private String license;
 
    public CollectionMetadata() {
       // Required by the serialization layer

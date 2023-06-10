@@ -27,6 +27,7 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
    // schema:namespace
    private static final String UID_PATTERN = "cern-open-data:%s";
    private static final Pattern DOI_PATTERN = Pattern.compile("DOI:([0-9.]+/[0-9A-Z.]+)");
+   private static final Pattern LICENSE_PATTERN = Pattern.compile("The open data are released under the ([^.]+).");
 
    @Override
    public CollectionMetadata buildMetadata(@NonNull String collectionId, @NonNull Path file) {
@@ -48,6 +49,7 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
             .tag(extractCollectionTag(document)) //
             .citeText(citeInfo.getLeft()) //
             .doi(citeInfo.getRight()) //
+            .license(extractLicense(document)) //
             .build();
    }
 
@@ -84,5 +86,23 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
       } catch (Exception exception) {
          return "";
       }
+   }
+
+   private String extractLicense(@NonNull Document document) {
+      String licenseText;
+      try {
+         licenseText = document.getElementsMatchingOwnText("Disclaimer").first() // <h2>Disclaimer</h2>
+               .parent() //
+               .getElementsByTag("p") //
+               .text() //
+               .trim();
+      } catch (Exception exception) {
+         return "";
+      }
+      Matcher matcher = LICENSE_PATTERN.matcher(licenseText);
+      if (matcher.find()) {
+         return matcher.group(1);
+      }
+      return "";
    }
 }
