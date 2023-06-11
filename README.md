@@ -160,35 +160,37 @@ imported dataset.
 Sample interaction:
 
 ```
-curl -i --request PUT \
-    --header "Content-Type: application/json" \
-    --data '{"collectionId":"13128","fileName":"237040910_FilteredDTHitsXZ.csv"} \
-    http://localhost:8080/v1'
+curl --header "Content-Type: application/json" \
+  --request PUT \
+  --data '{"collectionId":"13128","fileName":"237040910_DTHitsXZ.csv"}' \
+  http://localhost:8080/v1
 ```
 
 ```json
 {
-  "id": "13128-237040910_FilteredDTHitsXZ.csv",
-  "collectionName": "13128",
-  "fileName": "237040910_FilteredDTHitsXZ.csv",
+  "id": "cern-open-data:13128:1686475345237",
+  "fileName": "1686475345237.csv",
   "type": "CSV",
-  "importTimestamp": 1686087535325
+  "sizeInBytes": 735,
+  "numberOfColumns": 3,
+  "commaSeparatedColumnNames": "posX,posZ,driftDist",
+  "importTimestamp": 1686475345479,
+  "collectionMetadata": {
+    "id": "cern-open-data:13128",
+    "name": "13128",
+    "shortDescription": "OPERA neutrino-induced charmed hadron event 237040910",
+    "longDescription": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, see the description of the whole dataset.",
+    "year": 2019,
+    "experimentName": "OPERA",
+    "eventsCount": 1,
+    "type": "Derived",
+    "keyword": "",
+    "tag": "CERN-SPS",
+    "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron event 237040910. CERN Open Data Portal. ",
+    "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
+    "license": "Creative Commons CC0 waiver"
+  }
 }
-```
-
-### `GET /v1/{id}/column-names`
-
-Get the name of the columns for the given dataset.
-
-Sample interaction:
-
-```
-curl -i --request GET \ 
-    http://localhost:8080/v1/13128-237040910_FilteredDTHitsXZ.csv/column-names
-```
-
-```
-["_id","driftDist","posX","posZ"]
 ```
 
 ### `GET /v1/{id}/{column-name}`
@@ -199,7 +201,7 @@ Sample interaction:
 
 ```
 curl -i --request GET \  
-    http://localhost:8080/v1/13128-237040910_FilteredDTHitsXZ.csv/posX
+    http://localhost:8080/v1/cern-open-data:13128:1686475345237/posX
 ```
 
 ```json
@@ -257,7 +259,7 @@ Sample interaction
 curl -i --request GET \
     --header "Content-Type: application/json" \
     --data '{posX: "65.15"}' \
-    http://localhost:8080/v1/13128-237040910_FilteredDTHitsXZ.csv
+    http://localhost:8080/v1/cern-open-data:13128:1686475345237
 ```
 
 ```json
@@ -275,16 +277,33 @@ Sample interaction:
 
 ```
 curl -i --request GET \
-    http://localhost:8080/v1/metadata/13128-237040910_FilteredDTHitsXZ.csv
+    http://localhost:8080/v1/metadata/cern-open-data:13128:1686475345237
 ```
 
 ```json
 {
-  "id": "13128-237040910_FilteredDTHitsXZ.csv",
-  "collectionName": "13128",
-  "fileName": "237040910_FilteredDTHitsXZ.csv",
+  "id": "cern-open-data:13128:1686475345237",
+  "fileName": "1686475345237.csv",
   "type": "CSV",
-  "importTimestamp": 1686087535325
+  "sizeInBytes": 735,
+  "numberOfColumns": 3,
+  "commaSeparatedColumnNames": "posX,posZ,driftDist",
+  "importTimestamp": 1686475345479,
+  "collectionMetadata": {
+    "id": "cern-open-data:13128",
+    "name": "13128",
+    "shortDescription": "OPERA neutrino-induced charmed hadron event 237040910",
+    "longDescription": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, see the description of the whole dataset.",
+    "year": 2019,
+    "experimentName": "OPERA",
+    "eventsCount": 1,
+    "type": "Derived",
+    "keyword": "",
+    "tag": "CERN-SPS",
+    "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron event 237040910. CERN Open Data Portal. ",
+    "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
+    "license": "Creative Commons CC0 waiver"
+  }
 }
 ```
 
@@ -295,18 +314,6 @@ Return a sorted collection of all metadata objects stored in the database.
 ```
 curl -i --request GET \ 
     http://localhost:8080/v1/metadata/
-```
-
-```json
-[
-  {
-    "id": "13128-237040910_FilteredDTHitsXZ.csv",
-    "collectionName": "13128",
-    "fileName": "237040910_FilteredDTHitsXZ.csv",
-    "type": "CSV",
-    "importTimestamp": 1686087535325
-  }
-]
 ```
 
 ## TODO
@@ -324,7 +331,6 @@ curl -i --request GET \
     - [x] Endpoint to extract IDs satisfying a condition
 - [ ] Data lifecycle
 - [ ] Docker image
-    - [ ] Quarkus native image
-    - [ ] MongoDB
+    - [x] Quarkus native image
 - [ ] ~~Tests~~
 - [x] Document REST endpoints to be more FAIR (`/q/swagger-ui`, parsable version at `q/openapi`)
