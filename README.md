@@ -88,7 +88,7 @@ The following models are defined in the package `io.github.fandreuz.root.data.se
   "numberOfColumns": 3,
   "commaSeparatedColumnNames": "posX,posZ,driftDist",
   "importTimestamp": 1686475345479,
-    "collectionMetadata": {
+  "collectionMetadata": {
     "id": "cern-open-data:13128",
     "name": "13128",
     "shortDescription": "OPERA neutrino-induced charmed hadron event 237040910",
