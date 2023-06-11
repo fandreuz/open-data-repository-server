@@ -316,7 +316,7 @@ curl -i --request GET \
     - [x] Thread-safe create endpoint
     - [x] Import CSV datasets
     - [x] Import ROOT datasets
-- [ ] Make sure columns have the right typing at import-time
+- [ ] ~~Make sure columns have the right typing at import-time~~
 - [ ] ~~Endpoints for simple calculations~~ (won't do, data is stored as strings for now)
 - [x] Endpoints for simple querying
     - [x] Endpoint to get column names
