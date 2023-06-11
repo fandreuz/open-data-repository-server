@@ -28,13 +28,83 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 
 ## Model objects
 
+The following models are defined in the package `io.github.fandreuz.root.data.server.models`:
+
+### `CollectionMetadata`
+
+- ID
+- Name
+- Short description
+- Long description
+- Year
+- Experiment name
+- Events count
+- Type
+- Keyword
+- Tag
+- Cite text
+- DOI
+- License
+
+**Example**:
+
+```json
+{
+  "id": "cern-open-data:13128",
+  "name": "13128",
+  "shortDescription": "OPERA neutrino-induced charmed hadron event 237040910",
+  "longDescription": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, see the description of the whole dataset.",
+  "year": 2019,
+  "experimentName": "OPERA",
+  "eventsCount": 1,
+  "type": "Derived",
+  "keyword": "",
+  "tag": "CERN-SPS",
+  "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron event 237040910. CERN Open Data Portal. ",
+  "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
+  "license": "Creative Commons CC0 waiver"
+}
+```
+
 ### `DatasetMetadata`
 
-TODO
+- ID
+- File name
+- Dataset type (ROOT, CSV, JSON, ...)
+- Size in bytes
+- Number of columns
+- Comma separated column names
+- Import timestamp
+- Collection metadata
 
-### Dataset ID
+**Example**:
 
-TODO
+```json
+{
+  "id": "cern-open-data:13128:1686475345237",
+  "fileName": "1686475345237.csv",
+  "type": "CSV",
+  "sizeInBytes": 735,
+  "numberOfColumns": 3,
+  "commaSeparatedColumnNames": "posX,posZ,driftDist",
+  "importTimestamp": 1686475345479,
+    "collectionMetadata": {
+    "id": "cern-open-data:13128",
+    "name": "13128",
+    "shortDescription": "OPERA neutrino-induced charmed hadron event 237040910",
+    "longDescription": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, see the description of the whole dataset.",
+    "year": 2019,
+    "experimentName": "OPERA",
+    "eventsCount": 1,
+    "type": "Derived",
+    "keyword": "",
+    "tag": "CERN-SPS",
+    "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron event 237040910. CERN Open Data Portal. ",
+    "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
+    "license": "Creative Commons CC0 waiver"
+  }
+}
+```
 
 ## Unique identifiers
 
