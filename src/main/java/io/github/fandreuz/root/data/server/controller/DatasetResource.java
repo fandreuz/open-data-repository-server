@@ -36,15 +36,6 @@ public final class DatasetResource {
       return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
    }
 
-   @Tag(name = "columnNames", description = "List the column name for the dataset matching the given ID")
-   @GET
-   @Path("/{id}/column-names")
-   public SortedSet<String> getColumnNames( //
-         @PathParam("id") @NotBlank String id //
-   ) {
-      return datasetService.getColumnNames(id);
-   }
-
    @Tag(name = "getColumn", description = "List the content of the given column for the dataset matching the given ID")
    @GET
    @Path("/{id}/{columnName}")
