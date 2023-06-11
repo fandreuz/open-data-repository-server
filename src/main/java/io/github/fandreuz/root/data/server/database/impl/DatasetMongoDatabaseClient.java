@@ -95,8 +95,8 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
 
       var projection = Projections.fields(Projections.include(columnName));
       var entries = collection.find(Filters.empty()) //
-              .projection(projection) //
-              .into(new HashSet<>());
+            .projection(projection) //
+            .into(new HashSet<>());
       if (entries.isEmpty()) {
          String msg = String.format("Dataset with ID=%s not found", id);
          throw new DatabaseNotFoundException(msg);
@@ -120,9 +120,8 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
       log.info("Querying dataset with ID={}, query: '{}'...", id, query);
 
       if (collection.find(Filters.empty()) //
-              .projection(Projections.include()) //
-              .into(new HashSet<>())
-              .isEmpty() //
+            .projection(Projections.include()) //
+            .into(new HashSet<>()).isEmpty() //
       ) {
          String msg = String.format("Dataset with ID=%s not found", id);
          throw new DatabaseNotFoundException(msg);
