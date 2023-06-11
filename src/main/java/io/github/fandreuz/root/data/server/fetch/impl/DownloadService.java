@@ -63,6 +63,7 @@ final class DownloadService {
 
    private static String generateUniqueFileName(@NonNull String fileUrl) {
       int lastSlashIndex = fileUrl.lastIndexOf('/');
-      return Instant.now().toEpochMilli() + "." + Utils.extractExtension(fileUrl.substring(lastSlashIndex + 1));
+      String extension = Utils.extractExtension(fileUrl.substring(lastSlashIndex + 1));
+      return Instant.now().toEpochMilli() + (extension.isBlank() ? "" : "." + extension);
    }
 }
