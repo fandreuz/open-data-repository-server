@@ -94,10 +94,15 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
       log.info("Querying dataset with ID={}, column: '{}' ...", id, columnName);
 
       var projection = Projections.fields(Projections.include(columnName));
-      return collection.find(Filters.empty()) //
-            .projection(projection) //
-            .into(new HashSet<>()) //
-            .stream() //
+      var entries = collection.find(Filters.empty()) //
+              .projection(projection) //
+              .into(new HashSet<>());
+      if (entries.isEmpty()) {
+         String msg = String.format("Dataset with ID=%s not found", id);
+         throw new DatabaseNotFoundException(msg);
+      }
+
+      return entries.stream() //
             .collect(Collectors.toMap( //
                   document -> document.getObjectId("_id").toString(), //
                   document -> document.get(columnName, String.class), //
@@ -113,6 +118,15 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
    public SortedSet<String> getIdsWhere(@NonNull String id, @NonNull String query) {
       var collection = getDatasetCollection(id);
       log.info("Querying dataset with ID={}, query: '{}'...", id, query);
+
+      if (collection.find(Filters.empty()) //
+              .projection(Projections.include()) //
+              .into(new HashSet<>())
+              .isEmpty() //
+      ) {
+         String msg = String.format("Dataset with ID=%s not found", id);
+         throw new DatabaseNotFoundException(msg);
+      }
 
       Document parsedQuery;
       try {
