@@ -25,6 +25,7 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 - Gradle (Kotlin DSL)
 - Spotless
 - Lombok
+- Docker
 
 ## Model objects
 
