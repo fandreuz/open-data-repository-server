@@ -16,6 +16,10 @@ RUN ./gradlew build -Dquarkus.package.type=native
 FROM quay.io/quarkus/quarkus-micro-image:2.0
 WORKDIR /work/
 COPY --from=build /code/build/*-runner /work/application
+# Go executables to deal with .root files
+COPY --chown=quarkus:quarkus /go/bin/root* /work/go
+ENV root.executables.path="/work/go"
+
 RUN chmod 775 /work
 EXPOSE 8080
 CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
