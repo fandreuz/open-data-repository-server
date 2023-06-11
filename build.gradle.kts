@@ -52,13 +52,6 @@ tasks.withType<JavaCompile> {
 	options.compilerArgs.add("-parameters")
 }
 
-tasks.quarkusDev {
-	environmentVariables.set(mapOf( //
-		"mongodb.uri" to "mongodb://localhost:27017",  //
-		"root.executables.path" to "/home/fandreuz/go/bin" //
-	))
-}
-
 spotless {
 	format("misc") {
 		// define the files to apply `misc` to
