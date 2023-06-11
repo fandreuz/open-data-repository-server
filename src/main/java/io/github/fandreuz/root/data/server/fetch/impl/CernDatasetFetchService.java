@@ -7,7 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.nio.file.Path;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * Implementation of {@link DatasetFetchService} for CERN Open data.
@@ -28,7 +28,7 @@ final class CernDatasetFetchService implements DatasetFetchService {
    private DownloadService downloadService;
 
    @Override
-   public Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
+   public Triple<CollectionMetadata, DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
       // Download the collection reference page to build metadata
       String collectionUrl = String.format(COLLECTION_URL_PATTERN, collectionId);
       Path localCollectionFile = downloadService.download(collectionUrl);
@@ -40,6 +40,6 @@ final class CernDatasetFetchService implements DatasetFetchService {
       Path localDatasetFile = downloadService.download(fileUrl);
       DatasetMetadata datasetMetadata = datasetMetadataService.buildMetadata(collectionId, localDatasetFile);
 
-      return Pair.of(DatasetMetadata.attachCollectionMetadata(datasetMetadata, collectionMetadata), localDatasetFile);
+      return Triple.of(collectionMetadata, datasetMetadata, localDatasetFile);
    }
 }

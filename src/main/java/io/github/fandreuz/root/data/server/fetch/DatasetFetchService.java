@@ -1,9 +1,10 @@
 package io.github.fandreuz.root.data.server.fetch;
 
+import io.github.fandreuz.root.data.server.model.collection.CollectionMetadata;
 import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import java.nio.file.Path;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * Interface for services which can fetch a remote dataset.
@@ -24,7 +25,7 @@ public interface DatasetFetchService {
     *            ID of the collection.
     * @param file
     *            local file where the dataset is stored.
-    * @return a pair of metadata and the object representation of the dataset.
+    * @return a triple of metadata and the object representation of the dataset.
     */
-   Pair<DatasetMetadata, Path> fetchDataset(String collectionId, String file);
+   Triple<CollectionMetadata, DatasetMetadata, Path> fetchDataset(String collectionId, String file);
 }

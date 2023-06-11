@@ -83,30 +83,30 @@ public final class DatasetService {
    }
 
    private DatasetMetadata datasetCreationTransaction(@NonNull String collectionId, @NonNull String file) {
-      var pair = datasetFetchService.fetchDataset(collectionId, file);
-      DatasetMetadata metadata = pair.getLeft();
+      var triple = datasetFetchService.fetchDataset(collectionId, file);
+      DatasetMetadata datasetMetadata = triple.getMiddle();
 
       // If the metadata is already in the DB, stop the operation
       try {
-         return getMetadata(metadata.getId());
+         return getMetadata(datasetMetadata.getId());
       } catch (Exception exception) {
          // The exception is expected
       }
 
-      Path converted = conversionServiceOrchestrator.getConversionService(metadata.getType())
-            .convert(pair.getRight());
-      DatasetCoordinates datasetCoordinates = new DatasetCoordinates(metadata.getId(), converted);
+      Path converted = conversionServiceOrchestrator.getConversionService(datasetMetadata.getType())
+            .convert(triple.getRight());
+      DatasetCoordinates datasetCoordinates = new DatasetCoordinates(datasetMetadata.getId(), converted);
 
       try (TransactionController transactionController = transactionService.start()) {
          datasetDatabaseClient.create(datasetCoordinates);
-         datasetMetadataDatabaseClient.create(metadata);
-         collectionMetadataDatabaseClient.create(metadata.getCollectionMetadata());
+         datasetMetadataDatabaseClient.create(datasetMetadata);
+         collectionMetadataDatabaseClient.create(triple.getLeft());
          transactionController.commit();
       } catch (Exception exception) {
          throw new RuntimeException("An exception occurred while closing the transaction", exception);
       }
 
-      return metadata;
+      return DatasetMetadata.attachCollectionMetadata(datasetMetadata, triple.getLeft());
    }
 
    public DatasetMetadata getMetadata(@NonNull String metadataId) {
