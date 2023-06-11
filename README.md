@@ -330,7 +330,7 @@ curl -i --request GET \
     - [x] Endpoint to extract column content
     - [x] Endpoint to extract IDs satisfying a condition
 - [ ] Data lifecycle
-- [ ] Docker image
+- [x] Docker image
     - [x] Quarkus native image
 - [ ] ~~Tests~~
 - [x] Document REST endpoints to be more FAIR (`/q/swagger-ui`, parsable version at `q/openapi`)
