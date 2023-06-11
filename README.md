@@ -36,16 +36,37 @@ TODO
 
 TODO
 
-## Dataset unique identifier
+## Unique identifiers
 
-We adopt the Uniform Resource Name (URN) standard: `schema:namespace:resourceName`
+Uniform Resource Name (URN) standard: `schema:namespace:resourceName`
 
-### Example:
+### Dataset ID
+
+A dataset is identified by the schema, the namespace name (i.e. the collection it belongs to) and the file name.
+
+### Example
 
 We identify the file `experimentData` in the collection `19090` with the following URN:
+
 ```
 cern-open-data:19090:experimentData
 ```
+
+### Collection ID
+
+A dataset is identified by the schema and its name. The last part of the URN is omitted since it's not needed.
+
+### Example
+
+We identify the collection `19090` with the following URN:
+
+```
+cern-open-data:19090
+```
+
+### Consequences
+
+We can infer the collection URN based on the dataset URN by removing the trailing part.
 
 ## REST endpoints
 
@@ -233,7 +254,7 @@ curl -i --request GET \
     - [x] Endpoint to extract IDs satisfying a condition
 - [ ] Data lifecycle
 - [ ] Docker image
-  - [ ] Quarkus native image
-  - [ ] MongoDB
+    - [ ] Quarkus native image
+    - [ ] MongoDB
 - [ ] ~~Tests~~
 - [x] Document REST endpoints to be more FAIR (`/q/swagger-ui`, parsable version at `q/openapi`)
