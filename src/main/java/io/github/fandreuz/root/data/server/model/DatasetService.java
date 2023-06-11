@@ -1,7 +1,6 @@
 package io.github.fandreuz.root.data.server.model;
 
 import io.github.fandreuz.root.data.server.conversion.ConversionServiceOrchestrator;
-import io.github.fandreuz.root.data.server.database.DatabaseNotFoundException;
 import io.github.fandreuz.root.data.server.database.DatabaseTransactionService;
 import io.github.fandreuz.root.data.server.database.DatabaseTypedClient;
 import io.github.fandreuz.root.data.server.database.ExtractibleDatabaseTypedClient;
@@ -15,12 +14,14 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Optional;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,10 +87,10 @@ public final class DatasetService {
       DatasetMetadata metadata = pair.getLeft();
 
       // If the metadata is already in the DB, stop the operation
-      var dbMetadata = getMetadataIfAvailable(metadata.getId());
-      if (dbMetadata.isPresent()) {
-         log.info("The operation aborted because the dataset was already imported");
-         return dbMetadata.get();
+      try {
+         return getMetadata(metadata.getId());
+      } catch (Exception exception) {
+         // The exception is expected
       }
 
       Path converted = conversionServiceOrchestrator.getConversionService(metadata.getType())
@@ -108,17 +109,23 @@ public final class DatasetService {
       return metadata;
    }
 
-   private Optional<DatasetMetadata> getMetadataIfAvailable(@NonNull String metadataId) {
-      try {
-         return Optional.of(getMetadata(metadataId));
-      } catch (DatabaseNotFoundException exception) {
-         log.info("Metadata not found in the database, continuing the operation", exception);
-         return Optional.empty();
-      }
+   public DatasetMetadata getMetadata(@NonNull String metadataId) {
+      var datasetMetadata = datasetMetadataDatabaseClient.get(metadataId);
+      return attachCollectionMetadata(datasetMetadata);
    }
 
-   private static String buildDatasetLockKey(@NonNull String collectionId, @NonNull String file) {
-      return collectionId + "-" + file;
+   public SortedSet<DatasetMetadata> getAllMetadata() {
+      var output = datasetMetadataDatabaseClient.getAll() //
+            .stream() //
+            .map(this::attachCollectionMetadata) //
+            .collect(Collectors.toUnmodifiableSet());
+      return new TreeSet<>(output);
+   }
+
+   private DatasetMetadata attachCollectionMetadata(DatasetMetadata datasetMetadata) {
+      String collectionMetadataId = extractCollectionMetadataId(datasetMetadata.getId());
+      var collectionMetadata = collectionMetadataDatabaseClient.get(collectionMetadataId);
+      return DatasetMetadata.attachCollectionMetadata(datasetMetadata, collectionMetadata);
    }
 
    public SortedSet<String> getColumnNames(@NonNull String datasetId) {
@@ -133,23 +140,12 @@ public final class DatasetService {
       return datasetDatabaseClient.getIdsWhere(datasetId, query);
    }
 
-   /**
-    * Find an existing dataset in the service.
-    *
-    * @param datasetId
-    *            ID of the dataset to be found.
-    * @return the dataset object if it exists.
-    */
-   public DatasetMetadata getMetadata(String datasetId) {
-      return datasetMetadataDatabaseClient.get(datasetId);
+   // Leverage URN structure
+   private static String extractCollectionMetadataId(@NonNull String datasetMetadataId) {
+      return datasetMetadataId.substring(0, datasetMetadataId.lastIndexOf(":") + 1);
    }
 
-   /**
-    * Get all the datasets stored in the service.
-    *
-    * @return a set containing all the datasets.
-    */
-   public SortedSet<DatasetMetadata> getAllMetadata() {
-      return datasetMetadataDatabaseClient.getAll();
+   private static String buildDatasetLockKey(@NonNull String collectionId, @NonNull String file) {
+      return collectionId + "-" + file;
    }
 }
