@@ -1,5 +1,7 @@
 package io.github.fandreuz.root.data.server.fetch.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.fandreuz.root.data.server.fetch.FetchException;
 import io.github.fandreuz.root.data.server.fetch.MetadataService;
 import io.github.fandreuz.root.data.server.model.collection.CollectionMetadata;
@@ -12,6 +14,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +35,11 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
    private static final Pattern LICENSE_PATTERN = Pattern.compile("The open data are released under the ([^.]+).");
    private static final Pattern EVENTS_COUNT_PATTERN = Pattern.compile("(\\d+) events");
 
+   private static final TypeReference<Map<String, Object>> mapTypeReference = new TypeReference<>() {
+      // Jackson type reference
+   };
+   private static final ObjectMapper objectMapper = new ObjectMapper();
+
    @Override
    public CollectionMetadata buildMetadata(@NonNull String collectionId, @NonNull Path file) {
       Document document;
@@ -41,11 +50,14 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
       }
 
       var citeInfo = extractCiteInfo(document);
+      var jsonMetadata = extractJsonMetadata(document);
 
       return CollectionMetadata.builder() //
             .id(String.format(UID_PATTERN, collectionId)) //
             .name(collectionId) //
-            .description(extractDescription(document)) //
+            .shortDescription(jsonMetadata.get("name").toString()) //
+            .longDescription(jsonMetadata.get("description").toString()) //
+            .year(Integer.parseInt(jsonMetadata.get("datePublished").toString()))
             .experimentName(extractExperimentName(document)) //
             .eventsCount(extractEventsCount(document)) //
             .type(extractCollectionType(document)) //
@@ -84,15 +96,22 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
       return Pair.of(text, "");
    }
 
-   private String extractDescription(@NonNull Document document) {
+   private Map<String, Object> extractJsonMetadata(@NonNull Document document) {
+      String text;
       try {
-         return document.getElementsMatchingOwnText("Description").first() // <h2>Description</h2>
-               .parent() //
-               .getElementsByTag("p") //
-               .text() //
+         text = document.getElementsByAttributeValue("type", "application/ld+json").first() //
+               .data() //
                .trim();
       } catch (Exception exception) {
-         return "";
+         return Collections.emptyMap();
+      }
+      log.info("Found JSON metadata: '{}'", text);
+
+      try {
+         return objectMapper.readValue(text, mapTypeReference);
+      } catch (Exception exception) {
+         log.warn("An exception occurred while parsing JSON metadata", exception);
+         return Collections.emptyMap();
       }
    }
 

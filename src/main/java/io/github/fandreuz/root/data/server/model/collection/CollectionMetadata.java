@@ -31,7 +31,11 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
    @NonNull
    private String name;
    @NonNull
-   private String description;
+   private String shortDescription;
+   @NonNull
+   private String longDescription;
+   @NonNull
+   private Integer year;
    @Nonnull
    private String experimentName;
    // Collision, derived or simulated. Didn't want to provide an enum to make it
