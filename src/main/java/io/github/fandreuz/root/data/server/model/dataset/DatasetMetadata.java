@@ -37,7 +37,7 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
    // These are set when we have a CSV file.
    @Nullable
-   private Integer numberOfColumns;
+   private Long numberOfColumns;
    @Nullable
    private String commaSeparatedColumnNames;
 
@@ -76,6 +76,31 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
             .commaSeparatedColumnNames(datasetMetadata.getCommaSeparatedColumnNames()) //
             .importTimestamp(datasetMetadata.getImportTimestamp()) //
             .collectionMetadata(collectionMetadata) //
+            .build();
+   }
+
+   /**
+    * Attach the given CSV metadata to the provided dataset metadata.
+    *
+    * @param datasetMetadata
+    *            source dataset metadata.
+    * @param numberOfColumns
+    *            number of columns in the dataset.
+    * @param commaSeparatedColumnNames
+    *            columns of the dataset.
+    * @return a shallow copy of the given dataset metadata.
+    */
+   public static DatasetMetadata attachCsvMetadata(DatasetMetadata datasetMetadata, long numberOfColumns,
+         @NonNull String commaSeparatedColumnNames) {
+      return DatasetMetadata.builder() //
+            .id(datasetMetadata.getId()) //
+            .fileName(datasetMetadata.getFileName()) //
+            .type(datasetMetadata.getType()) //
+            .sizeInBytes(datasetMetadata.getSizeInBytes()) //
+            .numberOfColumns(numberOfColumns) //
+            .commaSeparatedColumnNames(commaSeparatedColumnNames) //
+            .importTimestamp(datasetMetadata.getImportTimestamp()) //
+            .collectionMetadata(datasetMetadata.getCollectionMetadata()) //
             .build();
    }
 }

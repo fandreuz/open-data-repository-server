@@ -12,6 +12,8 @@ import io.github.fandreuz.root.data.server.model.dataset.DatasetMetadata;
 import io.github.fandreuz.root.data.server.model.dataset.StoredDataset;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.SortedMap;
@@ -85,9 +87,8 @@ public final class DatasetService {
    private DatasetMetadata datasetCreationTransaction(@NonNull String collectionId, @NonNull String file) {
       var triple = datasetFetchService.fetchDataset(collectionId, file);
       DatasetMetadata datasetMetadata = triple.getMiddle();
-
-      // If the metadata is already in the DB, stop the operation
       try {
+         // If the metadata is already in the DB, stop the operation
          return getMetadata(datasetMetadata.getId());
       } catch (Exception exception) {
          // The exception is expected
@@ -95,6 +96,19 @@ public final class DatasetService {
 
       Path converted = conversionServiceOrchestrator.getConversionService(datasetMetadata.getType())
             .convert(triple.getRight());
+      try {
+         var lines = Files.readAllLines(converted);
+         if (!lines.isEmpty()) {
+            String columnNames = lines.get(0);
+            long numberOfColumns = 1 + columnNames.chars() //
+                  .filter(ch -> ch == ',') //
+                  .count();
+            datasetMetadata = DatasetMetadata.attachCsvMetadata(datasetMetadata, numberOfColumns, columnNames);
+         }
+      } catch (Exception exception) {
+         // Skip CSV metadata
+      }
+
       DatasetCoordinates datasetCoordinates = new DatasetCoordinates(datasetMetadata.getId(), converted);
 
       try (TransactionController transactionController = transactionService.start()) {
