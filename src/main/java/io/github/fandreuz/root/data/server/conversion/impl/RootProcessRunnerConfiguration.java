@@ -15,6 +15,6 @@ class RootProcessRunnerConfiguration {
 
    @Produces
    ProcessRunner getProcessRunner() {
-      return new ProcessRunner(System.getenv(ROOT_BIN_DIRECTORY_ENV_PROPERTY));
+      return new ProcessRunner(System.getProperty(ROOT_BIN_DIRECTORY_ENV_PROPERTY));
    }
 }

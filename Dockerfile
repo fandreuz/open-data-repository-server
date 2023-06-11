@@ -12,14 +12,17 @@ WORKDIR /code
 COPY src /code/src
 RUN ./gradlew build -Dquarkus.package.type=native
 
+# Go executables to deal with .root files
+FROM golang:1.20 AS go-root
+RUN go install go-hep.org/x/hep/cmd/root2csv@latest && cp $GOPATH/bin/root2csv /usr/local/bin/
+RUN go install go-hep.org/x/hep/groot/cmd/root-ls@latest && cp $GOPATH/bin/root-ls /usr/local/bin/
+
 # Create docker image
 FROM quay.io/quarkus/quarkus-micro-image:2.0
-WORKDIR /work/
-COPY --from=build /code/build/*-runner /work/application
-# Go executables to deal with .root files
-COPY --chown=quarkus:quarkus /go/bin/root* /work/go
-ENV root.executables.path="/work/go"
-
+WORKDIR /work
+COPY --from=build /code/build/*-runner /work/runner
+COPY --from=go-root /usr/local/bin/root2csv /work/go/bin/
+COPY --from=go-root /usr/local/bin/root-ls /work/go/bin/
 RUN chmod 775 /work
 EXPOSE 8080
-CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+CMD ["./runner", "-Dquarkus.http.host=0.0.0.0", "-Droot.executables.path=/work/go/bin"]
