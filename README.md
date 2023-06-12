@@ -1,4 +1,4 @@
-# (ROOT) data server
+# Open data server
 
 RESTful web service for storage and metadata extraction of Open Data repositories.
 
