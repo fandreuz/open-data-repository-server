@@ -79,8 +79,8 @@ Example request body:
 
 ```json
 {
-  "collectionId": "211",
-  "fileName": "qcd.root"
+  "collectionId": "13128",
+  "fileName": "237040910_EventInfo.csv"
 }
 ```
 
@@ -89,7 +89,7 @@ Sample interaction:
 ```
 curl --header "Content-Type: application/json" \
   --request PUT \
-  --data '{"collectionId":"13128","fileName":"237040910_DTHitsXZ.csv"}' \
+  --data '{"collectionId":"13128","fileName":"237040910_EventInfo.csv"}' \
   http://localhost:8080/v1
 ```
 
@@ -99,32 +99,38 @@ Sample output:
 
 ```json
 {
-  "id": "cern-open-data:13128:1686475345237",
-  "fileName": "1686475345237.csv",
+  "datasetId": "cern-open-data:13128:237040910_EventInfo",
+  "fileName": "237040910_EventInfo.csv",
   "type": "CSV",
-  "sizeInBytes": 735,
+  "sizeInBytes": 52,
   "numberOfColumns": 3,
-  "commaSeparatedColumnNames": "posX,posZ,driftDist",
-  "importTimestamp": 1686475345479,
+  "commaSeparatedColumnNames": "evID,timestamp,muMom",
+  "importTimestamp": 1686615824740,
   "collectionMetadata": {
-    "id": "cern-open-data:13128",
-    "name": "13128",
-    "shortDescription": "OPERA neutrino-induced charmed hadron event 237040910",
-    "longDescription": "This OPERA detector event is a muon neutrino interaction 
-      with the lead target where a charmed hadron was reconstructed in the final state.
-      The event data consist of Electronic Detector files (such as Drift Tube, RPC, and
-      Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files).
-      For more information, see the description of the whole dataset.",
-    "year": 2019,
-    "experimentName": "OPERA",
-    "eventsCount": 1,
-    "type": "Derived",
-    "keyword": "",
-    "tag": "CERN-SPS",
-    "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron 
-      event 237040910. CERN Open Data Portal. ",
-    "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
-    "license": "Creative Commons CC0 waiver"
+    {
+      "id": "cern-open-data:13128",
+      "name": "13128",
+      "experimentName": "OPERA",
+      "eventsCount": 1,
+      "type": "Derived",
+      "keyword": "",
+      "tag": "CERN-SPS",
+      "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron event 237040910. CERN Open Data Portal. ",
+      "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
+      "license": "Creative Commons CC0 waiver",
+      "creator": "curl/7.76.1",
+      "title": "OPERA neutrino-induced charmed hadron event 237040910",
+      "publisher": "OPERA",
+      "publicationYear": 2019,
+      "language": "English",
+      "subject": "High Energy Physics, Theoretical Physics",
+        "description": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was 
+        reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, 
+        and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, 
+        see the description of the whole dataset.",
+      "geoLocation": "46.233832398 6.053166454",
+      "fundingReference": "https://perma.cc/L34T-TCTG"
+    }
   }
 }
 ```
@@ -139,7 +145,7 @@ Sample interaction:
 
 ```
 curl -i --request GET \  
-    http://localhost:8080/v1/cern-open-data:13128:1686475345237/posX
+    http://localhost:8080/v1/cern-open-data:13128:237040910_EventInfo/posX
 ```
 
 Sample output:
@@ -151,6 +157,55 @@ Sample output:
    ...
 }
 ```
+
+---
+
+## Tools for the implementation
+
+- Java
+- MongoDB
+- Docker
+- Quarkus
+- Gradle
+
+Full list in `README.md`
+
+---
+
+## Why Java
+
+- Out-of-the-box static typing
+- More natural OOP wrt alternaties
+- Tooling
+
+---
+
+## Why MongoDB
+
+TODO
+
+---
+
+## Why Docker
+
+De-facto standard for containerization of applications
+
+---
+
+## Why Gradle
+
+De-facto standard build-tool for Java applications
+
+---
+
+## Why Quarkus
+
+- _Hot_ alternative to Spring Boot
+- Supports compilation to native executable
+  - Faster start-up time wrt JVM-based applications
+- Claims to be more _Kubernetes-ready_ wrt competitors
+  - Mainly tooling for containerization
+  - No need to deploy a full JVM in the container
 
 ---
 
@@ -209,6 +264,10 @@ Produced artifacts:
 
 ---
 
+## Deployment
+
+---
+
 ## Server Dockerfile
 
 ```Docker
@@ -244,7 +303,7 @@ CMD ["./runner", "-Dquarkus.http.host=0.0.0.0", "-Droot.executables.path=/work/g
 
 ---
 
-## Full application
+## Docker compose
 
 The full application is bundled as a `docker-compose.yml` file:
 ```yml
