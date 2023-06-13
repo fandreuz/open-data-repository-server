@@ -1,4 +1,4 @@
-package io.github.fandreuz.open.data.server.exceptions;
+package io.github.fandreuz.open.data.server.controller.exception.mapper;
 
 import io.github.fandreuz.open.data.server.conversion.ConversionServiceUnavailableException;
 import jakarta.ws.rs.core.Response;
