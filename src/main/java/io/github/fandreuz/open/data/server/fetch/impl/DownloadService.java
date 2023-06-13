@@ -9,12 +9,15 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Utility class to read the content of remote files.
+ * <p>
+ * This class is not safe with respect to concurrent download of files with the
+ * same name. Users should make sure this does not happen.
  *
  * @author fandreuz
  */
@@ -38,7 +41,16 @@ final class DownloadService {
          throw new FetchException("An error occurred while parsing the URL", exception);
       }
 
-      Path localFile = Path.of(generateUniqueFileName(fileUrl));
+      Path localFile = Path.of(extractFileName(fileUrl));
+      if (!Files.exists(localFile)) {
+         try {
+            Files.createFile(localFile);
+         } catch (Exception exception) {
+            String msg = "An error occurred while creating the file: " + localFile.toAbsolutePath();
+            throw new FetchException(msg, exception);
+         }
+      }
+
       log.info("Target file name for '{}': '{}'", fileUrl, localFile);
       try (ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
             FileOutputStream fileOutputStream = new FileOutputStream(localFile.toFile());
@@ -61,9 +73,9 @@ final class DownloadService {
       return localFile;
    }
 
-   private static String generateUniqueFileName(@NonNull String fileUrl) {
+   // TODO It's not necessarily true that the URL contains a proper file name
+   private static String extractFileName(@NonNull String fileUrl) {
       int lastSlashIndex = fileUrl.lastIndexOf('/');
-      String extension = Utils.extractExtension(fileUrl.substring(lastSlashIndex + 1));
-      return Instant.now().toEpochMilli() + (extension.isBlank() ? "" : "." + extension);
+      return fileUrl.substring(lastSlashIndex + 1);
    }
 }
