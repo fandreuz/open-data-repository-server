@@ -2,10 +2,15 @@ package io.github.fandreuz.open.data.server.fetch.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.fandreuz.open.data.server.controller.filter.UserAgentContainer;
 import io.github.fandreuz.open.data.server.fetch.FetchException;
 import io.github.fandreuz.open.data.server.fetch.MetadataService;
 import io.github.fandreuz.open.data.server.model.collection.CollectionMetadata;
 import jakarta.annotation.Nullable;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +40,18 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
    private static final Pattern LICENSE_PATTERN = Pattern.compile("The open data are released under the ([^.]+).");
    private static final Pattern EVENTS_COUNT_PATTERN = Pattern.compile("(\\d+) events");
 
+   private static final String FUNDING_PERMALINK = "https://perma.cc/L34T-TCTG";
+   private static final String CERN_COORDINATES = "46.233832398 6.053166454";
+   private static final String SUBJECT = "High Energy Physics, Theoretical Physics";
+   private static final String LANGUAGE = "English";
+
    private static final TypeReference<Map<String, Object>> mapTypeReference = new TypeReference<>() {
       // Jackson type reference
    };
    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+   @Inject
+   private BeanManager beanManager;
 
    @Override
    public CollectionMetadata buildMetadata(@NonNull String collectionId, @NonNull Path file) {
@@ -55,9 +68,6 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
       return CollectionMetadata.builder() //
             .id(String.format(UID_PATTERN, collectionId)) //
             .name(collectionId) //
-            .shortDescription(jsonMetadata.get("name").toString()) //
-            .longDescription(jsonMetadata.get("description").toString()) //
-            .year(Integer.parseInt(jsonMetadata.get("datePublished").toString()))
             .experimentName(extractExperimentName(document)) //
             .eventsCount(extractEventsCount(document)) //
             .type(extractCollectionType(document)) //
@@ -66,7 +76,26 @@ final class CernCollectionMetadataService implements MetadataService<CollectionM
             .citeText(citeInfo.getLeft()) //
             .doi(citeInfo.getRight()) //
             .license(extractLicense(document)) //
+            // DataCite
+            .creator(getUserAgent()) //
+            .title(jsonMetadata.get("name").toString()) //
+            .description(jsonMetadata.get("description").toString()) //
+            .publisher(extractExperimentName(document)) //
+            .publicationYear(Integer.parseInt(jsonMetadata.get("datePublished").toString())) //
+            // Additional
+            .language(LANGUAGE) //
+            .subject(SUBJECT) //
+            .geoLocation(CERN_COORDINATES) //
+            .fundingReference(FUNDING_PERMALINK) //
             .build();
+   }
+
+   @SuppressWarnings("unchecked")
+   private String getUserAgent() {
+      Bean<UserAgentContainer> bean = (Bean<UserAgentContainer>) beanManager.getBeans(UserAgentContainer.class)
+            .iterator().next();
+      CreationalContext<UserAgentContainer> ctx = beanManager.createCreationalContext(bean);
+      return ((UserAgentContainer) beanManager.getReference(bean, UserAgentContainer.class, ctx)).getUserAgent();
    }
 
    private String extractExperimentName(@NonNull Document document) {

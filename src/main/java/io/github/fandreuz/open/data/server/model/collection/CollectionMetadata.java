@@ -30,12 +30,6 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
 
    @NonNull
    private String name;
-   @NonNull
-   private String shortDescription;
-   @NonNull
-   private String longDescription;
-   @NonNull
-   private Integer year;
    @Nonnull
    private String experimentName;
    // Collision, derived or simulated. Didn't want to provide an enum to make it
@@ -54,6 +48,28 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
    private String doi;
    @NonNull
    private String license;
+
+   // DataCite
+   @Nonnull
+   private String creator;
+   @NonNull
+   private String title;
+   @NonNull
+   private String publisher;
+   @NonNull
+   private Integer publicationYear;
+
+   // DataCite additional
+   @NonNull
+   private String language;
+   @NonNull
+   private String subject;
+   @NonNull
+   private String description;
+   @NonNull
+   private String geoLocation;
+   @NonNull
+   private String fundingReference;
 
    public CollectionMetadata() {
       // Required by the serialization layer
