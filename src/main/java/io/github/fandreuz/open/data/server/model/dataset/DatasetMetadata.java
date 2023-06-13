@@ -24,10 +24,10 @@ import org.bson.codecs.pojo.annotations.BsonIgnore;
 @AllArgsConstructor
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
-   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator.comparing(DatasetMetadata::getId);
+   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator.comparing(DatasetMetadata::getDatasetId);
 
    @NonNull
-   private String id;
+   private String datasetId;
 
    @NonNull
    private String fileName;
@@ -68,7 +68,7 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
    public static DatasetMetadata attachCollectionMetadata(DatasetMetadata datasetMetadata,
          CollectionMetadata collectionMetadata) {
       return DatasetMetadata.builder() //
-            .id(datasetMetadata.getId()) //
+            .datasetId(datasetMetadata.getDatasetId()) //
             .fileName(datasetMetadata.getFileName()) //
             .type(datasetMetadata.getType()) //
             .sizeInBytes(datasetMetadata.getSizeInBytes()) //
@@ -93,7 +93,7 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
    public static DatasetMetadata attachCsvMetadata(DatasetMetadata datasetMetadata, long numberOfColumns,
          @NonNull String commaSeparatedColumnNames) {
       return DatasetMetadata.builder() //
-            .id(datasetMetadata.getId()) //
+            .datasetId(datasetMetadata.getDatasetId()) //
             .fileName(datasetMetadata.getFileName()) //
             .type(datasetMetadata.getType()) //
             .sizeInBytes(datasetMetadata.getSizeInBytes()) //

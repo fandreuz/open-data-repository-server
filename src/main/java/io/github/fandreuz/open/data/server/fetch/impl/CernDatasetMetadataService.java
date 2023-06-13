@@ -37,7 +37,7 @@ final class CernDatasetMetadataService implements MetadataService<DatasetMetadat
          throw new FetchException("An exception occurred while building metadata", exception);
       }
       return DatasetMetadata.builder() //
-            .id(uid) //
+            .datasetId(uid) //
             .fileName(fileName) //
             .type(type) //
             .importTimestamp(Instant.now().toEpochMilli()) //

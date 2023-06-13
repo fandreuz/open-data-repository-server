@@ -37,7 +37,7 @@ final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<Da
       var collection = getMetadataCollection();
       InsertOneResult result = collection.insertOne(metadata);
       if (!result.wasAcknowledged() || result.getInsertedId() == null) {
-         String msg = String.format("The write operation wasn't acknowledged (ID=%s)", metadata.getId());
+         String msg = String.format("The write operation wasn't acknowledged (ID=%s)", metadata.getDatasetId());
          throw new DatabaseException(msg);
       }
 
@@ -48,7 +48,7 @@ final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<Da
    public DatasetMetadata get(String id) {
       var collection = getMetadataCollection();
       log.info("Getting dataset metadata for ID={} ...", id);
-      DatasetMetadata result = collection.find(Filters.eq("_id", id)).first();
+      DatasetMetadata result = collection.find(Filters.eq("datasetId ", id)).first();
       if (result == null) {
          String msg = String.format("Metadata not found for ID=%s", id);
          throw new DatabaseNotFoundException(msg);

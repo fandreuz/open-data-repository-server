@@ -87,7 +87,7 @@ public final class DatasetService {
       DatasetMetadata datasetMetadata = triple.getMiddle();
       try {
          // If the metadata is already in the DB, stop the operation
-         return getMetadata(datasetMetadata.getId());
+         return getMetadata(datasetMetadata.getDatasetId());
       } catch (Exception exception) {
          // The exception is expected
       }
@@ -107,7 +107,7 @@ public final class DatasetService {
          // Skip CSV metadata
       }
 
-      DatasetCoordinates datasetCoordinates = new DatasetCoordinates(datasetMetadata.getId(), converted);
+      DatasetCoordinates datasetCoordinates = new DatasetCoordinates(datasetMetadata.getDatasetId(), converted);
 
       try (TransactionController transactionController = transactionService.start()) {
          datasetDatabaseClient.create(datasetCoordinates);
@@ -135,7 +135,7 @@ public final class DatasetService {
    }
 
    private DatasetMetadata attachCollectionMetadata(DatasetMetadata datasetMetadata) {
-      String collectionMetadataId = extractCollectionMetadataId(datasetMetadata.getId());
+      String collectionMetadataId = extractCollectionMetadataId(datasetMetadata.getDatasetId());
       var collectionMetadata = collectionMetadataDatabaseClient.get(collectionMetadataId);
       return DatasetMetadata.attachCollectionMetadata(datasetMetadata, collectionMetadata);
    }
