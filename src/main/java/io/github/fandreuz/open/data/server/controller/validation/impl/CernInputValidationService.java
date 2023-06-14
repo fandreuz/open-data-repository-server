@@ -1,7 +1,7 @@
-package io.github.fandreuz.open.data.server.controller.impl;
+package io.github.fandreuz.open.data.server.controller.validation.impl;
 
 import io.github.fandreuz.open.data.server.controller.DatasetLocator;
-import io.github.fandreuz.open.data.server.controller.InputValidationService;
+import io.github.fandreuz.open.data.server.controller.validation.InputValidationService;
 import jakarta.inject.Singleton;
 import jakarta.validation.ConstraintValidatorContext;
 

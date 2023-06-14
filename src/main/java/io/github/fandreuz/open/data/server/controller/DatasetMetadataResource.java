@@ -1,5 +1,6 @@
 package io.github.fandreuz.open.data.server.controller;
 
+import io.github.fandreuz.open.data.server.controller.validation.InputValidationService;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
 import io.github.fandreuz.open.data.server.model.DatasetService;
 import jakarta.inject.Inject;

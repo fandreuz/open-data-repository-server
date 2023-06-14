@@ -1,5 +1,6 @@
-package io.github.fandreuz.open.data.server.controller;
+package io.github.fandreuz.open.data.server.controller.validation;
 
+import io.github.fandreuz.open.data.server.controller.DatasetLocator;
 import jakarta.validation.ConstraintValidator;
 
 /**
