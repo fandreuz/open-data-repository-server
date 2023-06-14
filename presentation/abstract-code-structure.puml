@@ -1,0 +1,71 @@
+@startuml
+left to right direction
+
+package controller {
+  rectangle DatasetResource
+  rectangle DatasetMetadataResource
+  folder DatasetLocator [
+    <b>DatasetLocator</b>
+    ---
+    collectionId
+    fileName
+  ]
+  package validation [
+    InputValidationService
+  ]
+  package filter [
+    UserAgentFilter 
+  ]
+}
+
+package model {
+  rectangle DatasetMetadata
+  rectangle DatasetCoordinates
+  stack DatasetType
+  rectangle CollectionMetadata
+  rectangle DatasetService
+}
+
+package "database" {
+  rectangle TransactionController
+  rectangle DatabaseTypedClient
+}
+
+package conversion {
+  rectangle ConversionService
+  node ConversionServiceOrchestrator [
+    <b>ConversionServiceOrchestrator</b>
+    ---
+    CsvConversionService
+    JsonConversionService
+    ...
+  ]
+}
+
+package fetch {
+  rectangle MetadataService
+  node DatasetFetchService [
+    <b>DatasetFetchService</b>
+    ---
+    Type1MetadataService
+    Type2MetadataService
+    ...
+  ]
+}
+
+database mongodb
+
+:user: -[dashed]d---> DatasetResource : HTTP
+:user: -[dashed]d---> DatasetMetadataResource : HTTP
+
+DatasetResource -r-> DatasetService
+DatasetMetadataResource -r-> DatasetService
+
+DatasetService ----> DatabaseTypedClient
+DatasetService ----> TransactionController
+DatasetService ----> DatasetFetchService
+DatasetService ----> ConversionServiceOrchestrator
+
+DatabaseTypedClient -r-> mongodb
+
+@enduml
