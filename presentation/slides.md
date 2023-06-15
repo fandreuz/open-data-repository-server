@@ -324,6 +324,26 @@ Sample output:
 
 ---
 
+# High level design choices
+
+---
+
+## Authentication
+
+- Authentication-less service
+- No use-case for now (does not matter who imports what)
+- Can be implemented later
+
+---
+
+## Why CR~~UD~~
+
+- Individual datasets are not usually updated or removed from CERN Open Data
+- New datasets in a collection can be imported later
+- Delete $=>$ Authentication
+
+---
+
 # Abstract code structure
 
 ---
