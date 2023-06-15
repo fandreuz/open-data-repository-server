@@ -33,7 +33,7 @@ public final class DatasetResource {
    @Tag(name = "importDataset", description = "Import the given dataset to the database (idempotent)")
    @PUT
    public DatasetMetadata create( //
-                                  @Valid @ValidDatasetLocator DatasetLocator datasetLocator //
+         @Valid @ValidDatasetLocator DatasetLocator datasetLocator //
    ) {
       return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
    }
