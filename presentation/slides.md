@@ -215,6 +215,18 @@ We identify the collection `19090` with the following URN:
 - Easy to visualize
 - Easy to parse
 
+```csv
+posX,posZ,driftDist
+68.25,766.73,1.53
+60.94,755.39,0.99
+65.14,755.39,1.56
+67.24,759.03,0.77
+66.15,763.09,0.81
+52.89,956.74,0.62
+57.09,956.74,1.57
+...
+```
+
 ---
 
 # REST endpoints
