@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+
+database MongoDB {
+    package Dataset1 {
+        collections posX
+        collections posY
+    }
+    package Dataset2 {
+        collections pressure
+        collections energy
+    }
+    package Dataset3 {
+        collections velocity
+        collections acceleration
+    }
+    package Dataset4 {
+        collections weight
+    }
+
+    package "datasets-metadata" {
+        artifact "Dataset1-metadata" as dm1
+        artifact "Dataset2-metadata" as dm2
+        artifact "Dataset3-metadata" as dm3
+        artifact "Dataset4-metadata" as dm4
+    }
+
+    package "collections-metadata" {
+        artifact "Collection1-metadata" as cm1
+        artifact "Collection2-metadata" as cm2
+    }
+}
+
+dm1 --> cm1
+dm2 --> cm1
+dm3 --> cm1
+dm4 --> cm2
+
+dm1 -l--> Dataset1
+dm2 -d--> Dataset2
+dm3 -u--> Dataset3
+dm4 -d--> Dataset4
+
+@enduml

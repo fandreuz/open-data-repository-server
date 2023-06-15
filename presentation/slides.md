@@ -3,13 +3,40 @@ marp: true
 theme: uncover
 ---
 
+## Plan
+
+- [ ] Data
+  - [x] ID
+  - [x] Vocabulary
+  - [ ] Data lifecycle
+  - [x] Logical data
+  - [x] Physical data
+- [ ] REST endpoints
+- [x] Code structure
+- [ ] Implementation
+  - [x] Whys
+- [x] Deployment
+- [ ] FAIR principles
+
+---
+
 # Open data server
 
 https://github.com/fandreuz/open-data-server
 
 ---
 
-## Vocabulary
+## Motivation
+
+- Generic, flexible and extensible framework to parse, augment and store open source datasets
+- Scalable
+- Implementation provided for [CERN Open Data Portal](https://opendata.cern.ch/)
+
+---
+
+# Vocabulary
+
+---
 
 ### Collection
 
@@ -21,15 +48,114 @@ A table of heterogeneous data (CSV, JSON, ROOT).
 
 ---
 
-## Logical data
+## Example (collection)
+
+![](imgs/collection.png)
 
 ---
 
-## Physical data
+## Example (dataset)
+
+![](imgs/dataset.png)
 
 ---
 
-## Unique identifiers
+# Conceptual data model
+
+---
+
+- We want a scalable model w.r.t. number/structure of datasets stored
+  - One table (collection) per dataset
+- All dataset metadata entities together, in a separate table (`dataset-metadata`)
+- Metadata common to the whole collection stays in a separate table (`collections-metadata`)
+
+---
+
+![](https://plantuml-server.kkeisuke.dev/svg/XPDFJyGW4CNlV8f9xpqivMmskbVlUXnXjZRIie6fPcFyxj8_gqWWSXfcVk-5DqsFWT7pF5fXwSp03lpGlpAOmPFcmKr266HymK3mwARUdUxXKq0y5zHls1ESuZWG7_RsShIpTbC7kBZmL1iyhuElafsisNaAOVPK7D94lh_MJRkAwJjPfmU-5eUeDLdok2wZQgqgrX-qh7FN_H4sPbE6TYJ6vT8a7l6Z36VK3Crjlmc60SnugBCoPsMTxNAsgxCgPrKnM9B_dsmFFsGMJnVZ_U8on-N-alYMk1fesxlL8qPFwYwfrLxBNM2NwstNcyuaBRd9vwJLRIuffOGuqcJYx_GD.svg)
+
+---
+
+# Logical data model
+
+---
+
+## Dataset
+
+Each table is the direct translation of the dataset to the DB model.
+
+---
+
+## Dataset metadata
+
+```
+"datasetId": Dataset ID
+"fileName": Original name of the dataset file in the external repository
+"type": CSV, ROOT, JSON, ...
+"sizeInBytes": Size in bytes
+"numberOfColumns": Number of columns in the dataset
+"commaSeparatedColumnNames": Name of the columns in the dataset
+"importTimestamp": Import time stamp
+"collectionMetadata": Link to the metadata of the collection
+   which contains this dataset
+```
+
+---
+
+### Collection metadata
+
+DataCite compulsory fields and some recommended
+
+```
+"id": ID of the collection
+"name": Name of the collection in the external repository
+"experimentName": Name of the experiment
+"eventsCount": Name of the events of interest observed
+"type": Simulation, measurement, ...
+"keyword": Free keywords for the topic of the experiment
+"tag": Free tags for the collection
+"citeText": Text to cite the collection
+"doi": DOI of the collection
+"license": License attached to the collection
+"creator": User who first imported the collection in the database
+"title": Title of the collection
+"publisher": Published entity of the collection
+"publicationYear": Publication year
+"language": Reference language of the collection
+"subject": Longer text to describe the topic of the collection
+"description": Long description
+"geoLocation": Geographical coordinates where the collection was created         
+"fundingReference": Reference to the funding           
+```
+
+---
+
+# Physical data model
+
+---
+
+## Constraints
+
+- Entity integrity constraint
+- No other particular constraints on datasets tables
+- Some important metadata fields should be non-blank (e.g. compulsory DataCite fields)
+- Implementation-dependent
+
+---
+
+## Keys
+
+- For each dataset ID there's one dataset metadata entry and one dataset table
+- For each collection ID there may be one or more datasets
+
+---
+
+## Transactions
+
+While importing a new dataset it's important that the `datasets-metadata` and the dataset table become "visible" at the same time.
+
+---
+
+# Unique identifiers
 
 Uniform Resource Name (URN) standard: `schema:namespace:resourceName`
 
@@ -61,7 +187,37 @@ We identify the collection `19090` with the following URN:
 
 ---
 
-## REST endpoints
+# Data format
+
+---
+
+### Communication with user over HTTP protocol
+
+**JSON**
+
+- De-facto standard for RESTful APIs
+- Better integration with the tooling
+- More pleasant to write manually (e.g. cURL)
+
+```json
+{
+  "collectionId": "13128",
+  "fileName": "237040910_EventInfo.csv"
+}
+```
+
+---
+
+### Intermediate representation of datasets
+
+**CSV**
+
+- Easy to visualize
+- Easy to parse
+
+---
+
+# REST endpoints
 
 Full list in `README.md`
 
@@ -120,7 +276,7 @@ Sample output:
       "publicationYear": 2019,
       "language": "English",
       "subject": "High Energy Physics, Theoretical Physics",
-        "description": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was 
+      "description": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was 
         reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, 
         and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, 
         see the description of the whole dataset.",
@@ -156,7 +312,7 @@ Sample output:
 
 ---
 
-## Abstract code structure
+# Abstract code structure
 
 ---
 
@@ -268,7 +424,7 @@ Produced artifacts:
 
 ---
 
-## Deployment
+# Deployment
 
 ---
 
