@@ -395,7 +395,7 @@ Sample output:
 
 ---
 
-## Authentication
+### Authentication
 
 - Authentication-less service
 - No use-case for now (does not matter who imports what)
@@ -403,7 +403,7 @@ Sample output:
 
 ---
 
-## Why CR~~UD~~
+### Why CR~~UD~~
 
 - Individual datasets are not usually updated or removed from CERN Open Data
 - New datasets in a collection can be imported later
@@ -439,25 +439,25 @@ Full list in `README.md`
 
 ---
 
-## Why MongoDB
+### Why MongoDB
 
 TODO
 
 ---
 
-## Why Docker
+### Why Docker
 
 De-facto standard for containerization of applications
 
 ---
 
-## Why Gradle
+### Why Gradle
 
 De-facto standard build-tool for Java applications
 
 ---
 
-## Why Quarkus
+### Why Quarkus
 
 - _Hot_ alternative to Spring Boot
 - Supports compilation to native executable
@@ -469,7 +469,15 @@ De-facto standard build-tool for Java applications
 
 ---
 
-## Native executable
+### Quarkus benchmarks
+
+![width:1100px](imgs/quarkus.png)
+
+Source: https://quarkus.io/
+
+---
+
+### Native executable
 
 ```bash
 [fandreuz@pc-342 root-data-server]$ sudo ./gradlew build \
@@ -528,7 +536,7 @@ Produced artifacts:
 
 ---
 
-## Server Dockerfile
+### Server Dockerfile
 
 ```Docker
 # Build native image
@@ -563,7 +571,7 @@ CMD ["./runner", "-Dquarkus.http.host=0.0.0.0", "-Droot.executables.path=/work/g
 
 ---
 
-## Docker compose
+### Docker compose
 
 The full application is bundled as a `docker-compose.yml` file:
 ```yml
@@ -582,4 +590,4 @@ services:
 
 ---
 
-## Thanks for your attention
+# Thanks for your attention
