@@ -67,7 +67,7 @@ A table of heterogeneous data (CSV, JSON, ROOT).
 - We want a scalable model w.r.t. number/structure of datasets stored
   - One table (collection) per dataset
 - All dataset metadata entities together, in a separate table (`dataset-metadata`)
-- Metadata common to the whole collection stays in a separate table (`collections-metadata`)
+- Metadata common to the whole collection stay in a separate table (`collections-metadata`)
 
 ---
 
