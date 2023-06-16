@@ -11,10 +11,12 @@ theme: uncover
   - [ ] Data lifecycle
   - [x] Logical data
   - [x] Physical data
+  - [ ] Conversion
 - [ ] REST endpoints
 - [x] Code structure
 - [x] Implementation
   - [x] Whys
+    - [ ] MongoDB
 - [x] Deployment
 - [ ] FAIR principles
 
@@ -205,7 +207,7 @@ private String extractLicense(@NonNull Document document) {
 
 ---
 
-### Augmenting the metadata
+### Augmenting metadata
 
 Some of the fields above may need customized per-implementation values.
 
@@ -399,7 +401,7 @@ Sample output:
 
 - Authentication-less service
 - No use-case for now (does not matter who imports what)
-- Can be implemented later
+- Can be implemented later if needed
 
 ---
 
