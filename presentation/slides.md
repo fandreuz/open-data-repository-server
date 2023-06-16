@@ -13,7 +13,7 @@ theme: uncover
   - [x] Physical data
 - [ ] REST endpoints
 - [x] Code structure
-- [ ] Implementation
+- [x] Implementation
   - [x] Whys
 - [x] Deployment
 - [ ] FAIR principles
@@ -396,8 +396,9 @@ De-facto standard build-tool for Java applications
 - Supports compilation to native executable
   - Faster start-up time wrt JVM-based applications
 - Claims to be more _Kubernetes-ready_ wrt competitors
-  - Mainly tooling for containerization
+  - Tooling for containerization
   - No need to deploy a full JVM in the container
+- Out-of-the-box ORM integration with MongoDB
 
 ---
 
