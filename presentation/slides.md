@@ -31,7 +31,7 @@ https://github.com/fandreuz/open-data-server
 ## Motivation
 
 - Generic, flexible and extensible framework to parse, augment and store open source datasets
-- Scalable
+- Horizontally scalable
 - Implementation provided for [CERN Open Data Portal](https://opendata.cern.ch/)
 
 ---
@@ -50,13 +50,13 @@ A table of heterogeneous data (CSV, JSON, ROOT).
 
 ---
 
-## Example (collection)
+### Example (collection)
 
 ![](imgs/collection.png)
 
 ---
 
-## Example (dataset)
+### Example (dataset)
 
 ![](imgs/dataset.png)
 
@@ -81,13 +81,13 @@ A table of heterogeneous data (CSV, JSON, ROOT).
 
 ---
 
-## Dataset
+### Dataset
 
 Each table is the direct translation of the dataset to the DB model.
 
 ---
 
-## Dataset metadata
+### Dataset metadata
 
 ```
 "datasetId": Dataset ID
