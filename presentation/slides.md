@@ -124,7 +124,7 @@ DataCite compulsory fields and some recommended
 "subject": Longer text to describe the topic of the collection
 "description": Long description
 "geoLocation": Geographical coordinates where the collection was created         
-"fundingReference": Reference to the funding           
+"fundingReference": Reference to the funding                                      
 ```
 
 ---
@@ -152,6 +152,73 @@ DataCite compulsory fields and some recommended
 ## Transactions
 
 While importing a new dataset it's important that the `datasets-metadata` and the dataset table become "visible" at the same time.
+
+---
+
+## Extracting metadata
+
+---
+
+### Web-scraping (JSoup)
+
+```java
+   private String extractExperimentName(@NonNull Document document) {
+      return document.getElementsByClass("badge-experiment").text().trim();
+   }
+
+   private String extractCollectionType(@NonNull Document document) {
+      return document.getElementsByClass("badge-subtype").text().trim();
+   }
+
+   private String extractKeyword(@NonNull Document document) {
+      return document.getElementsByClass("badge-keyword").text().trim();
+   }
+
+   private String extractCollectionTag(@NonNull Document document) {
+      return document.getElementsByClass("badge-tag").text().trim();
+   }
+```
+
+---
+
+### Regular expressions
+
+```java
+private String extractLicense(@NonNull Document document) {
+      String licenseText;
+      try {
+         licenseText = document.getElementsMatchingOwnText("Disclaimer").first() // <h2>Disclaimer</h2>
+               .parent() //
+               .getElementsByTag("p") //
+               .text() //
+               .trim();
+      } catch (Exception exception) {
+         return "";
+      }
+      Matcher matcher = LICENSE_PATTERN.matcher(licenseText);
+      if (matcher.find()) {
+         return matcher.group(1);
+      }
+      return "";
+   }
+```
+
+---
+
+### Augmenting the metadata
+
+Some of the fields above may need customized per-implementation values.
+
+E.g. for CERN Open Data Portal:
+- `fundingReference`
+- `geoLocation`
+- `subject`
+
+---
+
+### Example: Funding reference (permalink)
+
+![width:1100px](imgs/permalink.png)
 
 ---
 
