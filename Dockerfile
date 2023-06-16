@@ -1,4 +1,4 @@
-# Build native image
+# Build native executable
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 AS build
 USER root
 RUN microdnf install findutils
