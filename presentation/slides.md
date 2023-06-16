@@ -11,12 +11,13 @@ theme: uncover
   - [ ] Data lifecycle
   - [x] Logical data
   - [x] Physical data
-  - [ ] Conversion
+  - [x] Conversion
 - [ ] REST endpoints
 - [x] Code structure
 - [x] Implementation
   - [x] Whys
     - [ ] MongoDB
+  - [ ] Logging
 - [x] Deployment
 - [ ] FAIR principles
 
@@ -46,7 +47,7 @@ A set of datasets related to the same topic/experiment/event.
 
 ### Dataset
 
-A table of heterogeneous data (CSV, JSON, ROOT).
+A table of heterogeneous data adhering to some standard data format (CSV, JSON, ROOT).
 
 ---
 
@@ -154,6 +155,15 @@ DataCite compulsory fields and some recommended
 ## Transactions
 
 While importing a new dataset it's important that the `datasets-metadata` and the dataset table become "visible" at the same time.
+
+---
+
+## Conversion to DB model
+
+- Datasets are stored remotely in standard formats (CSV, JSON, ROOT)
+- We don't want duplicate DB client code to store them in the database
+- Solution: all formats are "normalized" to CSV before being stored in the database
+- For ROOT datasets we rely on https://go-hep.org/
 
 ---
 
