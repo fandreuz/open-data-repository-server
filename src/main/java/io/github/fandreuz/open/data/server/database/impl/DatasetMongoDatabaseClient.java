@@ -66,6 +66,9 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
             collection.insertOne(document);
          }
       } catch (IOException exception) {
+         // Delete all entries written so far
+         var deleteResult = collection.deleteMany(Filters.empty());
+         log.warn("Cleaned {} entries", deleteResult.getDeletedCount());
          throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
       }
 
