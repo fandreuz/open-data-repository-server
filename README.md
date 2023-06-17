@@ -192,7 +192,7 @@ Sample interaction:
 
 ```
 curl -i --request GET \
-    http://localhost:8080/v1/cern-open-data:13128:237040910_EventInfo/posX
+    http://localhost:8080/v1/cern-open-data:13128:237040910_DTHitsXZ/posX
 ```
 
 ```json
@@ -206,8 +206,8 @@ curl -i --request GET \
 
 ### `GET /v1/{id}`
 
-Use request body to query the dataset identified by the given ID, and returns a list of IDs of the entries satisfying
-the condition.
+Use request body to query the dataset identified by the given ID, and returns a list of entries satisfying the
+condition.
 
 Sample interaction
 
@@ -215,12 +215,17 @@ Sample interaction
 curl -i --request GET \
     --header "Content-Type: application/json" \
     --data '{posX: "65.15"}' \
-    http://localhost:8080/v1/cern-open-data:13128:237040910_EventInfo
+    http://localhost:8080/v1/cern-open-data:13128:237040910_DTHitsXZ
 ```
 
 ```json
 [
-  "Document{{_id=647fa76f10c98516828586d2}}"
+  {
+    "_id": "648dabde466012629fcf0842",
+    "driftDist": "0.62",
+    "posX": "65.15",
+    "posZ": "1061.69"
+  }
 ]
 ```
 
@@ -282,6 +287,41 @@ curl -i --request GET \
 
 If a request body is attached, it will be used to query the collection entries, and the result will contain all the
 entries which satisfy the condition.
+
+Sample interaction:
+
+```
+curl -i --request GET \
+     --header "Content-Type: application/json" \
+     --data '{publicationYear: 2019}' \
+     http://localhost:8080/v1/metadata
+```
+
+```json
+[
+  {
+    "id": "cern-open-data:13128",
+    "name": "13128",
+    "experimentName": "OPERA",
+    "eventsCount": 1,
+    "type": "Derived",
+    "keyword": "",
+    "tag": "CERN-SPS",
+    "citeText": "Cite as: OPERA collaboration (2019). OPERA neutrino-induced charmed hadron event 237040910. CERN Open Data Portal. ",
+    "doi": "10.7483/OPENDATA.OPERA.Q74R.SYBQ",
+    "license": "Creative Commons CC0 waiver",
+    "creator": "curl/7.76.1",
+    "title": "OPERA neutrino-induced charmed hadron event 237040910",
+    "publisher": "OPERA",
+    "publicationYear": 2019,
+    "language": "English",
+    "subject": "High Energy Physics, Theoretical Physics",
+    "description": "This OPERA detector event is a muon neutrino interaction with the lead target where a charmed hadron was reconstructed in the final state. The event data consist of Electronic Detector files (such as Drift Tube, RPC, and Target Tracker files) and Emulsion Detector files (such as Tracks and Vertex files). For more information, see the description of the whole dataset.",
+    "geoLocation": "46.233832398 6.053166454",
+    "fundingReference": "https://perma.cc/L34T-TCTG"
+  }
+]
+```
 
 ## TODO
 
