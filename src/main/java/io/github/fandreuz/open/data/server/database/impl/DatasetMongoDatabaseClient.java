@@ -21,10 +21,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -102,7 +101,7 @@ final class DatasetMongoDatabaseClient implements MonolithicDatabaseTypedClient<
    }
 
    @Override
-   public SortedSet<String> getIdsWhere(@NonNull String id, @NonNull String query) {
+   public Set<SortedMap<String, String>> getEntriesMatching(@NonNull String id, @NonNull String query) {
       var collection = getDatasetCollection(id);
       log.info("Querying dataset with ID={}, query: '{}'...", id, query);
 
@@ -120,12 +119,16 @@ final class DatasetMongoDatabaseClient implements MonolithicDatabaseTypedClient<
          // queries
          parsedQuery = Document.parse(query);
       } catch (Exception exception) {
-         throw new DatabaseBadQueryException("An error occurred while parsing the query", exception);
+         String msg = String.format("An error occurred while parsing the query: '%s'", query);
+         throw new DatabaseBadQueryException(msg, exception);
       }
       return collection.find(parsedQuery) //
-            .projection(Projections.include("_id")) //
-            .map(Document::toString) //
-            .into(new TreeSet<>());
+            .map(document -> {
+               SortedMap<String, String> map = new TreeMap<>();
+               document.forEach((key, value) -> map.put(key, value.toString()));
+               return map;
+            }) //
+            .into(new HashSet<>());
    }
 
    private MongoCollection<Document> getDatasetCollection(@NonNull String datasetId) {

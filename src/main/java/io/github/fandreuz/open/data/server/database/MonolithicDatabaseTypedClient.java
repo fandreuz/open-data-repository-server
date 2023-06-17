@@ -2,6 +2,7 @@ package io.github.fandreuz.open.data.server.database;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
 import lombok.NonNull;
 
@@ -46,5 +47,5 @@ public interface MonolithicDatabaseTypedClient<I> {
     *            query to be matched.
     * @return the IDs satisfying the query.
     */
-   Set<String> getIdsWhere(@NonNull String id, @NonNull String query);
+   Set<SortedMap<String, String>> getEntriesMatching(@NonNull String id, @NonNull String query);
 }

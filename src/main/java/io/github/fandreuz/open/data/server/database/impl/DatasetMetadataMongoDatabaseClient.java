@@ -2,18 +2,22 @@ package io.github.fandreuz.open.data.server.database.impl;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.InsertOneResult;
+import io.github.fandreuz.open.data.server.database.DatabaseBadQueryException;
 import io.github.fandreuz.open.data.server.database.DatabaseTypedClient;
 import io.github.fandreuz.open.data.server.database.DatabaseException;
 import io.github.fandreuz.open.data.server.database.DatabaseNotFoundException;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
+import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadataDO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 
 /**
  * MongoDB implementation of {@link DatabaseTypedClient} for
@@ -23,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Singleton
-final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<DatasetMetadata, DatasetMetadata> {
+final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<DatasetMetadataDO, DatasetMetadataDO> {
 
    private static final String DATASET_NAME = "dataset-db";
    private static final String COLLECTION_NAME = "datasets-metadata";
@@ -32,7 +36,7 @@ final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<Da
    private MongoClientSetup databaseClientSetup;
 
    @Override
-   public void create(@NonNull DatasetMetadata metadata) {
+   public void create(@NonNull DatasetMetadataDO metadata) {
       log.info("Storing dataset metadata '{}' in the DB ...", metadata);
 
       var collection = getMetadataCollection();
@@ -46,30 +50,43 @@ final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<Da
    }
 
    @Override
-   public DatasetMetadata get(@NonNull String id) {
-      var collection = getMetadataCollection();
-      log.info("Getting dataset metadata for ID={} ...", id);
-      DatasetMetadata result = collection.find(Filters.eq("datasetId ", id)).first();
-      if (result == null) {
-         String msg = String.format("Metadata not found for ID=%s", id);
-         throw new DatabaseNotFoundException(msg);
-      }
-      log.info("Found metadata: {}", result);
-      return result;
+   public DatasetMetadataDO getEntry(@NonNull String id) {
+      return getEntriesMatching(String.format("{ _id: \"%s\"}", id)).stream() //
+            .findFirst() //
+            .orElseThrow(() -> {
+               String msg = String.format("Metadata not found for ID=%s", id);
+               return new DatabaseNotFoundException(msg);
+            });
    }
 
+   // TODO Unify with CollectionMetadata code
    @Override
-   public Set<DatasetMetadata> getAll() {
+   public Set<DatasetMetadataDO> getEntriesMatching(@NonNull String query) {
       var collection = getMetadataCollection();
-      log.info("Getting all stored datasets metadata ...");
-      var result = collection.find().into(new TreeSet<>());
-      log.info("Found {} dataset metadata", result.size());
-      return result;
+      log.info("Querying dataset metadata database, query: '{}'...", query);
+
+      if (collection.find(Filters.empty()) //
+            .projection(Projections.include()) //
+            .into(new HashSet<>()).isEmpty() //
+      ) {
+         throw new DatabaseNotFoundException("The database is empty");
+      }
+
+      Document parsedQuery;
+      try {
+         // See https://www.mongodb.com/docs/manual/tutorial/query-documents/ for valid
+         // queries
+         parsedQuery = Document.parse(query);
+      } catch (Exception exception) {
+         String msg = String.format("An error occurred while parsing the query: '%s'", query);
+         throw new DatabaseBadQueryException(msg, exception);
+      }
+      return collection.find(parsedQuery).into(new HashSet<>());
    }
 
-   private MongoCollection<DatasetMetadata> getMetadataCollection() {
+   private MongoCollection<DatasetMetadataDO> getMetadataCollection() {
       return databaseClientSetup.getMongoClient() //
             .getDatabase(DATASET_NAME) //
-            .getCollection(COLLECTION_NAME, DatasetMetadata.class);
+            .getCollection(COLLECTION_NAME, DatasetMetadataDO.class);
    }
 }

@@ -13,8 +13,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 
 /**
  * Dataset resource controller.
@@ -38,24 +38,24 @@ public final class DatasetResource {
       return datasetService.createDataset(datasetLocator.getCollectionId(), datasetLocator.getFileName());
    }
 
-   @Tag(name = "getColumn", description = "List the content of the given column for the dataset matching the given ID")
+   @Tag(name = "getColumn", description = "List the content of the given column")
    @GET
    @Path("/{id}/{columnName}")
    public SortedMap<String, String> getColumn( //
          @PathParam("id") @NotBlank String id, //
          @PathParam("columnName") @NotBlank String columnName //
    ) {
-      return datasetService.getColumn(id, columnName);
+      return datasetService.getDatasetColumn(id, columnName);
    }
 
-   @Tag(name = "getIdsWhere", description = "List the entries ID of the rows matching the given query for the dataset matching the given ID")
+   @Tag(name = "getEntriesMatching", description = "List the entries matching the given query")
    @GET
    @Path("/{id}")
-   public SortedSet<String> getIdsWhere( //
+   public Set<SortedMap<String, String>> getEntriesMatching( //
          @PathParam("id") @NotBlank String id, //
          @NotBlank String query //
    ) {
-      return datasetService.getIdsWhere(id, query);
+      return datasetService.getDatasetEntriesMatching(id, query);
    }
 
 }

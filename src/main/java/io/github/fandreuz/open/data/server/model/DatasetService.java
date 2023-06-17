@@ -6,7 +6,6 @@ import io.github.fandreuz.open.data.server.database.DatabaseTypedClient;
 import io.github.fandreuz.open.data.server.database.MonolithicDatabaseTypedClient;
 import io.github.fandreuz.open.data.server.database.TransactionController;
 import io.github.fandreuz.open.data.server.fetch.DatasetFetchService;
-import io.github.fandreuz.open.data.server.model.collection.CollectionMetadata;
 import io.github.fandreuz.open.data.server.model.collection.CollectionMetadataDO;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetCoordinates;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
@@ -18,17 +17,18 @@ import lombok.NonNull;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
- * Dataset service.
+ * Component to manage dataset resources.
+ * <p>
+ * Interactions with this component (e.g. creating a new dataset) may involve
+ * interactions with metadata objects.
  *
  * @author fandreuz
  */
@@ -43,6 +43,9 @@ public final class DatasetService {
 
    @Inject
    private MonolithicDatabaseTypedClient<DatasetCoordinates> datasetDatabaseClient;
+
+   @Inject
+   private MetadataService metadataService;
 
    @Inject
    private DatasetFetchService datasetFetchService;
@@ -88,7 +91,7 @@ public final class DatasetService {
       DatasetMetadata datasetMetadata = triple.getMiddle();
       try {
          // If the metadata is already in the DB, stop the operation
-         return getMetadata(datasetMetadata.getDatasetId());
+         return metadataService.getDatasetMetadata(datasetMetadata.getDatasetId());
       } catch (Exception exception) {
          // The exception is expected
       }
@@ -122,38 +125,12 @@ public final class DatasetService {
       return DatasetMetadata.attachCollectionMetadata(datasetMetadata, triple.getLeft());
    }
 
-   public DatasetMetadata getMetadata(@NonNull String metadataId) {
-      var datasetMetadata = DatasetMetadata.fromDatabaseObject(datasetMetadataDatabaseClient.get(metadataId));
-      return attachCollectionMetadata(datasetMetadata);
-   }
-
-   public SortedSet<DatasetMetadata> getAllMetadata() {
-      var output = datasetMetadataDatabaseClient.getAll() //
-            .stream() //
-            .map(DatasetMetadata::fromDatabaseObject) //
-            .map(this::attachCollectionMetadata) //
-            .collect(Collectors.toUnmodifiableSet());
-      return new TreeSet<>(output);
-   }
-
-   private DatasetMetadata attachCollectionMetadata(DatasetMetadata datasetMetadata) {
-      String collectionMetadataId = extractCollectionMetadataId(datasetMetadata.getDatasetId());
-      var collectionMetadata = CollectionMetadata
-            .fromDatabaseObject(collectionMetadataDatabaseClient.get(collectionMetadataId));
-      return DatasetMetadata.attachCollectionMetadata(datasetMetadata, collectionMetadata);
-   }
-
-   public SortedMap<String, String> getColumn(@NonNull String datasetId, @NonNull String columnName) {
+   public SortedMap<String, String> getDatasetColumn(@NonNull String datasetId, @NonNull String columnName) {
       return new TreeMap<>(datasetDatabaseClient.getColumn(datasetId, columnName));
    }
 
-   public SortedSet<String> getIdsWhere(@NonNull String datasetId, @NonNull String query) {
-      return new TreeSet<>(datasetDatabaseClient.getIdsWhere(datasetId, query));
-   }
-
-   // Leverage URN structure
-   private static String extractCollectionMetadataId(@NonNull String datasetMetadataId) {
-      return datasetMetadataId.substring(0, datasetMetadataId.lastIndexOf(":"));
+   public Set<SortedMap<String, String>> getDatasetEntriesMatching(@NonNull String datasetId, @NonNull String query) {
+      return datasetDatabaseClient.getEntriesMatching(datasetId, query);
    }
 
    private static String buildDatasetLockKey(@NonNull String collectionId, @NonNull String file) {

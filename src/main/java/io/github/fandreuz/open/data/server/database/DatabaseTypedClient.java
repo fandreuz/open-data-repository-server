@@ -30,12 +30,14 @@ public interface DatabaseTypedClient<I, O> {
     *            ID of the object to be fetched.
     * @return the requested object if it exists.
     */
-   O get(@NonNull String id);
+   O getEntry(@NonNull String id);
 
    /**
-    * Get all the objects stored in the database.
+    * Get the IDS of the entries which satisfy the query.
     *
-    * @return a set containing all the objects in the database.
+    * @param query
+    *            query to be matched.
+    * @return the IDs satisfying the query.
     */
-   Set<O> getAll();
+   Set<O> getEntriesMatching(@NonNull String query);
 }
