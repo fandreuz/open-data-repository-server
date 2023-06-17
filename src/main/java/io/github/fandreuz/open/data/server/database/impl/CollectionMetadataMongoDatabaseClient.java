@@ -48,7 +48,7 @@ final class CollectionMetadataMongoDatabaseClient
    }
 
    @Override
-   public CollectionMetadata get(String id) {
+   public CollectionMetadata get(@NonNull String id) {
       var collection = getMetadataCollection();
       log.info("Getting collection metadata for ID={} ...", id);
       CollectionMetadata result = collection.find(Filters.eq("_id", id)).first();

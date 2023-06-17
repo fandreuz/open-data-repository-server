@@ -29,7 +29,7 @@ public interface DatabaseTypedClient<I, O> {
     *            ID of the object to be fetched.
     * @return the requested object if it exists.
     */
-   O get(String id);
+   O get(@NonNull String id);
 
    /**
     * Get all the objects stored in the database.

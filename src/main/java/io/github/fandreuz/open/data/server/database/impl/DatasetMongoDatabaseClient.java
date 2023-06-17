@@ -76,7 +76,7 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
    }
 
    @Override
-   public StoredDataset get(String id) {
+   public StoredDataset get(@NonNull String id) {
       var collection = getDatasetCollection(id);
       log.info("Getting dataset with ID={} ...", id);
 

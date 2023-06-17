@@ -45,7 +45,7 @@ final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<Da
    }
 
    @Override
-   public DatasetMetadata get(String id) {
+   public DatasetMetadata get(@NonNull String id) {
       var collection = getMetadataCollection();
       log.info("Getting dataset metadata for ID={} ...", id);
       DatasetMetadata result = collection.find(Filters.eq("datasetId ", id)).first();
