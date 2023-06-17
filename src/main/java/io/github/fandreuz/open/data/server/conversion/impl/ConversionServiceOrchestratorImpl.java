@@ -7,6 +7,8 @@ import io.github.fandreuz.open.data.server.model.dataset.DatasetType;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.NonNull;
+
 import java.util.EnumMap;
 
 /**
@@ -32,7 +34,7 @@ final class ConversionServiceOrchestratorImpl implements ConversionServiceOrches
    }
 
    @Override
-   public ConversionService getConversionService(DatasetType datasetType) {
+   public ConversionService getConversionService(@NonNull DatasetType datasetType) {
       if (!conversionServices.containsKey(datasetType)) {
          throw new ConversionServiceUnavailableException(datasetType);
       }

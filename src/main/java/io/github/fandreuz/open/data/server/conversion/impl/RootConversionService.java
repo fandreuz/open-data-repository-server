@@ -3,6 +3,7 @@ package io.github.fandreuz.open.data.server.conversion.impl;
 import io.github.fandreuz.open.data.server.conversion.ConversionService;
 import io.github.fandreuz.open.data.server.conversion.ConversionServiceException;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.nio.file.Path;
 import lombok.NonNull;
@@ -23,10 +24,11 @@ class RootConversionService implements ConversionService {
    private static final String ROOT_2_CSV_ERR = "root2csv.err";
 
    @Inject
+   @Named("root")
    private ProcessRunner processRunner;
 
    @Override
-   public synchronized Path convert(Path source) {
+   public synchronized Path convert(@NonNull Path source) {
       String rootLsCommand = String.format(ROOT_TREE_READER_COMMAND_PATTERN, source);
       String rootLsOutput = processRunner.runCommand(rootLsCommand, ROOT_LS_ERR);
       log.info("root-ls output: {}", rootLsOutput);

@@ -2,6 +2,8 @@ package io.github.fandreuz.open.data.server.conversion;
 
 import java.nio.file.Path;
 
+import lombok.NonNull;
+
 /**
  * Interface for services providing conversion from supported dataset types to
  * CSV.
@@ -17,5 +19,5 @@ public interface ConversionService {
     *            original file.
     * @return path to the converted file if available.
     */
-   Path convert(Path source);
+   Path convert(@NonNull Path source);
 }

@@ -1,6 +1,7 @@
 package io.github.fandreuz.open.data.server.conversion;
 
 import io.github.fandreuz.open.data.server.model.dataset.DatasetType;
+import lombok.NonNull;
 
 /**
  * Interface to orchestrate multiple conversion services.
@@ -16,5 +17,5 @@ public interface ConversionServiceOrchestrator {
     *            dataset type.
     * @return the appropriate conversion service for the dataset type.
     */
-   ConversionService getConversionService(DatasetType datasetType);
+   ConversionService getConversionService(@NonNull DatasetType datasetType);
 }
