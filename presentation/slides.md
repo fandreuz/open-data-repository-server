@@ -234,49 +234,6 @@ E.g. for CERN Open Data Portal:
 
 ---
 
-# Data lifecycle
-
----
-
-### Conceptualise
-- At development time
-- Planning metadata, collection methods, storage
-
-### Create and receive
-- Receive import request from users via RESTful API
-- Extract metadata
-- Collect dataset entries from the source for long-term storage
-
----
-
-### Appraise and select
-- Augment metadata if needed
-- Normalize dataset format to facilitate storage operations
-
-### Ingest
-- Store entries in the database
-- Store metadata in the database
-
----
-
-### Preservation
-- Datasets are assumed to be immutable
-- More complex implementation may leverage database redundancy and partitioning for additional safety
-
-### Access
-- Access is guaranteed via RESTful API
-
----
-
-### Transform
-- Data is normalized before to CSV, then to DB format
-- Querying via RESTful API
-
-### Dispose
-- Disposing data is not permitted in the current implementation
-
----
-
 # Unique identifiers
 
 Uniform Resource Name (URN) standard: `schema:namespace:resourceName`
@@ -443,6 +400,49 @@ Sample output:
    ...
 }
 ```
+
+---
+
+# Data lifecycle
+
+---
+
+### Conceptualise
+- At development time
+- Planning metadata, collection methods, storage
+
+### Create and receive
+- Receive import request from users via RESTful API
+- Extract metadata
+- Collect dataset entries from the source for long-term storage
+
+---
+
+### Appraise and select
+- Augment metadata if needed
+- Normalize dataset format to facilitate storage operations
+
+### Ingest
+- Store entries in the database
+- Store metadata in the database
+
+---
+
+### Preservation
+- Datasets are assumed to be immutable
+- More complex implementation may leverage database redundancy and partitioning for additional safety
+
+### Access
+- Access is guaranteed via RESTful API
+
+---
+
+### Transform
+- Data is normalized before to CSV, then to DB format
+- Querying via RESTful API
+
+### Dispose
+- Disposing data is not permitted in the current implementation
 
 ---
 
