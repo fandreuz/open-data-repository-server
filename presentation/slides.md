@@ -16,8 +16,8 @@ theme: uncover
 - [x] Code structure
 - [x] Implementation
   - [x] Whys
-    - [ ] MongoDB
-  - [ ] Logging
+    - [x] MongoDB
+  - [x] Logging
 - [x] Deployment
 - [ ] FAIR principles
 
@@ -434,6 +434,7 @@ Sample output:
 ## Tools for the implementation
 
 - Java
+- Slf4j + Logback
 - MongoDB
 - Docker
 - Quarkus
@@ -451,9 +452,59 @@ Full list in `README.md`
 
 ---
 
+## Why Slf4j and Logback
+
+- Standardized logging interface (Simple Logging Façade for Java)
+- Enables changing log format and implementation seamlessly
+
+---
+
+### Logging example
+
+```java
+@Override
+public void create(@NonNull DatasetCoordinates datasetCoordinates) {
+  log.info("Storing dataset '{}' in the DB ...", datasetCoordinates);
+
+  MongoCollection<Document> collection = getDatasetCollection(datasetCoordinates.getId());
+  log.info("DB Collection: {}", collection.getNamespace());
+
+  try (BufferedReader reader = Files.newBufferedReader(datasetCoordinates.getLocalFileLocation());
+        CSVParser parser = csvFormat.parse(reader)) {
+      var iterator = parser.iterator();
+      if (!iterator.hasNext()) {
+        throw new IllegalArgumentException("The dataset is empty");
+      }
+
+      var headers = parser.getHeaderMap();
+      while (iterator.hasNext()) {
+        var record = iterator.next();
+        Document document = new Document();
+        for (var headerEntry : headers.entrySet()) {
+            document.append(headerEntry.getKey(), record.get(headerEntry.getValue()));
+        }
+        collection.insertOne(document);
+      }
+  } catch (IOException exception) {
+      // Delete all entries written so far
+      var deleteResult = collection.deleteMany(Filters.empty());
+      log.warn("Cleaned {} entries", deleteResult.getDeletedCount());
+      throw new DatabaseException("An error occurred while transferring CSV records to the DB", exception);
+  }
+
+  log.info("Stored dataset '{}' in the database", datasetCoordinates);
+}
+```
+
+---
+
 ### Why MongoDB
 
-TODO
+- Open source ([SSPL](https://en.wikipedia.org/wiki/Server_Side_Public_License))
+- Scalable
+- Flexible schema
+- Docker image
+- Tooling (Java, Quarkus)
 
 ---
 
