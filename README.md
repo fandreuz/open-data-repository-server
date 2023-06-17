@@ -8,8 +8,8 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 
 - Java 11
 - Quarkus
-  - RESTEasy Reactive
-  - Jackson extension
+    - RESTEasy Reactive
+    - Jackson extension
 - Hibernate Validator
 - Jakarta EE CDI
 - MongoDB Java driver
@@ -29,7 +29,8 @@ RESTful web service for storage and metadata extraction of Open Data repositorie
 
 ## Abstract code structure
 
-The following schema summarizes the interconnection of the interfaces defined in the public section of each main package (`model`, `controller`, `database`, `fetch`, `conversion`):
+The following schema summarizes the interconnection of the interfaces defined in the public section of each main
+package (`model`, `controller`, `database`, `fetch`, `conversion`):
 
 ![](https://plantuml-server.kkeisuke.dev/svg/VLJBRi8m4BpdAwpUGzKU4K9KgL2f-b9BUwbwCFOI8eoDx0MfGltthaCCmJ4S4E2P7S_ERZ9oo2rkLYfJC4U6XjcgN22JbGM1bT5PjkPYoKjWmcYqHYcmR9Snvd6kImNidYDtWE_WpCOAI67FW5pIpnPdRfGagORmP0H7Ozat8OmDPiFJyy7rR5WZUPxNty8RgGrEP7qmhnIyy9LN_g5FCBtbggABYTT8J_HwWr-7qm-msqh4LII64CnyEh1t9MWSxqzhxjynbvMHeDAHXBPJM66CbPNc28vW6eDO1cZwkpvDiJXqUqanzDBoTkMvCmAl8eDJoxNZjMHnc6j7r5TwCx9G5GNGLgPjs89rFjXTv3K0nsmrHTG5NgrOW4DxElYBjCuU56wRkf2nHrTtba1wlLuymZcWM4HzXAIZBfginxwYWJfBsmOxZdsUDrtnFN2R0bg6mpXfwNHfv2pB-XjQppxBloLt2v0_akuPneyawxE7wVJjCZb-HaDH5elbzbWKV9xJI76pq_y-cOOKxrkIc5xTivhHFDB4YqktDnnvstTs6CC8jAItw3y0.svg)
 
@@ -39,7 +40,8 @@ The following models are defined in the package `io.github.fandreuz.root.data.se
 
 ### `CollectionMetadata`
 
-Metadata for a collection contains metadata related to the experiment which generated the collection of datasets. It contains compulsory [DataCite](https://schema.datacite.org/) information and a subset of the recommended ones.
+Metadata for a collection contains metadata related to the experiment which generated the collection of datasets. It
+contains compulsory [DataCite](https://schema.datacite.org/) information and a subset of the recommended ones.
 
 **Example**:
 
@@ -69,7 +71,8 @@ Metadata for a collection contains metadata related to the experiment which gene
 
 ### `DatasetMetadata`
 
-Dataset metadata contain metadata strictly related to the dataset file, and wrap the metadata of the collection the dataset belongs to.
+Dataset metadata contain metadata strictly related to the dataset file, and wrap the metadata of the collection the
+dataset belongs to.
 
 **Example**:
 
@@ -216,7 +219,9 @@ curl -i --request GET \
 ```
 
 ```json
-["Document{{_id=647fa76f10c98516828586d2}}"]
+[
+  "Document{{_id=647fa76f10c98516828586d2}}"
+]
 ```
 
 ### `GET /v1/metadata/{id}`
@@ -268,26 +273,31 @@ curl -i --request GET \
 
 Return a sorted collection of all metadata objects stored in the database.
 
+Sample interaction:
+
 ```
 curl -i --request GET \
-    http://localhost:8080/v1/metadata/
+    http://localhost:8080/v1/metadata
 ```
+
+If a request body is attached, it will be used to query the collection entries, and the result will contain all the
+entries which satisfy the condition.
 
 ## TODO
 
 - [x] CRU~~D~~ operations for datasets
-  - [x] Idempotent create (update not needed)
-  - [x] Thread-safe create endpoint
-  - [x] Import CSV datasets
-  - [x] Import ROOT datasets
+    - [x] Idempotent create (update not needed)
+    - [x] Thread-safe create endpoint
+    - [x] Import CSV datasets
+    - [x] Import ROOT datasets
 - [ ] ~~Make sure columns have the right typing at import-time~~
 - [ ] ~~Endpoints for simple calculations~~ (won't do, data is stored as strings for now)
 - [x] Endpoints for simple querying
-  - [x] Endpoint to get column names
-  - [x] Endpoint to extract column content
-  - [x] Endpoint to extract IDs satisfying a condition
+    - [x] Endpoint to get column names
+    - [x] Endpoint to extract column content
+    - [x] Endpoint to extract IDs satisfying a condition
 - [ ] Data lifecycle
 - [x] Docker image
-  - [x] Quarkus native image
+    - [x] Quarkus native image
 - [ ] ~~Tests~~
 - [x] Document REST endpoints to be more FAIR (`/q/swagger-ui`, parsable version at `q/openapi`)
