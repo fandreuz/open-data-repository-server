@@ -24,7 +24,12 @@ import org.bson.codecs.pojo.annotations.BsonIgnore;
 @AllArgsConstructor
 public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
-   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator.comparing(DatasetMetadata::getDatasetId);
+   private static final Comparator<DatasetMetadata> COMPARATOR = Comparator.nullsLast( //
+         Comparator.comparing( //
+               DatasetMetadata::getDatasetId, //
+               Comparator.nullsLast(Comparator.naturalOrder()) //
+         ) //
+   );
 
    @NonNull
    private String datasetId;

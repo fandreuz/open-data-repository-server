@@ -23,7 +23,12 @@ import java.util.Comparator;
 @AllArgsConstructor
 public class CollectionMetadata implements Comparable<CollectionMetadata> {
 
-   private static final Comparator<CollectionMetadata> COMPARATOR = Comparator.comparing(CollectionMetadata::getId);
+   private static final Comparator<CollectionMetadata> COMPARATOR = Comparator.nullsLast( //
+         Comparator.comparing( //
+               CollectionMetadata::getId, //
+               Comparator.nullsLast(Comparator.naturalOrder()) //
+         ) //
+   );
 
    @NonNull
    private String id;
