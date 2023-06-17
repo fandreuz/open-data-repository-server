@@ -24,7 +24,7 @@ class RootConversionService implements ConversionService {
    private static final String ROOT_2_CSV_ERR = "root2csv.err";
 
    @Inject
-   @Named("root")
+   @Named(RootProcessRunnerConfiguration.ROOT_PROCESS_RUNNER_BEAN_NAME)
    private ProcessRunner processRunner;
 
    @Override
