@@ -10,10 +10,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.bson.codecs.pojo.annotations.BsonIgnore;
 
 /**
- * Stored dataset metadata.
+ * Dataset metadata.
  *
  * @author fandreuz
  */
@@ -48,17 +47,26 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
 
    private long importTimestamp;
 
-   @BsonIgnore
    @Nullable
    private CollectionMetadata collectionMetadata;
 
-   public DatasetMetadata() {
-      // Required by the serialization layer
-   }
-
-   @Override
-   public int compareTo(@NonNull DatasetMetadata dataset) {
-      return COMPARATOR.compare(this, dataset);
+   /**
+    * Construct a metadata instance from a database object.
+    *
+    * @param datasetMetadataDO
+    *            database object.
+    * @return a dataset instance.
+    */
+   public static DatasetMetadata fromDatabaseObject(DatasetMetadataDO datasetMetadataDO) {
+      return DatasetMetadata.builder() //
+            .datasetId(datasetMetadataDO.getDatasetId()) //
+            .fileName(datasetMetadataDO.getFileName()) //
+            .type(datasetMetadataDO.getType()) //
+            .sizeInBytes(datasetMetadataDO.getSizeInBytes()) //
+            .numberOfColumns(datasetMetadataDO.getNumberOfColumns()) //
+            .commaSeparatedColumnNames(datasetMetadataDO.getCommaSeparatedColumnNames()) //
+            .importTimestamp(datasetMetadataDO.getImportTimestamp()) //
+            .build();
    }
 
    /**
@@ -107,5 +115,27 @@ public class DatasetMetadata implements Comparable<DatasetMetadata> {
             .importTimestamp(datasetMetadata.getImportTimestamp()) //
             .collectionMetadata(datasetMetadata.getCollectionMetadata()) //
             .build();
+   }
+
+   /**
+    * Transform this instance in a database object.
+    *
+    * @return a database object.
+    */
+   public DatasetMetadataDO asDatabaseObject() {
+      return DatasetMetadataDO.builder() //
+            .datasetId(getDatasetId()) //
+            .fileName(getFileName()) //
+            .type(getType()) //
+            .sizeInBytes(getSizeInBytes()) //
+            .numberOfColumns(getNumberOfColumns()) //
+            .commaSeparatedColumnNames(getCommaSeparatedColumnNames()) //
+            .importTimestamp(getImportTimestamp()) //
+            .build();
+   }
+
+   @Override
+   public int compareTo(@NonNull DatasetMetadata dataset) {
+      return COMPARATOR.compare(this, dataset);
    }
 }

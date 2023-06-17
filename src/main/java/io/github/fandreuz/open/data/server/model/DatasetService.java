@@ -3,28 +3,29 @@ package io.github.fandreuz.open.data.server.model;
 import io.github.fandreuz.open.data.server.conversion.ConversionServiceOrchestrator;
 import io.github.fandreuz.open.data.server.database.DatabaseTransactionService;
 import io.github.fandreuz.open.data.server.database.DatabaseTypedClient;
+import io.github.fandreuz.open.data.server.database.MonolithicDatabaseTypedClient;
 import io.github.fandreuz.open.data.server.database.TransactionController;
 import io.github.fandreuz.open.data.server.fetch.DatasetFetchService;
 import io.github.fandreuz.open.data.server.model.collection.CollectionMetadata;
-import io.github.fandreuz.open.data.server.database.ExtractibleDatabaseTypedClient;
+import io.github.fandreuz.open.data.server.model.collection.CollectionMetadataDO;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetCoordinates;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
-import io.github.fandreuz.open.data.server.model.dataset.StoredDataset;
+import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadataDO;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.NonNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-
-import lombok.NonNull;
 
 /**
  * Dataset service.
@@ -35,13 +36,13 @@ import lombok.NonNull;
 public final class DatasetService {
 
    @Inject
-   private DatabaseTypedClient<CollectionMetadata, CollectionMetadata> collectionMetadataDatabaseClient;
+   private DatabaseTypedClient<CollectionMetadataDO, CollectionMetadataDO> collectionMetadataDatabaseClient;
 
    @Inject
-   private DatabaseTypedClient<DatasetMetadata, DatasetMetadata> datasetMetadataDatabaseClient;
+   private DatabaseTypedClient<DatasetMetadataDO, DatasetMetadataDO> datasetMetadataDatabaseClient;
 
    @Inject
-   private ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> datasetDatabaseClient;
+   private MonolithicDatabaseTypedClient<DatasetCoordinates> datasetDatabaseClient;
 
    @Inject
    private DatasetFetchService datasetFetchService;
@@ -111,8 +112,8 @@ public final class DatasetService {
 
       try (TransactionController transactionController = transactionService.start()) {
          datasetDatabaseClient.create(datasetCoordinates);
-         datasetMetadataDatabaseClient.create(datasetMetadata);
-         collectionMetadataDatabaseClient.create(triple.getLeft());
+         datasetMetadataDatabaseClient.create(datasetMetadata.asDatabaseObject());
+         collectionMetadataDatabaseClient.create(triple.getLeft().asDatabaseObject());
          transactionController.commit();
       } catch (Exception exception) {
          throw new RuntimeException("An exception occurred while closing the transaction", exception);
@@ -122,13 +123,14 @@ public final class DatasetService {
    }
 
    public DatasetMetadata getMetadata(@NonNull String metadataId) {
-      var datasetMetadata = datasetMetadataDatabaseClient.get(metadataId);
+      var datasetMetadata = DatasetMetadata.fromDatabaseObject(datasetMetadataDatabaseClient.get(metadataId));
       return attachCollectionMetadata(datasetMetadata);
    }
 
    public SortedSet<DatasetMetadata> getAllMetadata() {
       var output = datasetMetadataDatabaseClient.getAll() //
             .stream() //
+            .map(DatasetMetadata::fromDatabaseObject) //
             .map(this::attachCollectionMetadata) //
             .collect(Collectors.toUnmodifiableSet());
       return new TreeSet<>(output);
@@ -136,25 +138,22 @@ public final class DatasetService {
 
    private DatasetMetadata attachCollectionMetadata(DatasetMetadata datasetMetadata) {
       String collectionMetadataId = extractCollectionMetadataId(datasetMetadata.getDatasetId());
-      var collectionMetadata = collectionMetadataDatabaseClient.get(collectionMetadataId);
+      var collectionMetadata = CollectionMetadata
+            .fromDatabaseObject(collectionMetadataDatabaseClient.get(collectionMetadataId));
       return DatasetMetadata.attachCollectionMetadata(datasetMetadata, collectionMetadata);
    }
 
-   public SortedSet<String> getColumnNames(@NonNull String datasetId) {
-      return datasetDatabaseClient.get(datasetId).getColumnNames();
-   }
-
    public SortedMap<String, String> getColumn(@NonNull String datasetId, @NonNull String columnName) {
-      return datasetDatabaseClient.getColumn(datasetId, columnName);
+      return new TreeMap<>(datasetDatabaseClient.getColumn(datasetId, columnName));
    }
 
    public SortedSet<String> getIdsWhere(@NonNull String datasetId, @NonNull String query) {
-      return datasetDatabaseClient.getIdsWhere(datasetId, query);
+      return new TreeSet<>(datasetDatabaseClient.getIdsWhere(datasetId, query));
    }
 
    // Leverage URN structure
    private static String extractCollectionMetadataId(@NonNull String datasetMetadataId) {
-      return datasetMetadataId.substring(0, datasetMetadataId.lastIndexOf(":") + 1);
+      return datasetMetadataId.substring(0, datasetMetadataId.lastIndexOf(":"));
    }
 
    private static String buildDatasetLockKey(@NonNull String collectionId, @NonNull String file) {

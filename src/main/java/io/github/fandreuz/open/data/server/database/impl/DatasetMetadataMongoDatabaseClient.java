@@ -9,7 +9,8 @@ import io.github.fandreuz.open.data.server.database.DatabaseNotFoundException;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.util.SortedSet;
+
+import java.util.Set;
 import java.util.TreeSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,7 @@ final class DatasetMetadataMongoDatabaseClient implements DatabaseTypedClient<Da
    }
 
    @Override
-   public SortedSet<DatasetMetadata> getAll() {
+   public Set<DatasetMetadata> getAll() {
       var collection = getMetadataCollection();
       log.info("Getting all stored datasets metadata ...");
       var result = collection.find().into(new TreeSet<>());

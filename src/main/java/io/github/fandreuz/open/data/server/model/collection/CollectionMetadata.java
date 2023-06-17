@@ -31,53 +31,109 @@ public class CollectionMetadata implements Comparable<CollectionMetadata> {
    );
 
    @NonNull
-   private String id;
+   private final String id;
 
    @NonNull
-   private String name;
+   private final String name;
    @Nonnull
-   private String experimentName;
+   private final String experimentName;
    // Collision, derived or simulated. Didn't want to provide an enum to make it
    // more flexible.
    @Nullable
    private Long eventsCount;
    @Nonnull
-   private String type;
+   private final String type;
    @NonNull
-   private String keyword;
+   private final String keyword;
    @NonNull
-   private String tag;
+   private final String tag;
    @NonNull
-   private String citeText;
+   private final String citeText;
    @NonNull
-   private String doi;
+   private final String doi;
    @NonNull
-   private String license;
+   private final String license;
 
    // DataCite
    @Nonnull
-   private String creator;
+   private final String creator;
    @NonNull
-   private String title;
+   private final String title;
    @NonNull
-   private String publisher;
+   private final String publisher;
    @NonNull
-   private Integer publicationYear;
+   private final Integer publicationYear;
 
    // DataCite additional
    @NonNull
-   private String language;
+   private final String language;
    @NonNull
-   private String subject;
+   private final String subject;
    @NonNull
-   private String description;
+   private final String description;
    @NonNull
-   private String geoLocation;
+   private final String geoLocation;
    @NonNull
-   private String fundingReference;
+   private final String fundingReference;
 
-   public CollectionMetadata() {
-      // Required by the serialization layer
+   /**
+    * Construct a metadata instance from a database object.
+    *
+    * @param collectionMetadataDO
+    *            database object.
+    * @return a dataset instance.
+    */
+   public static CollectionMetadata fromDatabaseObject(CollectionMetadataDO collectionMetadataDO) {
+      return CollectionMetadata.builder() //
+            .id(collectionMetadataDO.getId()) //
+            .name(collectionMetadataDO.getName()) //
+            .experimentName(collectionMetadataDO.getExperimentName()) //
+            .eventsCount(collectionMetadataDO.getEventsCount()) //
+            .type(collectionMetadataDO.getType()) //
+            .keyword(collectionMetadataDO.getKeyword()) //
+            .tag(collectionMetadataDO.getTag()) //
+            .citeText(collectionMetadataDO.getCiteText()) //
+            .doi(collectionMetadataDO.getDoi()) //
+            .license(collectionMetadataDO.getLicense()) //
+            .creator(collectionMetadataDO.getCreator()) //
+            .title(collectionMetadataDO.getTitle()) //
+            .publisher(collectionMetadataDO.getPublisher()) //
+            .publicationYear(collectionMetadataDO.getPublicationYear()) //
+            .language(collectionMetadataDO.getLanguage()) //
+            .subject(collectionMetadataDO.getSubject()) //
+            .description(collectionMetadataDO.getDescription()) //
+            .geoLocation(collectionMetadataDO.getGeoLocation()) //
+            .fundingReference(collectionMetadataDO.getFundingReference()) //
+            .build();
+   }
+
+   /**
+    * Transform this instance in a database object.
+    *
+    * @return a database object.
+    */
+   public CollectionMetadataDO asDatabaseObject() {
+      return CollectionMetadataDO.builder() //
+            .id(getId()) //
+            .name(getName()) //
+            .experimentName(getExperimentName()) //
+            .eventsCount(getEventsCount()) //
+            .type(getType()) //
+            .keyword(getKeyword()) //
+            .tag(getTag()) //
+            .citeText(getCiteText()) //
+            .doi(getDoi()) //
+            .license(getLicense()) //
+            .creator(getCreator()) //
+            .title(getTitle()) //
+            .publisher(getPublisher()) //
+            .publicationYear(getPublicationYear()) //
+            .language(getLanguage()) //
+            .subject(getSubject()) //
+            .description(getDescription()) //
+            .geoLocation(getGeoLocation()) //
+            .fundingReference(getFundingReference()) //
+            .build();
    }
 
    @Override

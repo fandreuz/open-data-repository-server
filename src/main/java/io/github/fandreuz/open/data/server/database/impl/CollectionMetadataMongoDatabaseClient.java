@@ -3,16 +3,15 @@ package io.github.fandreuz.open.data.server.database.impl;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
-import io.github.fandreuz.open.data.server.database.DatabaseTypedClient;
-import io.github.fandreuz.open.data.server.database.DatabaseIdempotentTypedClient;
 import io.github.fandreuz.open.data.server.database.DatabaseNotFoundException;
+import io.github.fandreuz.open.data.server.database.DatabaseTypedClient;
 import io.github.fandreuz.open.data.server.model.collection.CollectionMetadata;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.SortedSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -25,7 +24,7 @@ import java.util.TreeSet;
 @Singleton
 final class CollectionMetadataMongoDatabaseClient
       implements
-         DatabaseIdempotentTypedClient<CollectionMetadata, CollectionMetadata> {
+         DatabaseTypedClient<CollectionMetadata, CollectionMetadata> {
 
    private static final String DATASET_NAME = "dataset-db";
    private static final String COLLECTION_NAME = "collections-metadata";
@@ -34,7 +33,7 @@ final class CollectionMetadataMongoDatabaseClient
    private MongoClientSetup databaseClientSetup;
 
    @Override
-   public void createOrUpdate(@NonNull CollectionMetadata metadata) {
+   public void create(@NonNull CollectionMetadata metadata) {
       log.info("Storing collection metadata '{}' in the DB ...", metadata);
 
       // Create if not found
@@ -61,7 +60,7 @@ final class CollectionMetadataMongoDatabaseClient
    }
 
    @Override
-   public SortedSet<CollectionMetadata> getAll() {
+   public Set<CollectionMetadata> getAll() {
       var collection = getMetadataCollection();
       log.info("Getting all stored collections metadata ...");
       var result = collection.find().into(new TreeSet<>());

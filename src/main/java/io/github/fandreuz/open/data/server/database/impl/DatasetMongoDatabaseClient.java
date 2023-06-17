@@ -7,11 +7,16 @@ import io.github.fandreuz.open.data.server.database.DatabaseBadQueryException;
 import io.github.fandreuz.open.data.server.database.DatabaseException;
 import io.github.fandreuz.open.data.server.database.DatabaseNotFoundException;
 import io.github.fandreuz.open.data.server.database.DatabaseTypedClient;
-import io.github.fandreuz.open.data.server.database.ExtractibleDatabaseTypedClient;
+import io.github.fandreuz.open.data.server.database.MonolithicDatabaseTypedClient;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetCoordinates;
-import io.github.fandreuz.open.data.server.model.dataset.StoredDataset;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.bson.Document;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,11 +26,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.bson.Document;
 
 /**
  * MongoDB implementation of {@link DatabaseTypedClient} for dataset objects.
@@ -34,7 +34,7 @@ import org.bson.Document;
  */
 @Slf4j
 @Singleton
-final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient<DatasetCoordinates, StoredDataset> {
+final class DatasetMongoDatabaseClient implements MonolithicDatabaseTypedClient<DatasetCoordinates> {
 
    private static final String DATASET_NAME = "dataset-db";
    private static final CSVFormat csvFormat = CSVFormat.Builder.create().setHeader().build();
@@ -73,22 +73,6 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
       }
 
       log.info("Stored dataset '{}' in the database", datasetCoordinates);
-   }
-
-   @Override
-   public StoredDataset get(@NonNull String id) {
-      var collection = getDatasetCollection(id);
-      log.info("Getting dataset with ID={} ...", id);
-
-      var firstDocument = collection.find().first();
-      if (firstDocument == null) {
-         throw new DatabaseNotFoundException(String.format("Dataset with ID=%s not found", id));
-      }
-
-      StoredDataset storedDataset = new StoredDataset(id, firstDocument.keySet());
-      log.info("Found dataset: {}", storedDataset);
-
-      return storedDataset;
    }
 
    @Override
@@ -142,11 +126,6 @@ final class DatasetMongoDatabaseClient implements ExtractibleDatabaseTypedClient
             .projection(Projections.include("_id")) //
             .map(Document::toString) //
             .into(new TreeSet<>());
-   }
-
-   @Override
-   public SortedSet<StoredDataset> getAll() {
-      return null;
    }
 
    private MongoCollection<Document> getDatasetCollection(@NonNull String datasetId) {

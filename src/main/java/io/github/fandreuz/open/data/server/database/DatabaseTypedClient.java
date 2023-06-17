@@ -1,7 +1,8 @@
 package io.github.fandreuz.open.data.server.database;
 
-import java.util.SortedSet;
 import lombok.NonNull;
+
+import java.util.Set;
 
 /**
  * Interface for database clients.
@@ -36,5 +37,5 @@ public interface DatabaseTypedClient<I, O> {
     *
     * @return a set containing all the objects in the database.
     */
-   SortedSet<O> getAll();
+   Set<O> getAll();
 }
