@@ -460,15 +460,15 @@ Sample output:
 
 ### Accessible
 
-1. Metadata retrievable by ID over standardized protocol (RESTful API)
+1. Metadata retrievable by ID over standardized protocol (RESTful API). No authentication
 2. Metadata is persisted and not bound to the dataset
 
 ---
 
 ### Interoperable
 
-1. Formal, shared, accessible metadata representation
-2. Common language for metadata
+- Most metadata is extracted with automated techniques from webpages
+- Shared, accessible, broadly applicable language
 
 ### Re-usable
 
@@ -678,7 +678,7 @@ Produced artifacts:
 ### Server Dockerfile
 
 ```Docker
-# Build native executable
+# Build native executable (approx. 15mins)
 FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:22.3-java17 AS build
 USER root
 RUN microdnf install findutils
