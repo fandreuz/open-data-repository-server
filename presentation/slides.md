@@ -3,27 +3,6 @@ marp: true
 theme: uncover
 ---
 
-## Plan
-
-- [x] Data
-  - [x] ID
-  - [x] Vocabulary
-  - [x] Data lifecycle
-  - [x] Logical data
-  - [x] Physical data
-  - [x] Conversion
-- [ ] REST endpoints
-  - [ ] Add querying metadata
-- [x] Code structure
-- [x] Implementation
-  - [x] Whys
-    - [x] MongoDB
-  - [x] Logging
-- [x] Deployment
-- [x] FAIR principles
-
----
-
 # Open data server
 
 https://github.com/fandreuz/open-data-server
@@ -339,8 +318,6 @@ curl --header "Content-Type: application/json" \
 
 ---
 
-Sample output:
-
 ```json
 {
   "datasetId": "cern-open-data:13128:237040910_EventInfo",
@@ -392,14 +369,37 @@ curl -i --request GET \
     http://localhost:8080/v1/cern-open-data:13128:237040910_EventInfo/posX
 ```
 
-Sample output:
-
 ```json
 {
   "647fa76f10c98516828586ae": "66.55",
   "647fa76f10c98516828586af": "64.45",
    ...
 }
+```
+
+---
+
+### `GET /v1/metadata`
+
+Query into the metadata database.
+
+Sample interaction:
+
+```
+curl -i --request GET \
+     --header "Content-Type: application/json" \
+     --data '{publicationYear: 2019}' \
+     http://localhost:8080/v1/metadata
+```
+
+```json
+[
+  {
+    "id": "cern-open-data:13128",
+    "name": "13128",
+    ...
+  }
+]
 ```
 
 ---
