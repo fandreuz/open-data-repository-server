@@ -13,13 +13,14 @@ theme: uncover
   - [x] Physical data
   - [x] Conversion
 - [ ] REST endpoints
+  - [ ] Add querying metadata
 - [x] Code structure
 - [x] Implementation
   - [x] Whys
     - [x] MongoDB
   - [x] Logging
 - [x] Deployment
-- [ ] FAIR principles
+- [x] FAIR principles
 
 ---
 
@@ -443,6 +444,38 @@ Sample output:
 
 ### Dispose
 - Disposing data is not permitted in the current implementation
+
+---
+
+# FAIR principles
+
+---
+
+### Findable
+
+1. Unique and persistent ID
+2. Rich metadata
+3. Metadata linked with ID
+4. Indexed and searchable meatdata (RESTful API)
+
+### Accessible
+
+1. Metadata retrievable by ID over standardized protocol (RESTful API)
+2. Metadata is persisted and not bound to the dataset
+
+---
+
+### Interoperable
+
+1. Formal, shared, accessible metadata representation
+2. Common language for metadata
+
+### Re-usable
+
+1. Multiple accurate and relevant attrbiutes in metadata
+2. License (same as dataset)
+3. Provenance
+4. Community standard (DataCite: compulsory and a subset of recommended fields)
 
 ---
 
