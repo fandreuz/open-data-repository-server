@@ -1,7 +1,5 @@
-package io.github.fandreuz.open.data.server.fetch.impl;
+package io.github.fandreuz.open.data.server.fetch;
 
-import io.github.fandreuz.open.data.server.fetch.FetchException;
-import jakarta.inject.Singleton;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -22,8 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author fandreuz
  */
 @Slf4j
-@Singleton
-final class DownloadService {
+final class DownloadUtils {
 
    /**
     * Try to read the file at {@code fileUrl}.
@@ -32,7 +29,7 @@ final class DownloadService {
     *            url to the file to be read.
     * @return the file content if available.
     */
-   Path download(@NonNull String fileUrl) {
+   static Path download(@NonNull String fileUrl) {
       log.info("Downloading URL '{}'", fileUrl);
       URL url;
       try {

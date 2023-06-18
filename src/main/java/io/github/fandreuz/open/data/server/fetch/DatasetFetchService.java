@@ -2,20 +2,24 @@ package io.github.fandreuz.open.data.server.fetch;
 
 import io.github.fandreuz.open.data.server.model.collection.CollectionMetadata;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
-import java.nio.file.Path;
-
+import jakarta.inject.Inject;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.nio.file.Path;
+
 /**
- * Interface for services which can fetch a remote dataset.
- *
- * <p>
- * Typically, implementations will already know some base URL to infer the
- * global location of the dataset.
+ * Fetch a remote dataset.
  *
  * @author fandreuz
  */
-public interface DatasetFetchService {
+public class DatasetFetchService {
+
+   @Inject
+   private MetadataBuilderService<DatasetMetadata> datasetMetadataService;
+   @Inject
+   private MetadataBuilderService<CollectionMetadata> collectionMetadataService;
+   @Inject
+   private UrlBuilderService urlBuilderService;
 
    /**
     * Fetch a dataset based on the ID of the collection it belongs to, and the name
@@ -27,5 +31,18 @@ public interface DatasetFetchService {
     *            local file where the dataset is stored.
     * @return a triple of metadata and the object representation of the dataset.
     */
-   Triple<CollectionMetadata, DatasetMetadata, Path> fetchDataset(String collectionId, String file);
+   public Triple<CollectionMetadata, DatasetMetadata, Path> fetchDataset(String collectionId, String file) {
+      // Download the collection reference page to build metadata
+      String collectionUrl = urlBuilderService.getCollectionUrl(collectionId);
+      Path localCollectionFile = DownloadUtils.download(collectionUrl);
+      CollectionMetadata collectionMetadata = collectionMetadataService.buildMetadata(collectionId,
+            localCollectionFile);
+
+      // Download the dataset file
+      String fileUrl = urlBuilderService.getFileUrl(collectionId, file);
+      Path localDatasetFile = DownloadUtils.download(fileUrl);
+      DatasetMetadata datasetMetadata = datasetMetadataService.buildMetadata(collectionId, localDatasetFile);
+
+      return Triple.of(collectionMetadata, datasetMetadata, localDatasetFile);
+   }
 }
