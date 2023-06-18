@@ -2,14 +2,9 @@
 left to right direction
 
 package controller {
-  rectangle DatasetResource
-  rectangle DatasetMetadataResource
-  folder DatasetLocator [
-    <b>DatasetLocator</b>
-    ---
-    collectionId
-    fileName
-  ]
+  usecase DatasetResource
+  usecase DatasetMetadataResource
+  artifact DatasetLocator
   package validation [
     InputValidationService
   ]
@@ -19,39 +14,32 @@ package controller {
 }
 
 package model {
-  rectangle DatasetMetadata
-  rectangle DatasetCoordinates
+  artifact DatasetMetadata
+  artifact DatasetCoordinates
   stack DatasetType
-  rectangle CollectionMetadata
-  rectangle DatasetService
-  rectangle MetadataService
+  artifact CollectionMetadata
+  node DatasetService
+  node MetadataService
 }
 
 package "database" {
-  rectangle TransactionController
-  rectangle DatabaseTypedClient
+  node TransactionController
+  node DatabaseTypedClient
 }
 
 package conversion {
-  rectangle ConversionService
-  node ConversionServiceOrchestrator [
-    <b>ConversionServiceOrchestrator</b>
-    ---
-    CsvConversionService
-    JsonConversionService
-    ...
-  ]
+  node CsvConversionService
+  node JsonConversionService
+  node RootConversionService
+  node ConversionServiceOrchestrator
 }
 
 package fetch {
-  rectangle MetadataBuilderService
-  node DatasetFetchService [
-    <b>DatasetFetchService</b>
-    ---
-    Type1MetadataService
-    Type2MetadataService
-    ...
-  ]
+  rectangle "MetadataBuilderService<DatasetMetadata>" as mbsd #line.dashed 
+  rectangle "MetadataBuilderService<CollectionMetadata>" as mbsc #line.dashed 
+  rectangle UrlBuilderService #line.dashed
+  node DownloadService
+  node DatasetFetchService
 }
 
 database mongodb
@@ -70,5 +58,14 @@ DatasetService ----> ConversionServiceOrchestrator
 MetadataService ----> DatabaseTypedClient
 
 DatabaseTypedClient -r-> mongodb
+
+DatasetFetchService --> DownloadService
+DatasetFetchService --> mbsd
+DatasetFetchService --> mbsc
+DatasetFetchService --> UrlBuilderService
+
+ConversionServiceOrchestrator --> CsvConversionService
+ConversionServiceOrchestrator --> JsonConversionService
+ConversionServiceOrchestrator --> RootConversionService
 
 @enduml
