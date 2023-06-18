@@ -6,12 +6,12 @@ import jakarta.inject.Singleton;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * Implementation of {@link InputValidationService} for CERN open data.
+ * Implementation of {@link InputValidationService}.
  *
  * @author fandreuz
  */
 @Singleton
-class CernInputValidationService implements InputValidationService {
+class InputValidationServiceImpl implements InputValidationService {
 
    @Override
    public boolean isValid(DatasetLocator value, ConstraintValidatorContext context) {
