@@ -21,6 +21,12 @@ Source code: [GitHub](https://github.com/fandreuz/open-data-server)
 
 ---
 
+### TODO: Dashed only
+
+![width:950px](https://plantuml-server.kkeisuke.dev/svg/ZLLDZzCm4BtxLupAEVo02bKBGQi5WK1Bbyjg3wuzJQrrxSgU5274VyTnrwdhEbbEYMRUUtxpuUJ64tVKxpNJk2KW2qvrEmAf70fIrZ1suEAPTmZ26d9MQtJmXm7q7WNt21yvXGVTexUz4tYT-Oh4PNZD4E58jUM24kIB5Poi2vbqs95h5KZ103o6CC0dS-ZfvnZzWUweejPJnjegJS7UYV7WqRtlqD3jAHgnVy_rxAr47KifxIJ7bLHhhPFAS48Vig5vuZcbrhyF5xMrGwzY3pCz4mvDX7CDCPfGAPnPNGpnJU0iejy8NpjkF8_wxJYP_8G1FtYIhLQX2xbU6EKHdH-wE-gr_jYEuSBQPnyFgIVlhQN9v5NYcnCxzEJYl3DBMoInYsw6nUEcqw7ir98FlT8ItOl4ks9CgmLm3_kDb_16AuDl9VSxbF1VMjTJ6kN4ZDo3qvT25zXn3FQNqPRBeYal_c-7ahDffo67pJITbHl6bk4gkIKqZoVP9zaqpQgySR24k_Nw-poul8I9n4gnnkMqv6vAfT4HNQukkwH3CsgMIra5rbTxKhDiPHKuluYig636CQi4XwwjpcEhc88eLwp356vOvRcac4nUhILZiuL7KlNclqwhVnHUvzM_5-m6ZGp_eNy0.svg)
+
+---
+
 # Vocabulary
 
 ---
