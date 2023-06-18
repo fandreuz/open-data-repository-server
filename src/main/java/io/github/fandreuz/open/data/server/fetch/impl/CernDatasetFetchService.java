@@ -21,9 +21,9 @@ final class CernDatasetFetchService implements DatasetFetchService {
    private static final String BASE_URL_FILE_PATTERN = "https://opendata.cern.ch/record/%s/files/%s";
 
    @Inject
-   private CernDatasetMetadataService datasetMetadataService;
+   private CernDatasetMetadataBuilderService datasetMetadataService;
    @Inject
-   private CernCollectionMetadataService collectionMetadataService;
+   private CernCollectionMetadataBuilderService collectionMetadataService;
    @Inject
    private DownloadService downloadService;
 

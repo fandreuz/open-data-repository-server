@@ -5,13 +5,13 @@ import lombok.NonNull;
 import java.nio.file.Path;
 
 /**
- * Interface for services providing metadata for in-memory remote datasets.
+ * Interface for services to generate metadata for datasets.
  *
  * @param <M>
  *            metadata type.
  * @author fandreuz
  */
-public interface MetadataService<M> {
+public interface MetadataBuilderService<M> {
 
    /**
     * Build metadata for the given dataset.

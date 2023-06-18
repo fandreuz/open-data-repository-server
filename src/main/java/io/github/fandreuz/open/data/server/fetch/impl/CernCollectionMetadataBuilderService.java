@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.fandreuz.open.data.server.controller.filter.UserAgentContainer;
 import io.github.fandreuz.open.data.server.fetch.FetchException;
-import io.github.fandreuz.open.data.server.fetch.MetadataService;
+import io.github.fandreuz.open.data.server.fetch.MetadataBuilderService;
 import io.github.fandreuz.open.data.server.model.collection.CollectionMetadata;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -25,13 +25,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Implementation of {@link MetadataService} for CERN Open data collections.
+ * Implementation of {@link MetadataBuilderService} for CERN Open data
+ * collections.
  *
  * @author fandreuz
  */
 @Singleton
 @Slf4j
-final class CernCollectionMetadataService implements MetadataService<CollectionMetadata> {
+final class CernCollectionMetadataBuilderService implements MetadataBuilderService<CollectionMetadata> {
 
    // Uniform Resource Name (URN)
    // schema:namespace

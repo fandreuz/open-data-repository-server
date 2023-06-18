@@ -2,7 +2,7 @@ package io.github.fandreuz.open.data.server.fetch.impl;
 
 import io.github.fandreuz.open.data.server.fetch.FetchException;
 import io.github.fandreuz.open.data.server.fetch.FileTypeNotRecognizedException;
-import io.github.fandreuz.open.data.server.fetch.MetadataService;
+import io.github.fandreuz.open.data.server.fetch.MetadataBuilderService;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetMetadata;
 import io.github.fandreuz.open.data.server.model.dataset.DatasetType;
 import jakarta.inject.Singleton;
@@ -13,12 +13,12 @@ import java.time.Instant;
 import lombok.NonNull;
 
 /**
- * Implementation of {@link MetadataService} for CERN Open data datasets.
+ * Implementation of {@link MetadataBuilderService} for CERN Open data datasets.
  *
  * @author fandreuz
  */
 @Singleton
-final class CernDatasetMetadataService implements MetadataService<DatasetMetadata> {
+final class CernDatasetMetadataBuilderService implements MetadataBuilderService<DatasetMetadata> {
 
    // Uniform Resource Name (URN)
    // schema:namespace:name
