@@ -24,6 +24,7 @@ package model {
   stack DatasetType
   rectangle CollectionMetadata
   rectangle DatasetService
+  rectangle MetadataService
 }
 
 package "database" {
@@ -43,7 +44,7 @@ package conversion {
 }
 
 package fetch {
-  rectangle MetadataService
+  rectangle MetadataBuilderService
   node DatasetFetchService [
     <b>DatasetFetchService</b>
     ---
@@ -58,13 +59,15 @@ database mongodb
 :user: -[dashed]d---> DatasetResource : HTTP
 :user: -[dashed]d---> DatasetMetadataResource : HTTP
 
-DatasetResource -r-> DatasetService
-DatasetMetadataResource -r-> DatasetService
+DatasetResource -r---> DatasetService
+DatasetMetadataResource -l---> MetadataService
 
 DatasetService ----> DatabaseTypedClient
 DatasetService ----> TransactionController
 DatasetService ----> DatasetFetchService
 DatasetService ----> ConversionServiceOrchestrator
+
+MetadataService ----> DatabaseTypedClient
 
 DatabaseTypedClient -r-> mongodb
 

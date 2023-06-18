@@ -23,7 +23,7 @@ https://github.com/fandreuz/open-data-server
 
 ### Collection
 
-A set of datasets related to the same topic/experiment/event.
+A set of datasets related to the same topic, experiment or event.
 
 ### Dataset
 
@@ -119,9 +119,9 @@ DataCite compulsory fields and some recommended
 ## Constraints
 
 - Entity integrity constraint
-- No other particular constraints on datasets tables
-- Some important metadata fields should be non-blank (e.g. compulsory DataCite fields)
-- Implementation-dependent
+- No particular constraints on datasets tables
+  - Some important metadata fields should be non-blank (e.g. compulsory DataCite fields)
+- Implementation-dependent (other Open Data portals may not provide the same information)
 
 ---
 
@@ -192,7 +192,7 @@ private String extractLicense(@NonNull Document document) {
          return matcher.group(1);
       }
       return "";
-   }
+}
 ```
 
 ---
@@ -236,7 +236,7 @@ cern-open-data:19090:experimentData
 
 ### Collection ID
 
-A dataset is identified by the schema and its name. The last part of the URN is omitted since it's not needed.
+A collection is identified by the schema and the collection name. The last part of the URN is omitted since it's not needed.
 
 ### Example
 
@@ -250,9 +250,7 @@ We identify the collection `19090` with the following URN:
 
 ---
 
-### Communication with user over HTTP protocol
-
-**JSON**
+### Communication with user over HTTP protocol: JSON
 
 - De-facto standard for RESTful APIs
 - Better integration with the tooling
@@ -267,9 +265,7 @@ We identify the collection `19090` with the following URN:
 
 ---
 
-### Intermediate representation of datasets
-
-**CSV**
+### Intermediate representation of datasets: CSV
 
 - Easy to visualize
 - Easy to parse
@@ -404,6 +400,32 @@ curl -i --request GET \
 
 ---
 
+### Error handling
+
+Whenever a server-side exception is thrown, we map it to an appropriate HTTP status code:
+
+```java
+/**
+ * Implementation of {@link ExceptionMapper} for
+ * {@link DatabaseNotFoundException}.
+ *
+ * @author fandreuz
+ */
+@Provider
+@Slf4j
+public class DatabaseNotFoundExceptionMapper implements ExceptionMapper<DatabaseNotFoundException> {
+   @Override
+   public Response toResponse(DatabaseNotFoundException exception) {
+      log.error("DatabaseNotFoundException caught", exception);
+      return Response.status(Response.Status.NOT_FOUND) //
+            .entity(exception.getMessage()) //
+            .build();
+   }
+}
+```
+
+---
+
 # Data lifecycle
 
 ---
@@ -431,7 +453,7 @@ curl -i --request GET \
 
 ### Preservation
 - Datasets are assumed to be immutable
-- More complex implementation may leverage database redundancy and partitioning for additional safety
+- Possible improvements: leveraging database redundancy and partitioning for additional safety
 
 ### Access
 - Access is guaranteed via RESTful API
@@ -472,7 +494,7 @@ curl -i --request GET \
 
 ### Re-usable
 
-1. Multiple accurate and relevant attrbiutes in metadata
+1. Multiple accurate and relevant metadata attributes
 2. License (same as dataset)
 3. Provenance
 4. Community standard (DataCite: compulsory and a subset of recommended fields)
@@ -503,7 +525,7 @@ curl -i --request GET \
 
 ---
 
-![width:850px](https://plantuml-server.kkeisuke.dev/svg/VLJBRi8m4BpdAwpUGzKU4K9KgL2f-b9BUwbwCFOI8eoDx0MfGltthaCCmJ4S4E2P7S_ERZ9oo2rkLYfJC4U6XjcgN22JbGM1bT5PjkPYoKjWmcYqHYcmR9Snvd6kImNidYDtWE_WpCOAI67FW5pIpnPdRfGagORmP0H7Ozat8OmDPiFJyy7rR5WZUPxNty8RgGrEP7qmhnIyy9LN_g5FCBtbggABYTT8J_HwWr-7qm-msqh4LII64CnyEh1t9MWSxqzhxjynbvMHeDAHXBPJM66CbPNc28vW6eDO1cZwkpvDiJXqUqanzDBoTkMvCmAl8eDJoxNZjMHnc6j7r5TwCx9G5GNGLgPjs89rFjXTv3K0nsmrHTG5NgrOW4DxElYBjCuU56wRkf2nHrTtba1wlLuymZcWM4HzXAIZBfginxwYWJfBsmOxZdsUDrtnFN2R0bg6mpXfwNHfv2pB-XjQppxBloLt2v0_akuPneyawxE7wVJjCZb-HaDH5elbzbWKV9xJI76pq_y-cOOKxrkIc5xTivhHFDB4YqktDnnvstTs6CC8jAItw3y0.svg)
+![width:850px](https://plantuml-server.kkeisuke.dev/svg/VLJBRjim4BppAuZSvQ8v6e6HLa6G1Ea3ZTjBa0DDhcKYD6cGAmD5a7_lKXKjcM9q42pipCxEFkJhWC9ZkpVCm1OvEkvriqEkj0U9sbd63aA-YWQuT1QzCmOyVsESHrpOnW2_4IW2u2y8hlKIIjWtGA7eTSJPEgD8gYSyEYdGUVvC2ETNczLv_EhJPjKXLLLrlp8QwGpUgowmrGQ-YtrKVg4dcJuAewamyNhfUtjeySyf-WJ-g6MUHM88oSpl0FvB0nPl_qSxxlimbxrJOCeZIMsNiDevhxGL285WMeDyJT3wx-5yYlMfspd5ePS1Ilo4ZNnVnFY64YyoysilR11TkVgqyqd1c1cDgjfe6ivOcIxb23x4eRzbVIHWy6ffV5FWXvSx2EZFZsAMDhcHEXnB1Jb_25rd1MInMEJhtGBANTP7ckhNLiSZpfhfrt4R4tjeSjTZS68yZlLplha4N9Q0aU-qLRfBspYrOMpPqWKlUVMiHDY1Ub5KPvL_jNp9xzRhd_Fa_3DEIImNg_muBJdzIAKo7JjlZ9sdn_7qcldj5OdbC_vGCrjAcJXxW8nb7SmuPeLWdDfgMDirM4L_pFy0.svg)
 
 ---
 
@@ -523,7 +545,7 @@ Full list in `README.md`
 ## Why Java
 
 - Out-of-the-box static typing
-- More natural OOP wrt alternaties
+- More natural OOP w.r.t. alternaties
 - Tooling
 
 ---
@@ -586,7 +608,7 @@ public void create(@NonNull DatasetCoordinates datasetCoordinates) {
 
 ### Why Docker
 
-De-facto standard for containerization of applications
+De-facto standard for containerization
 
 ---
 
@@ -601,7 +623,7 @@ De-facto standard build-tool for Java applications
 - _Hot_ alternative to Spring Boot
 - Supports compilation to native executable
   - Faster start-up time wrt JVM-based applications
-- Claims to be more _Kubernetes-ready_ wrt competitors
+- Claims to be _Kubernetes-ready_
   - Tooling for containerization
   - No need to deploy a full JVM in the container
 - Out-of-the-box ORM integration with MongoDB
