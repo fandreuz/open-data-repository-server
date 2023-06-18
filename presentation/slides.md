@@ -475,9 +475,9 @@ public class DatabaseNotFoundExceptionMapper implements ExceptionMapper<Database
 
 ### Findable
 
-1. Unique and persistent ID
-2. Rich metadata
-3. Metadata linked with ID
+1. Globally unique and persistent ID
+2. Rich metadata (DataCite)
+3. Metadata contains reference to data
 4. Indexed and searchable meatdata (RESTful API)
 
 ### Accessible
@@ -489,15 +489,15 @@ public class DatabaseNotFoundExceptionMapper implements ExceptionMapper<Database
 
 ### Interoperable
 
-- Most metadata is extracted with automated techniques from webpages
-- Shared, accessible, broadly applicable language
+- Metadata in general is extracted with automated techniques, therefore depends on how the original information is structured.
+- Metadata is structured (some fields are free text)
 
 ### Re-usable
 
 1. Multiple accurate and relevant metadata attributes
-2. License (same as dataset)
-3. Provenance
-4. Community standard (DataCite: compulsory and a subset of recommended fields)
+2. License is the same as dataset, usually open source
+3. Metadata describes provenance (experiment, year, ..)
+4. Community standard (DataCite)
 
 ---
 
