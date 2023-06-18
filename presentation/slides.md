@@ -3,16 +3,20 @@ marp: true
 theme: uncover
 ---
 
-# Open data server
+# Open data repository server
+### Final project: Open Data Management & the Cloud
 
-https://github.com/fandreuz/open-data-server
+Francesco Andreuzzi
+
+Source code: [GitHub](https://github.com/fandreuz/open-data-server)
 
 ---
 
 ## Motivation
 
 - Generic, flexible and extensible framework to parse, augment and store open source datasets
-- Horizontally scalable
+- Infrastructure + per-source implementation
+- Horizontally scalable (i.e. number of datasets)
 - Implementation provided for [CERN Open Data Portal](https://opendata.cern.ch/)
 
 ---
@@ -47,7 +51,7 @@ A table of heterogeneous data adhering to some standard data format (CSV, JSON, 
 
 ---
 
-- We want a scalable model w.r.t. number/structure of datasets stored
+- We want a scalable model w.r.t. number of datasets stored
   - One table (collection) per dataset
 - All dataset metadata entities together, in a separate table (`dataset-metadata`)
 - Metadata common to the whole collection stay in a separate table (`collections-metadata`)
@@ -120,7 +124,7 @@ DataCite compulsory fields and some recommended
 
 - Entity integrity constraint
 - No particular constraints on datasets tables
-  - Some important metadata fields should be non-blank (e.g. compulsory DataCite fields)
+- Some important metadata fields should be non-blank (e.g. compulsory DataCite fields)
 - Implementation-dependent (other Open Data portals may not provide the same information)
 
 ---
@@ -436,8 +440,7 @@ public class DatabaseNotFoundExceptionMapper implements ExceptionMapper<Database
 
 ### Create and receive
 - Receive import request from users via RESTful API
-- Extract metadata
-- Collect dataset entries from the source for long-term storage
+- Extract metadata as a file from remote source
 
 ---
 
