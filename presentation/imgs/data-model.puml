@@ -2,32 +2,32 @@
 left to right direction
 
 database MongoDB {
-    package Dataset1 {
+    package Dataset1 #paleturquoise;line:turquoise {
         collections posX
         collections posY
     }
-    package Dataset2 {
+    package Dataset2 #paleturquoise;line:turquoise {
         collections pressure
         collections energy
     }
-    package Dataset3 {
+    package Dataset3 #paleturquoise;line:turquoise {
         collections velocity
         collections acceleration
     }
-    package Dataset4 {
+    package Dataset4 #palegreen;line:green {
         collections weight
     }
 
     package "datasets-metadata" {
-        artifact "Dataset1-metadata" as dm1
-        artifact "Dataset2-metadata" as dm2
-        artifact "Dataset3-metadata" as dm3
-        artifact "Dataset4-metadata" as dm4
+        artifact "Dataset1-metadata" as dm1 #paleturquoise;line:turquoise
+        artifact "Dataset2-metadata" as dm2 #paleturquoise;line:turquoise
+        artifact "Dataset3-metadata" as dm3 #paleturquoise;line:turquoise
+        artifact "Dataset4-metadata" as dm4 #palegreen;line:green
     }
 
     package "collections-metadata" {
-        artifact "Collection1-metadata" as cm1
-        artifact "Collection2-metadata" as cm2
+        artifact "Collection1-metadata" as cm1 #paleturquoise;line:turquoise
+        artifact "Collection2-metadata" as cm2 #palegreen;line:green
     }
 }
 
