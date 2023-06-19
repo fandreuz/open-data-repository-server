@@ -1,4 +1,4 @@
-# Open data server
+# Open data repository server
 
 RESTful web service for storage and metadata extraction of Open Data repositories.
 
